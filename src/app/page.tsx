@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { AccountMenu } from "@/components/account-menu";
 import { getServerSession } from "@/lib/session";
 
 export default async function Home() {
@@ -15,26 +16,7 @@ export default async function Home() {
             </span>
           </Link>
           {session ? (
-            <Link
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#151515]/20 bg-white/80 transition hover:border-[#151515]/40"
-              href="/dashboard"
-              aria-label="Open dashboard"
-            >
-              <svg
-                className="h-5 w-5 text-[#151515]"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7" />
-                <path
-                  d="M4 20c0-3.4 3.6-6 8-6s8 2.6 8 6"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </Link>
+            <AccountMenu />
           ) : (
             <div className="flex items-center gap-2 text-sm font-semibold">
               <Link className="rounded-full px-4 py-2" href="/login">

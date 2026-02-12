@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -11,22 +11,77 @@ export function SignUpForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState<
+    "idle" | "checking" | "available" | "unavailable"
+  >("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const trimmedUsername = username.trim();
+
+    if (trimmedUsername.length < 3) {
+      setUsernameStatus("idle");
+      return;
+    }
+
+    setUsernameStatus("checking");
+
+    let isActive = true;
+    const timeoutId = setTimeout(async () => {
+      const { data, error } = await authClient.isUsernameAvailable({
+        username: trimmedUsername,
+      });
+
+      if (!isActive) {
+        return;
+      }
+
+      if (error) {
+        setUsernameStatus("idle");
+        return;
+      }
+
+      setUsernameStatus(data?.available ? "available" : "unavailable");
+    }, 350);
+
+    return () => {
+      isActive = false;
+      clearTimeout(timeoutId);
+    };
+  }, [username]);
 
   const handleSubmit = async (
     event: React.SyntheticEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
+    const trimmedUsername = username.trim();
+
+    if (usernameStatus === "unavailable") {
+      setErrorMessage("That username is already taken.");
+      return;
+    }
+
     setErrorMessage(null);
     setIsSubmitting(true);
 
+    const { data: availabilityData, error: availabilityError } =
+      await authClient.isUsernameAvailable({
+        username: trimmedUsername,
+      });
+
+    if (availabilityError || !availabilityData?.available) {
+      setIsSubmitting(false);
+      setUsernameStatus("unavailable");
+      setErrorMessage("That username is already taken.");
+      return;
+    }
+
     const { error } = await authClient.signUp.email({
-      name: username,
+      name: trimmedUsername,
       email,
       password,
-      username,
-      displayUsername: username,
+      username: trimmedUsername,
       callbackURL: "/dashboard",
     });
 
@@ -77,11 +132,29 @@ export function SignUpForm() {
                   name="username"
                   type="text"
                   value={username}
-                  onChange={(event) => setUsername(event.target.value)}
+                  onChange={(event) => {
+                    setUsername(event.target.value);
+                    setErrorMessage(null);
+                  }}
                   placeholder="jordan"
                   autoComplete="username"
                   required
                 />
+                {usernameStatus === "checking" ? (
+                  <p className="mt-2 text-xs text-[#1b1b1b]/60">
+                    Checking username availability...
+                  </p>
+                ) : null}
+                {usernameStatus === "available" ? (
+                  <p className="mt-2 text-xs text-green-700">
+                    Username is available.
+                  </p>
+                ) : null}
+                {usernameStatus === "unavailable" ? (
+                  <p className="mt-2 text-xs text-red-700">
+                    Username is not available.
+                  </p>
+                ) : null}
               </div>
               <div>
                 <label className="text-xs font-semibold uppercase tracking-[0.22em] text-[#1b1b1b]/60">
@@ -121,7 +194,7 @@ export function SignUpForm() {
               <button
                 className="mt-2 inline-flex items-center justify-center rounded-full bg-[#1b1b1b] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black"
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || usernameStatus === "checking"}
               >
                 {isSubmitting ? "Creating..." : "Create account"}
               </button>
