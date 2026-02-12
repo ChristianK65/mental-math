@@ -167,11 +167,10 @@ export default function TrainingPage() {
     <div className="min-h-screen bg-[#f8f6f2] text-[#1b1b1b]">
       <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-6 pb-16 pt-8 sm:px-10">
         <header className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-lg font-semibold tracking-tight">
+          <div className="flex items-center text-lg font-semibold tracking-tight">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1b1b1b] text-xs font-bold text-white">
               S
             </span>
-            Samolni
           </div>
           <div className="flex items-center gap-3 text-sm font-medium">
             <Link className="rounded-full px-3 py-2" href="/">
