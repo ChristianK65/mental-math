@@ -8,9 +8,9 @@ import { authClient } from "@/lib/auth-client";
 
 export function AccountMenu() {
   const router = useRouter();
+  const menuRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

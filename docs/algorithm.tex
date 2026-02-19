@@ -1,0 +1,259 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{amsmath}
+
+\title{Mental Math Progression \& Level System (v1)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Core Philosophy}
+
+\begin{itemize}[leftmargin=*]
+    \item No global Elo system.
+    \item Personalized progression per user.
+    \item Each level corresponds to a \textbf{pattern family}.
+    \item Progression based on:
+    \begin{itemize}
+        \item Relative speed (time-to-first-correct; median vs population)
+        \item Skip behavior
+    \end{itemize}
+    \item No hard-coded time thresholds.
+\end{itemize}
+
+The system adapts automatically using population response-time percentiles.
+
+\section{High-Level Structure}
+
+Progression is separated by \textbf{Operation Domains}:
+
+\begin{itemize}[leftmargin=*]
+    \item Addition (ADD)
+    \item Multiplication (MUL)
+    \item Subtraction (SUB)
+    \item Division (DIV)
+\end{itemize}
+
+Each domain has its own independent level ladder.
+
+User progress is tracked per domain.
+
+\section{Pattern-Based Levels}
+
+Each level corresponds to a defined structural pattern.
+
+A pattern is \textbf{not} a single question. It is a generator rule with structural constraints.
+
+Each pattern contains:
+
+\begin{itemize}[leftmargin=*]
+    \item Operation
+    \item Digit configuration
+    \item Carry constraints (operation-specific)
+    \item Other structural constraints (pattern-specific)
+\end{itemize}
+
+\subsection*{Operand Order Randomization}
+
+For all patterns involving operands of different digit lengths, 
+the order of the operands is randomized at generation time 
+(e.g., $1$-digit $+$ $2$-digit or $2$-digit $+$ $1$-digit).
+For equal-length operands (e.g., $1$-digit $+$ $1$-digit), 
+order is naturally symmetric.
+
+\subsection*{Example Patterns (Addition) --- first 5 levels}
+
+\begin{itemize}[leftmargin=*]
+    \item Level 1: 1-digit + 1-digit, no carry
+    \item Level 2: 1-digit + 1-digit, with carry
+    \item Level 3: 1-digit + 2-digit, no carry
+    \item Level 4: 1-digit + 2-digit, with carry
+    \item Level 5: 2-digit + 2-digit, no carry
+\end{itemize}
+
+\subsection*{Example Patterns (Multiplication) --- first 5 levels}
+
+\begin{itemize}[leftmargin=*]
+    \item Level 1: 1-digit $\times$ 1-digit, no carry
+    \item Level 2: 1-digit $\times$ 1-digit, with carry
+    \item Level 3: 1-digit $\times$ 2-digit, no carry
+    \item Level 4: 1-digit $\times$ 2-digit, with carry
+    \item Level 5: 1-digit $\times$ 2-digit, two carries
+\end{itemize}
+
+\subsection*{Example Patterns (Subtraction) --- first 5 levels}
+
+\begin{itemize}[leftmargin=*]
+    \item Level 1: 1-digit $-$ 1-digit, non-negative result (no borrow possible)
+    \item Level 2: 2-digit $-$ 1-digit, no borrow
+    \item Level 3: 2-digit $-$ 1-digit, with borrow (single borrow)
+    \item Level 4: 2-digit $-$ 2-digit, no borrow
+    \item Level 5: 2-digit $-$ 2-digit, with borrow (single borrow)
+\end{itemize}
+
+
+\subsection*{Example Patterns (Division) --- first 5 levels }
+
+\begin{itemize}[leftmargin=*]
+    \item Level 1: 1-digit $\div$ 1-digit, exact integer result
+    \item Level 2: 2-digit $\div$ 1-digit, exact integer result
+    \item Level 3: 2-digit $\div$ 2-digit, exact integer result
+    \item Level 4: 3-digit $\div$ 1-digit, exact integer result
+    \item Level 5: 3-digit $\div$ 2-digit, exact integer result
+\end{itemize}
+
+
+
+\section{Performance Model (v1: Hard-Coded Targets)}
+
+Progression is based on:
+
+\begin{itemize}[leftmargin=*]
+    \item Time-to-first-correct (milliseconds)
+    \item Completion behavior (completed vs skipped)
+\end{itemize}
+
+For v1, each (domain, level) has a hard-coded \textbf{target time}.
+
+These targets are tuned manually and can later be replaced by population percentiles.
+
+\subsection*{Target Thresholds}
+
+For each domain and level $L$, define:
+
+\begin{itemize}[leftmargin=*]
+    \item $T_L$: target median time-to-first-correct over the last $N$ completed attempts
+    \item $C_L$: cutoff time beyond which a completion does not count toward progression
+\end{itemize}
+
+Suggested default:
+
+\begin{itemize}[leftmargin=*]
+    \item $C_L = 3 \times T_L$
+\end{itemize}
+
+$T_L$ increases with digit length and structural difficulty.
+
+\section{Promotion Rule (Per Level)}
+
+For a user currently on Level $L$ in a domain, evaluate the last $N$ completed attempts at Level $L$.
+
+Recommended:
+
+\begin{center}
+$N = 10$
+\end{center}
+
+Promotion requires:
+
+\begin{enumerate}[leftmargin=*]
+    \item No skips within the last $N$ attempts
+    \item Median(time-to-first-correct) $\leq T_L$
+\end{enumerate}
+
+Attempts with time-to-first-correct $> C_L$ do not count toward the $N$ completed attempts window.
+
+If satisfied, unlock Level $L + 1$.
+
+\section{Demotion Rule (Hysteresis)}
+
+Evaluate the last $M$ attempts at the current level (including skips).
+
+Recommended:
+
+\begin{center}
+$M = 20$
+\end{center}
+
+Demote if any of the following holds:
+
+\begin{itemize}[leftmargin=*]
+    \item Median(time-to-first-correct) $\geq D_T \times T_L$
+    \item Skip rate over the last $M$ attempts exceeds tolerance $S_{max}$
+\end{itemize}
+
+Suggested defaults:
+
+\begin{itemize}[leftmargin=*]
+    \item $D_T = 1.5$
+    \item $S_{max} = 0.25$ (25\%)
+\end{itemize}
+
+Only allow demotion after a minimum exposure at that level (e.g., 20 attempts).
+
+\section{Level Selection During Play}
+
+When user is at Level $L$:
+
+\begin{itemize}[leftmargin=*]
+    \item 70\% questions from Level $L$
+    \item 20\% from Level $L + 1$ (challenge)
+    \item 10\% from Level $L - 1$ (confidence)
+\end{itemize}
+
+Within a level:
+
+\begin{itemize}[leftmargin=*]
+    \item Randomize seeds
+    \item Randomize digit combinations
+    \item Maintain structural constraints
+\end{itemize}
+
+\section{Scope (v1)}
+
+Version 1 includes integer-only ladders for:
+
+\begin{itemize}[leftmargin=*]
+    \item Addition (ADD)
+    \item Multiplication (MUL)
+    \item Subtraction (SUB)
+    \item Division (DIV) with exact integer results (no remainders)
+\end{itemize}
+
+No decimals or negative numbers in v1.
+
+Rationale:
+
+\begin{itemize}[leftmargin=*]
+    \item Keeps pattern count small
+    \item Keeps UX and tuning simple
+    \item Validates progression logic and generator quality first
+\end{itemize}
+
+\section{Database Model (Conceptual)}
+
+\subsection*{Pattern}
+\begin{itemize}[leftmargin=*]
+    \item id
+    \item domain
+    \item level
+    \item params (JSON constraints)
+    \item targetTimeMs ($T_L$)
+    \item cutoffTimeMs ($C_L$)
+\end{itemize}
+
+\subsection*{Attempt}
+\begin{itemize}[leftmargin=*]
+    \item userId
+    \item patternId
+    \item seed
+    \item skipped (boolean)
+    \item timeToFirstCorrectMs
+    \item createdAt
+\end{itemize}
+
+\subsection*{UserDomainProgress}
+\begin{itemize}[leftmargin=*]
+    \item userId
+    \item domain
+    \item currentLevel
+    \item updatedAt
+\end{itemize}
+
+
+
+\end{document}

@@ -2,102 +2,68 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+
+import { formatPrompt } from "@/features/training/format-prompt";
+import { useTrainingQuestions } from "@/features/training/use-training-questions";
+import { useTrainingTimer } from "@/features/training/use-training-timer";
 
 export default function TrainingPage() {
-  const questions = [
-    { left: 48, operator: "-", right: 19, answer: 29 },
-    { left: 32, operator: "+", right: 27, answer: 59 },
-    { left: 64, operator: "-", right: 38, answer: 26 },
-    { left: 15, operator: "x", right: 4, answer: 60 },
-    { left: 96, operator: "/", right: 8, answer: 12 },
-    { left: 53, operator: "-", right: 26, answer: 27 },
-    { left: 19, operator: "+", right: 34, answer: 53 },
-    { left: 2, operator: "^", right: 5, answer: 32 },
-    { left: 49, operator: "sqrt", right: null, answer: 7 },
-    { left: 27, operator: "root", right: 3, answer: 3 },
-  ];
-  const totalQuestions = questions.length;
+  const router = useRouter();
+  const { questions, isLoadingQuestions, questionsError } = useTrainingQuestions();
+  const { elapsedMs, restart, stop, formatElapsed } = useTrainingTimer();
+
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [elapsedMs, setElapsedMs] = useState(0);
   const [answerInput, setAnswerInput] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const [errorFlash, setErrorFlash] = useState(false);
-  const [isTimerRunning, setIsTimerRunning] = useState(true);
-  const currentQuestion = questions[Math.min(currentIndex, questions.length - 1)];
-  const router = useRouter();
-  const startTimeRef = useRef<number | null>(null);
 
+  const totalQuestions = questions.length;
+  const hasLoadedQuestions = !isLoadingQuestions && !questionsError && totalQuestions > 0;
+  const currentQuestion = questions.length > 0
+    ? questions[Math.min(currentIndex, questions.length - 1)]
+    : undefined;
+  const isInteractionDisabled = !hasLoadedQuestions;
   const currentQuestionNumber = currentIndex + 1;
-  const progressPercent = (currentQuestionNumber / totalQuestions) * 100;
+  const progressPercent = totalQuestions > 0 ? (currentQuestionNumber / totalQuestions) * 100 : 0;
   const progressOffset = 100 - progressPercent;
 
   useEffect(() => {
-    if (!isTimerRunning) {
+    if (!hasLoadedQuestions) {
+      stop();
       return;
     }
 
-    if (startTimeRef.current === null) {
-      startTimeRef.current = performance.now();
+    setCurrentIndex(0);
+    setAnswerInput("");
+    setShowAnswer(false);
+    restart();
+  }, [hasLoadedQuestions, restart, stop]);
+
+  const advanceOrFinish = (form: HTMLFormElement) => {
+    if (currentIndex >= totalQuestions - 1) {
+      stop();
+      router.push("/training/overview");
+      return;
     }
 
-    const intervalId = window.setInterval(() => {
-      if (startTimeRef.current === null) {
-        return;
-      }
-      setElapsedMs(Math.round(performance.now() - startTimeRef.current));
-    }, 50);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, [isTimerRunning]);
-
-  const formatElapsed = (ms: number) => {
-    const seconds = ms / 1000;
-    return seconds.toFixed(1);
-  };
-
-  const formatPrompt = (question: (typeof questions)[number]) => {
-    if (question.operator === "sqrt") {
-      return (
-        <span>
-          &radic;
-          {question.left}
-        </span>
-      );
-    }
-
-    if (question.operator === "root") {
-      return (
-        <span>
-          <sup>{question.right}</sup>
-          &radic;
-          {question.left}
-        </span>
-      );
-    }
-
-    if (question.operator === "^") {
-      return (
-        <span>
-          {question.left}
-          <sup>{question.right}</sup>
-        </span>
-      );
-    }
-
-    return (
-      <span>
-        {question.left} {question.operator} {question.right ?? ""}
-      </span>
-    );
+    setCurrentIndex((prev) => Math.min(prev + 1, totalQuestions - 1));
+    restart();
+    setAnswerInput("");
+    setShowAnswer(false);
+    form.reset();
   };
 
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const expectedAnswer = currentQuestion?.answer ?? null;
-    const normalized = Number(answerInput.trim());
+
+    if (!currentQuestion) {
+      return;
+    }
+
+    const expectedAnswer = currentQuestion.answer;
+    const trimmedAnswer = answerInput.trim();
+    const normalized = Number(trimmedAnswer);
 
     if (showAnswer) {
       if (currentQuestion) {
@@ -108,23 +74,15 @@ export default function TrainingPage() {
           elapsedMs: null,
         });
       }
-      if (currentIndex >= totalQuestions - 1) {
-        setIsTimerRunning(false);
-        router.push("/training/overview");
-        return;
-      }
-
-      setCurrentIndex((prev) => Math.min(prev + 1, totalQuestions - 1));
-      setElapsedMs(0);
-      startTimeRef.current = performance.now();
-      setAnswerInput("");
-      setShowAnswer(false);
-      setIsTimerRunning(true);
-      event.currentTarget.reset();
+      advanceOrFinish(event.currentTarget);
       return;
     }
 
-    if (expectedAnswer !== null && normalized === expectedAnswer) {
+    if (trimmedAnswer === "" || Number.isNaN(normalized)) {
+      return;
+    }
+
+    if (normalized === expectedAnswer) {
       if (currentQuestion) {
         console.log({
           question: currentQuestion,
@@ -133,19 +91,7 @@ export default function TrainingPage() {
           elapsedMs: elapsedMs,
         });
       }
-      if (currentIndex >= totalQuestions - 1) {
-        setIsTimerRunning(false);
-        router.push("/training/overview");
-        return;
-      }
-
-      setCurrentIndex((prev) => Math.min(prev + 1, totalQuestions - 1));
-      setElapsedMs(0);
-      startTimeRef.current = performance.now();
-      setAnswerInput("");
-      setShowAnswer(false);
-      setIsTimerRunning(true);
-      event.currentTarget.reset();
+      advanceOrFinish(event.currentTarget);
       return;
     }
 
@@ -159,8 +105,12 @@ export default function TrainingPage() {
   };
 
   const handleDontKnow = () => {
+    if (!currentQuestion) {
+      return;
+    }
+
     setShowAnswer(true);
-    setIsTimerRunning(false);
+    stop();
   };
 
   return (
@@ -227,8 +177,17 @@ export default function TrainingPage() {
             </div>
 
             <div className="mt-12">
+              {isLoadingQuestions ? (
+                <p className="text-base text-[#1b1b1b]/60">Loading questions…</p>
+              ) : null}
+              {!isLoadingQuestions && questionsError ? (
+                <p className="text-base text-[#1b1b1b]/60">{questionsError}</p>
+              ) : null}
+              {!isLoadingQuestions && !questionsError && totalQuestions === 0 ? (
+                <p className="text-base text-[#1b1b1b]/60">No questions available right now.</p>
+              ) : null}
               <p className="text-4xl font-semibold">
-                {currentQuestion ? formatPrompt(currentQuestion) : null}
+                {!isLoadingQuestions && !questionsError && currentQuestion ? formatPrompt(currentQuestion) : null}
                 {showAnswer ? (
                   <span className="ml-3 text-[#1b1b1b]/60">
                     = {currentQuestion?.answer}
@@ -249,7 +208,7 @@ export default function TrainingPage() {
                   onChange={(event) => {
                     setAnswerInput(event.target.value);
                   }}
-                  disabled={showAnswer}
+                  disabled={showAnswer || isInteractionDisabled}
                 />
                 <div className="flex gap-3 sm:min-w-[240px]">
                   {!showAnswer ? (
@@ -257,6 +216,7 @@ export default function TrainingPage() {
                       className="rounded-full border border-[#1b1b1b]/20 px-5 py-3 text-sm font-semibold transition hover:border-[#1b1b1b]/40"
                       type="button"
                       onClick={handleDontKnow}
+                      disabled={isInteractionDisabled}
                     >
                       Don&apos;t know
                     </button>
@@ -264,6 +224,7 @@ export default function TrainingPage() {
                   <button
                     className={`rounded-full px-6 py-3 text-sm font-semibold transition ${showAnswer ? "w-full bg-[#1b1b1b] text-white hover:bg-black" : "bg-[#1b1b1b] text-white hover:bg-black"}`}
                     type="submit"
+                    disabled={isInteractionDisabled}
                   >
                     {showAnswer ? "Continue" : "Submit"}
                   </button>
