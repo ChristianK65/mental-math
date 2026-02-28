@@ -20,8 +20,70 @@ model User {
   image         String?
   sessions      Session[]
   accounts      Account[]
+  attempts      Attempt[]
+  domainProgress UserDomainProgress[]
 
   @@map("user")
+}
+
+enum Domain {
+  ADD
+  MUL
+  SUB
+  DIV
+
+  @@map("domain")
+}
+
+model Pattern {
+  id           String    @id @default(cuid())
+  domain       Domain
+  level        Int
+  description  String
+  params       Json
+  cutoffTimeMs Int
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([domain, level, description])
+  @@map("pattern")
+}
+
+model Attempt {
+  id                   String        @id @default(cuid())
+  userId               String
+  user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patternId            String
+  pattern              Pattern       @relation(fields: [patternId], references: [id], onDelete: Cascade)
+  domain               Domain
+  presentedLevel       Int
+  seed                 Int
+  solved               Boolean
+  timeToFirstCorrectMs Int?
+  presentedAt          DateTime      @default(now())
+  answeredAt           DateTime?
+  responseMs           Int?
+  createdAt            DateTime      @default(now())
+
+  @@index([userId, createdAt])
+  @@index([userId, patternId, createdAt])
+  @@index([patternId, createdAt])
+  @@map("attempt")
+}
+
+model UserDomainProgress {
+  id                  String    @id @default(cuid())
+  userId              String
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  domain              Domain
+  currentLevel        Int       @default(1)
+  highestUnlockedLevel Int      @default(1)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@unique([userId, domain])
+  @@map("user_domain_progress")
 }
 
 model Session {

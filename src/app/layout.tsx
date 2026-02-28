@@ -20,7 +20,7 @@ const jetBrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Samolni - Mental Math Training",
   description:
-    "A focused mental math trainer with an Elo-based difficulty ladder.",
+    "A focused mental math trainer",
 };
 
 export default function RootLayout({

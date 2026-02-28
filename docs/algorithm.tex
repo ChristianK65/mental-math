@@ -11,7 +11,7 @@
 
 \maketitle
 
-\section{Core Philosophy}
+\section{Vision}
 
 \begin{itemize}[leftmargin=*]
     \item No global Elo system.
@@ -108,41 +108,22 @@ order is naturally symmetric.
 
 
 
-\section{Performance Model (v1: Hard-Coded Targets)}
+\section{Performance Model (v1: Hard-Coded Cutoff)}
 
 Progression is based on:
 
 \begin{itemize}[leftmargin=*]
-    \item Time-to-first-correct (milliseconds)
-    \item Completion behavior (completed vs skipped)
+    \item Whether the attempt is solved (correct answer submitted within $C_L$ milliseconds)
+    \item If time-to-first-correct exceeds $C_L$, the attempt counts as unsolved regardless of correctness
 \end{itemize}
 
-For v1, each (domain, level) has a hard-coded \textbf{target time}.
+For v1, each (domain, level) has a hard-coded \textbf{cutoff time} $C_L$.
 
-These targets are tuned manually and can later be replaced by population percentiles.
-
-\subsection*{Target Thresholds}
-
-For each domain and level $L$, define:
-
-\begin{itemize}[leftmargin=*]
-    \item $T_L$: target median time-to-first-correct over the last $N$ completed attempts
-    \item $C_L$: cutoff time beyond which a completion does not count toward progression
-\end{itemize}
-
-Suggested default:
-
-\begin{itemize}[leftmargin=*]
-    \item $C_L = 3 \times T_L$
-\end{itemize}
-
-$T_L$ increases with digit length and structural difficulty.
+This threshold is tuned manually and can later be replaced by population percentiles.
 
 \section{Promotion Rule (Per Level)}
 
 For a user currently on Level $L$ in a domain, evaluate the last $N$ completed attempts at Level $L$.
-
-Recommended:
 
 \begin{center}
 $N = 10$
@@ -151,19 +132,14 @@ $N = 10$
 Promotion requires:
 
 \begin{enumerate}[leftmargin=*]
-    \item No skips within the last $N$ attempts
-    \item Median(time-to-first-correct) $\leq T_L$
+    \item All of the last $N$ attempts are solved (correct and within $C_L$)
 \end{enumerate}
-
-Attempts with time-to-first-correct $> C_L$ do not count toward the $N$ completed attempts window.
 
 If satisfied, unlock Level $L + 1$.
 
 \section{Demotion Rule (Hysteresis)}
 
 Evaluate the last $M$ attempts at the current level (including skips).
-
-Recommended:
 
 \begin{center}
 $M = 20$
@@ -172,18 +148,14 @@ $M = 20$
 Demote if any of the following holds:
 
 \begin{itemize}[leftmargin=*]
-    \item Median(time-to-first-correct) $\geq D_T \times T_L$
-    \item Skip rate over the last $M$ attempts exceeds tolerance $S_{max}$
+    \item Unsolved rate over the last $M$ attempts exceeds tolerance $S_{max}$
 \end{itemize}
 
-Suggested defaults:
-
 \begin{itemize}[leftmargin=*]
-    \item $D_T = 1.5$
     \item $S_{max} = 0.25$ (25\%)
 \end{itemize}
 
-Only allow demotion after a minimum exposure at that level (e.g., 20 attempts).
+Only allow demotion after a minimum exposure at that level (20 attempts).
 
 \section{Level Selection During Play}
 
@@ -191,8 +163,8 @@ When user is at Level $L$:
 
 \begin{itemize}[leftmargin=*]
     \item 70\% questions from Level $L$
-    \item 20\% from Level $L + 1$ (challenge)
-    \item 10\% from Level $L - 1$ (confidence)
+    \item 10\% from Level $L + 1$ (challenge)
+    \item 20\% from Level $L - 1$ (confidence)
 \end{itemize}
 
 Within a level:
@@ -203,57 +175,38 @@ Within a level:
     \item Maintain structural constraints
 \end{itemize}
 
-\section{Scope (v1)}
 
-Version 1 includes integer-only ladders for:
+
+\section{How Questions are stored}
+
+\begin{enumerate}[leftmargin=*]
+    \item Store \textbf{Pattern} rows (the generator rules).
+    \item Generate question instances on demand using a RNG seed.
+    \item Store each user interaction as an \textbf{Attempt} row.
+\end{enumerate}
+
+So, in practice, the ``question'' is represented by:
+
+\begin{center}
+\texttt{(patternId, seed)}
+\end{center}
+
+Optional later: add a \texttt{QuestionInstance} table only if you need explicit review queues or caching.
+
+\section{Best Datatype for Generation Rules}
+
+Use \textbf{PostgreSQL JSONB} for rule constraints.
+
+In Prisma, model this as \texttt{Json} (backed by JSONB in Postgres).
+
+Why JSONB is the best fit here:
 
 \begin{itemize}[leftmargin=*]
-    \item Addition (ADD)
-    \item Multiplication (MUL)
-    \item Subtraction (SUB)
-    \item Division (DIV) with exact integer results (no remainders)
+    \item Rule shapes differ by operation (ADD vs DIV), so rigid columns become messy.
+    \item Easy to version and extend constraints without migrations for every new rule key.
+    \item Queryable when needed (e.g., filtering by carry/borrow requirement).
 \end{itemize}
 
-No decimals or negative numbers in v1.
-
-Rationale:
-
-\begin{itemize}[leftmargin=*]
-    \item Keeps pattern count small
-    \item Keeps UX and tuning simple
-    \item Validates progression logic and generator quality first
-\end{itemize}
-
-\section{Database Model (Conceptual)}
-
-\subsection*{Pattern}
-\begin{itemize}[leftmargin=*]
-    \item id
-    \item domain
-    \item level
-    \item params (JSON constraints)
-    \item targetTimeMs ($T_L$)
-    \item cutoffTimeMs ($C_L$)
-\end{itemize}
-
-\subsection*{Attempt}
-\begin{itemize}[leftmargin=*]
-    \item userId
-    \item patternId
-    \item seed
-    \item skipped (boolean)
-    \item timeToFirstCorrectMs
-    \item createdAt
-\end{itemize}
-
-\subsection*{UserDomainProgress}
-\begin{itemize}[leftmargin=*]
-    \item userId
-    \item domain
-    \item currentLevel
-    \item updatedAt
-\end{itemize}
-
-
+Keep stable, frequently queried fields as normal columns (domain, level, active, version), and dynamic constraints in JSONB.
 
 \end{document}
