@@ -34,9 +34,7 @@ export default function TrainingPage() {
       return;
     }
 
-    setCurrentIndex(0);
-    setAnswerInput("");
-    setShowAnswer(false);
+ 
     restart();
   }, [hasLoadedQuestions, restart, stop]);
 
