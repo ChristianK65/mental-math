@@ -21,11 +21,8 @@ export function SignUpForm() {
     const trimmedUsername = username.trim();
 
     if (trimmedUsername.length < 3) {
-      setUsernameStatus("idle");
       return;
     }
-
-    setUsernameStatus("checking");
 
     let isActive = true;
     const timeoutId = setTimeout(async () => {
@@ -133,11 +130,16 @@ export function SignUpForm() {
                   type="text"
                   value={username}
                   onChange={(event) => {
-                    setUsername(event.target.value);
+                    const nextUsername = event.target.value;
+                    setUsername(nextUsername);
                     setErrorMessage(null);
+                    setUsernameStatus(
+                      nextUsername.trim().length < 3 ? "idle" : "checking"
+                    );
                   }}
                   placeholder="jordan"
                   autoComplete="username"
+                  minLength={3}
                   required
                 />
                 {usernameStatus === "checking" ? (

@@ -45,6 +45,7 @@ model Pattern {
   active       Boolean   @default(true)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  attempts     Attempt[]
 
   @@unique([domain, level, description])
   @@map("pattern")
@@ -69,6 +70,7 @@ model Attempt {
   @@index([userId, createdAt])
   @@index([userId, patternId, createdAt])
   @@index([patternId, createdAt])
+  @@index([userId, domain, presentedLevel, createdAt])
   @@map("attempt")
 }
 
