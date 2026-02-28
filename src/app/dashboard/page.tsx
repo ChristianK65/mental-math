@@ -51,9 +51,6 @@ const operationOptions: OperationOption[] = [
   { id: "subtraction", label: "Subtraction", symbol: "−", defaultChecked: true },
   { id: "multiplication", label: "Multiplication", symbol: "×", defaultChecked: true },
   { id: "division", label: "Division", symbol: "÷", defaultChecked: true },
-  { id: "powers", label: "Powers", symbol: "a^b" },
-  { id: "square-root", label: "Square roots", symbol: "√x" },
-  { id: "nth-root", label: "Nth roots", symbol: "ⁿ√x" },
 ];
 
 const generateHeatmap = (): HeatmapCell[][] => {
@@ -86,45 +83,36 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#f8f3ea] text-[#151515]">
       <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 sm:px-10">
-        <header className="flex items-center justify-between">
+        <header className="flex items-center">
           <Link className="flex items-center" href="/">
             <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#151515] text-xs font-bold text-white">
               S
             </span>
           </Link>
-          <span className="rounded-full border border-[#151515]/20 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-[#151515]/70">
-            Mock dashboard
-          </span>
         </header>
 
-        <main className="mt-10 grid gap-6 lg:grid-cols-[1.05fr_1fr]">
-          <section className="rounded-3xl border border-[#151515]/10 bg-white/80 p-7">
-            <div className="grid grid-cols-3 gap-2 text-xs">
-              <div className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-2">
-                <p className="uppercase tracking-[0.16em] text-[#151515]/55">Streak</p>
-                <p className="mt-1 text-lg font-semibold">{mockStreak.current}d</p>
+        <main className="mt-10 space-y-6">
+          <section className="rounded-3xl border border-[#151515]/10 bg-white p-7 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#151515]/55">
+                  Training setup
+                </p>
+                <h1 className="mt-2 text-2xl font-semibold tracking-tight font-[var(--font-display)] sm:text-3xl">
+                  Choose operations
+                </h1>
               </div>
-              <div className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-2">
-                <p className="uppercase tracking-[0.16em] text-[#151515]/55">Longest</p>
-                <p className="mt-1 text-lg font-semibold">{mockStreak.longest}d</p>
-              </div>
-              <div className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-2">
-                <p className="uppercase tracking-[0.16em] text-[#151515]/55">Week</p>
-                <p className="mt-1 text-lg font-semibold">{mockStreak.trainedThisWeek}</p>
-              </div>
+              <span className="rounded-full border border-[#151515]/15 bg-[#f8f3ea] px-3 py-1 text-xs font-semibold text-[#151515]/70">
+                4 core domains
+              </span>
             </div>
 
-            <h2 className="mt-7 text-2xl font-semibold font-[var(--font-display)]">Start training</h2>
-            <p className="mt-2 text-sm text-[#151515]/65">
-              Pick a focus and difficulty. This is prototype-only and still starts the current training flow.
-            </p>
-
-            <form action="/training" className="mt-6 space-y-4">
+            <form action="/training" className="mt-6 space-y-5">
               <fieldset>
                 <legend className="text-xs font-semibold uppercase tracking-[0.2em] text-[#151515]/55">
-                  What to train
+                  Operations
                 </legend>
-                <div className="mt-2 grid grid-cols-2 gap-2">
+                <div className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
                   {operationOptions.map((operation) => (
                     <label
                       key={operation.id}
@@ -139,74 +127,97 @@ export default async function DashboardPage() {
                         defaultChecked={operation.defaultChecked}
                         className="peer sr-only"
                       />
-                      <span className="flex w-full items-center justify-between rounded-2xl border border-[#151515]/15 bg-white px-3 py-3 text-sm transition hover:border-[#151515]/40 peer-checked:border-[#151515]/45 peer-checked:bg-[#151515]/10">
-                        <span className="font-semibold text-[#151515]/80">{operation.label}</span>
-                        <span className="text-xs font-semibold text-[#151515]/60">{operation.symbol}</span>
+                      <span className="flex w-full items-center justify-between rounded-2xl border border-[#151515]/15 bg-[#f8f3ea] px-3 py-3 text-sm transition hover:border-[#151515]/40 peer-checked:border-[#151515]/45 peer-checked:bg-[#151515]/10">
+                        <span className="font-semibold text-[#151515]/85">{operation.label}</span>
+                        <span className="text-xs font-semibold text-[#151515]/65">{operation.symbol}</span>
                       </span>
                     </label>
                   ))}
                 </div>
               </fieldset>
 
-              <div>
+              <div className="max-w-xs">
                 <label
+                  htmlFor="calculation-count"
                   className="text-xs font-semibold uppercase tracking-[0.2em] text-[#151515]/55"
-                  htmlFor="training-difficulty"
                 >
-                  Difficulty
+                  Number of calculations
                 </label>
                 <select
-                  id="training-difficulty"
-                  name="difficulty"
-                  defaultValue="adaptive"
-                  className="mt-2 w-full rounded-2xl border border-[#151515]/15 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#151515]/35"
+                  id="calculation-count"
+                  name="count"
+                  defaultValue="10"
+                  className="mt-2 w-full rounded-2xl border border-[#151515]/15 bg-[#f8f3ea] px-4 py-3 text-sm font-medium outline-none transition focus:border-[#151515]/35"
                 >
-                  <option value="easy">Easy</option>
-                  <option value="adaptive">Optimal</option>
-                  <option value="hard">Hard</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
                 </select>
               </div>
 
               <button
                 type="submit"
-                className="inline-flex w-full items-center justify-center rounded-full bg-[#151515] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black"
+                className="inline-flex w-full items-center justify-center rounded-full bg-[#151515] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black sm:w-auto sm:min-w-[220px]"
               >
                 Start training
               </button>
             </form>
           </section>
 
-          <section className="rounded-3xl border border-[#151515]/10 bg-white/80 p-7">
-            <div className="flex items-end justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#151515]/55">
-                  Session trend
-                </p>
-                <h2 className="mt-3 text-2xl font-semibold font-[var(--font-display)]">
-                  Last 7 days
-                </h2>
+          <div className="grid gap-6 lg:grid-cols-[1.05fr_1fr]">
+            <section className="rounded-3xl border border-[#151515]/10 bg-white p-7 sm:p-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#151515]/55">
+                Progress snapshot
+              </p>
+              <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
+                <div className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-3">
+                  <p className="uppercase tracking-[0.16em] text-[#151515]/55">Streak</p>
+                  <p className="mt-1 text-xl font-semibold">{mockStreak.current}d</p>
+                </div>
+                <div className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-3">
+                  <p className="uppercase tracking-[0.16em] text-[#151515]/55">Longest</p>
+                  <p className="mt-1 text-xl font-semibold">{mockStreak.longest}d</p>
+                </div>
+                <div className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-3">
+                  <p className="uppercase tracking-[0.16em] text-[#151515]/55">Week</p>
+                  <p className="mt-1 text-xl font-semibold">{mockStreak.trainedThisWeek}</p>
+                </div>
               </div>
-              <p className="text-sm text-[#151515]/60">Sessions / day</p>
-            </div>
+            </section>
 
-            <div className="mt-8 flex h-52 items-end gap-3">
-              {mockTrend.map((point) => {
-                const heightPercent = Math.max(
-                  16,
-                  Math.round((point.sessions / peakSessions) * 100)
-                );
+            <section className="rounded-3xl border border-[#151515]/10 bg-white p-7 sm:p-8">
+              <div className="flex items-end justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#151515]/55">
+                    Session trend
+                  </p>
+                  <h2 className="mt-3 text-2xl font-semibold font-[var(--font-display)]">
+                    Last 7 days
+                  </h2>
+                </div>
+                <p className="text-sm text-[#151515]/60">Sessions / day</p>
+              </div>
 
-                return (
-                  <div key={point.day} className="flex flex-1 flex-col items-center gap-2">
-                    <div className="w-full rounded-t-2xl border border-[#151515]/10 bg-[#151515]/85" style={{ height: `${heightPercent}%` }} />
-                    <span className="text-xs font-semibold text-[#151515]/60">{point.day}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
+              <div className="mt-8 flex h-52 items-end gap-3">
+                {mockTrend.map((point) => {
+                  const heightPercent = Math.max(
+                    16,
+                    Math.round((point.sessions / peakSessions) * 100)
+                  );
 
-          <section className="rounded-3xl border border-[#151515]/10 bg-white/80 p-7 lg:col-span-2">
+                  return (
+                    <div key={point.day} className="flex flex-1 flex-col items-center gap-2">
+                      <div className="w-full rounded-t-2xl border border-[#151515]/10 bg-[#151515]/85" style={{ height: `${heightPercent}%` }} />
+                      <span className="text-xs font-semibold text-[#151515]/60">{point.day}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
+
+          <section className="rounded-3xl border border-[#151515]/10 bg-white p-7 sm:p-8 lg:col-span-2">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#151515]/55">

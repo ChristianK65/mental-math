@@ -193,20 +193,86 @@ So, in practice, the ``question'' is represented by:
 
 Optional later: add a \texttt{QuestionInstance} table only if you need explicit review queues or caching.
 
-\section{Best Datatype for Generation Rules}
+\subsection*{How a Pattern is stored in DB}
 
-Use \textbf{PostgreSQL JSONB} for rule constraints.
+Each pattern family is one row in the \texttt{pattern} table.
 
-In Prisma, model this as \texttt{Json} (backed by JSONB in Postgres).
-
-Why JSONB is the best fit here:
+Stable, indexed fields are stored as normal columns:
 
 \begin{itemize}[leftmargin=*]
-    \item Rule shapes differ by operation (ADD vs DIV), so rigid columns become messy.
-    \item Easy to version and extend constraints without migrations for every new rule key.
-    \item Queryable when needed (e.g., filtering by carry/borrow requirement).
+        \item \texttt{id}: unique pattern id
+        \item \texttt{domain}: \texttt{ADD | MUL | SUB | DIV}
+        \item \texttt{level}: ladder level within domain
+        \item \texttt{description}: human-readable pattern label
+        \item \texttt{cutoffTimeMs}: solved-time cutoff for v1
+        \item \texttt{active}: enable/disable pattern
+        \item \texttt{createdAt}, \texttt{updatedAt}: audit timestamps
 \end{itemize}
 
-Keep stable, frequently queried fields as normal columns (domain, level, active, version), and dynamic constraints in JSONB.
+Dynamic generation constraints are stored in:
+
+\begin{itemize}[leftmargin=*]
+        \item \texttt{params} (Prisma \texttt{Json}, PostgreSQL \texttt{JSONB})
+\end{itemize}
+
+Uniqueness rule in v1:
+
+\begin{center}
+\texttt{UNIQUE(domain, level, description)}
+\end{center}
+
+\subsection*{What \texttt{params} JSON looks like}
+
+In v1, digit fields are stored as single integers (not lists),
+because each pattern uses one fixed digit size per side.
+
+\textbf{ADD example (Level 3: 1-digit + 2-digit, no carry)}
+
+\begin{verbatim}
+{
+    "operation": "ADD",
+    "leftDigits": 1,
+    "rightDigits": 2,
+    "carryCount": 0,
+}
+\end{verbatim}
+
+\textbf{MUL example (Level 5: 1-digit x 2-digit, two carries)}
+
+\begin{verbatim}
+{
+    "operation": "MUL",
+    "leftDigits": 1,
+    "rightDigits": 2,
+    "carryCount": 2,
+}
+\end{verbatim}
+
+\textbf{SUB example (Level 5: 2-digit - 2-digit, single borrow)}
+
+\begin{verbatim}
+{
+    "operation": "SUB",
+    "leftDigits": 2,
+    "rightDigits": 2,
+    "borrowCount": 1,
+    "allowNegative": false
+}
+\end{verbatim}
+
+\textbf{DIV example (Level 3: 2-digit / 2-digit, exact integer)}
+
+\begin{verbatim}
+{
+    "operation": "DIV",
+    "dividendDigits": 2,
+    "divisorDigits": 2,
+    "exactInteger": true,
+    "minQuotient": 2
+}
+\end{verbatim}
+
+The exact key set may vary by operation and version. The important rule is:
+keep frequently queried fields in columns and operation-specific constraints in \texttt{params}.
 
 \end{document}

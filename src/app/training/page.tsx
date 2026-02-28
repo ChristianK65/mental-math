@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { formatPrompt } from "@/features/training/format-prompt";
@@ -10,7 +10,10 @@ import { useTrainingTimer } from "@/features/training/use-training-timer";
 
 export default function TrainingPage() {
   const router = useRouter();
-  const { questions, isLoadingQuestions, questionsError } = useTrainingQuestions();
+  const searchParams = useSearchParams();
+  const selectedOperations = searchParams.getAll("operations");
+  const selectedCount = searchParams.get("count") ?? "10";
+  const { questions, isLoadingQuestions, questionsError } = useTrainingQuestions(selectedOperations, selectedCount);
   const { elapsedMs, restart, stop, formatElapsed } = useTrainingTimer();
 
   const [currentIndex, setCurrentIndex] = useState(0);

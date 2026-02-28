@@ -19,6 +19,21 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model Pattern
+ * 
+ */
+export type Pattern = $Result.DefaultSelection<Prisma.$PatternPayload>
+/**
+ * Model Attempt
+ * 
+ */
+export type Attempt = $Result.DefaultSelection<Prisma.$AttemptPayload>
+/**
+ * Model UserDomainProgress
+ * 
+ */
+export type UserDomainProgress = $Result.DefaultSelection<Prisma.$UserDomainProgressPayload>
+/**
  * Model Session
  * 
  */
@@ -35,12 +50,33 @@ export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
 export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const Domain: {
+  ADD: 'ADD',
+  MUL: 'MUL',
+  SUB: 'SUB',
+  DIV: 'DIV'
+};
+
+export type Domain = (typeof Domain)[keyof typeof Domain]
+
+}
+
+export type Domain = $Enums.Domain
+
+export const Domain: typeof $Enums.Domain
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
  * @example
  * ```
- * const prisma = new PrismaClient()
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
  * // Fetch zero or more Users
  * const users = await prisma.user.findMany()
  * ```
@@ -61,7 +97,9 @@ export class PrismaClient<
    * Type-safe database client for TypeScript & Node.js
    * @example
    * ```
-   * const prisma = new PrismaClient()
+   * const prisma = new PrismaClient({
+   *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+   * })
    * // Fetch zero or more Users
    * const users = await prisma.user.findMany()
    * ```
@@ -141,7 +179,7 @@ export class PrismaClient<
    * ])
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
+   * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
   $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
@@ -160,6 +198,36 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pattern`: Exposes CRUD operations for the **Pattern** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Patterns
+    * const patterns = await prisma.pattern.findMany()
+    * ```
+    */
+  get pattern(): Prisma.PatternDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.attempt`: Exposes CRUD operations for the **Attempt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Attempts
+    * const attempts = await prisma.attempt.findMany()
+    * ```
+    */
+  get attempt(): Prisma.AttemptDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userDomainProgress`: Exposes CRUD operations for the **UserDomainProgress** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserDomainProgresses
+    * const userDomainProgresses = await prisma.userDomainProgress.findMany()
+    * ```
+    */
+  get userDomainProgress(): Prisma.UserDomainProgressDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.session`: Exposes CRUD operations for the **Session** model.
@@ -240,8 +308,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.4.0
-   * Query Engine version: ab56fe763f921d033a6c195e7ddeb3e255bdbb57
+   * Prisma Client JS version: 7.4.2
+   * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
    */
   export type PrismaVersion = {
     client: string
@@ -625,6 +693,9 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    Pattern: 'Pattern',
+    Attempt: 'Attempt',
+    UserDomainProgress: 'UserDomainProgress',
     Session: 'Session',
     Account: 'Account',
     Verification: 'Verification'
@@ -643,7 +714,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification"
+      modelProps: "user" | "pattern" | "attempt" | "userDomainProgress" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -718,6 +789,228 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      Pattern: {
+        payload: Prisma.$PatternPayload<ExtArgs>
+        fields: Prisma.PatternFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PatternFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PatternFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload>
+          }
+          findFirst: {
+            args: Prisma.PatternFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PatternFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload>
+          }
+          findMany: {
+            args: Prisma.PatternFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload>[]
+          }
+          create: {
+            args: Prisma.PatternCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload>
+          }
+          createMany: {
+            args: Prisma.PatternCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PatternCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload>[]
+          }
+          delete: {
+            args: Prisma.PatternDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload>
+          }
+          update: {
+            args: Prisma.PatternUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload>
+          }
+          deleteMany: {
+            args: Prisma.PatternDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PatternUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PatternUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload>[]
+          }
+          upsert: {
+            args: Prisma.PatternUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PatternPayload>
+          }
+          aggregate: {
+            args: Prisma.PatternAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePattern>
+          }
+          groupBy: {
+            args: Prisma.PatternGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PatternGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PatternCountArgs<ExtArgs>
+            result: $Utils.Optional<PatternCountAggregateOutputType> | number
+          }
+        }
+      }
+      Attempt: {
+        payload: Prisma.$AttemptPayload<ExtArgs>
+        fields: Prisma.AttemptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AttemptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AttemptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload>
+          }
+          findFirst: {
+            args: Prisma.AttemptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AttemptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload>
+          }
+          findMany: {
+            args: Prisma.AttemptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload>[]
+          }
+          create: {
+            args: Prisma.AttemptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload>
+          }
+          createMany: {
+            args: Prisma.AttemptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AttemptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload>[]
+          }
+          delete: {
+            args: Prisma.AttemptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload>
+          }
+          update: {
+            args: Prisma.AttemptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload>
+          }
+          deleteMany: {
+            args: Prisma.AttemptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AttemptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AttemptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload>[]
+          }
+          upsert: {
+            args: Prisma.AttemptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AttemptPayload>
+          }
+          aggregate: {
+            args: Prisma.AttemptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAttempt>
+          }
+          groupBy: {
+            args: Prisma.AttemptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AttemptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AttemptCountArgs<ExtArgs>
+            result: $Utils.Optional<AttemptCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserDomainProgress: {
+        payload: Prisma.$UserDomainProgressPayload<ExtArgs>
+        fields: Prisma.UserDomainProgressFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserDomainProgressFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserDomainProgressFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload>
+          }
+          findFirst: {
+            args: Prisma.UserDomainProgressFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserDomainProgressFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload>
+          }
+          findMany: {
+            args: Prisma.UserDomainProgressFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload>[]
+          }
+          create: {
+            args: Prisma.UserDomainProgressCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload>
+          }
+          createMany: {
+            args: Prisma.UserDomainProgressCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserDomainProgressCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload>[]
+          }
+          delete: {
+            args: Prisma.UserDomainProgressDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload>
+          }
+          update: {
+            args: Prisma.UserDomainProgressUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserDomainProgressDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserDomainProgressUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserDomainProgressUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserDomainProgressUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDomainProgressPayload>
+          }
+          aggregate: {
+            args: Prisma.UserDomainProgressAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserDomainProgress>
+          }
+          groupBy: {
+            args: Prisma.UserDomainProgressGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserDomainProgressGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserDomainProgressCountArgs<ExtArgs>
+            result: $Utils.Optional<UserDomainProgressCountAggregateOutputType> | number
           }
         }
       }
@@ -1052,6 +1345,9 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    pattern?: PatternOmit
+    attempt?: AttemptOmit
+    userDomainProgress?: UserDomainProgressOmit
     session?: SessionOmit
     account?: AccountOmit
     verification?: VerificationOmit
@@ -1137,11 +1433,15 @@ export namespace Prisma {
   export type UserCountOutputType = {
     sessions: number
     accounts: number
+    attempts: number
+    domainProgress: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
+    attempts?: boolean | UserCountOutputTypeCountAttemptsArgs
+    domainProgress?: boolean | UserCountOutputTypeCountDomainProgressArgs
   }
 
   // Custom InputTypes
@@ -1167,6 +1467,51 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AccountWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAttemptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AttemptWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDomainProgressArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserDomainProgressWhereInput
+  }
+
+
+  /**
+   * Count Type PatternCountOutputType
+   */
+
+  export type PatternCountOutputType = {
+    attempts: number
+  }
+
+  export type PatternCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attempts?: boolean | PatternCountOutputTypeCountAttemptsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PatternCountOutputType without action
+   */
+  export type PatternCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PatternCountOutputType
+     */
+    select?: PatternCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PatternCountOutputType without action
+   */
+  export type PatternCountOutputTypeCountAttemptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AttemptWhereInput
   }
 
 
@@ -1372,6 +1717,8 @@ export namespace Prisma {
     image?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
+    attempts?: boolean | User$attemptsArgs<ExtArgs>
+    domainProgress?: boolean | User$domainProgressArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1415,6 +1762,8 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
+    attempts?: boolean | User$attemptsArgs<ExtArgs>
+    domainProgress?: boolean | User$domainProgressArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1425,6 +1774,8 @@ export namespace Prisma {
     objects: {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
+      attempts: Prisma.$AttemptPayload<ExtArgs>[]
+      domainProgress: Prisma.$UserDomainProgressPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1832,6 +2183,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    attempts<T extends User$attemptsArgs<ExtArgs> = {}>(args?: Subset<T, User$attemptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    domainProgress<T extends User$domainProgressArgs<ExtArgs> = {}>(args?: Subset<T, User$domainProgressArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2306,6 +2659,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.attempts
+   */
+  export type User$attemptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    where?: AttemptWhereInput
+    orderBy?: AttemptOrderByWithRelationInput | AttemptOrderByWithRelationInput[]
+    cursor?: AttemptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AttemptScalarFieldEnum | AttemptScalarFieldEnum[]
+  }
+
+  /**
+   * User.domainProgress
+   */
+  export type User$domainProgressArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
+    where?: UserDomainProgressWhereInput
+    orderBy?: UserDomainProgressOrderByWithRelationInput | UserDomainProgressOrderByWithRelationInput[]
+    cursor?: UserDomainProgressWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserDomainProgressScalarFieldEnum | UserDomainProgressScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2321,6 +2722,3487 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Pattern
+   */
+
+  export type AggregatePattern = {
+    _count: PatternCountAggregateOutputType | null
+    _avg: PatternAvgAggregateOutputType | null
+    _sum: PatternSumAggregateOutputType | null
+    _min: PatternMinAggregateOutputType | null
+    _max: PatternMaxAggregateOutputType | null
+  }
+
+  export type PatternAvgAggregateOutputType = {
+    level: number | null
+    cutoffTimeMs: number | null
+  }
+
+  export type PatternSumAggregateOutputType = {
+    level: number | null
+    cutoffTimeMs: number | null
+  }
+
+  export type PatternMinAggregateOutputType = {
+    id: string | null
+    domain: $Enums.Domain | null
+    level: number | null
+    description: string | null
+    cutoffTimeMs: number | null
+    active: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PatternMaxAggregateOutputType = {
+    id: string | null
+    domain: $Enums.Domain | null
+    level: number | null
+    description: string | null
+    cutoffTimeMs: number | null
+    active: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PatternCountAggregateOutputType = {
+    id: number
+    domain: number
+    level: number
+    description: number
+    params: number
+    cutoffTimeMs: number
+    active: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PatternAvgAggregateInputType = {
+    level?: true
+    cutoffTimeMs?: true
+  }
+
+  export type PatternSumAggregateInputType = {
+    level?: true
+    cutoffTimeMs?: true
+  }
+
+  export type PatternMinAggregateInputType = {
+    id?: true
+    domain?: true
+    level?: true
+    description?: true
+    cutoffTimeMs?: true
+    active?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PatternMaxAggregateInputType = {
+    id?: true
+    domain?: true
+    level?: true
+    description?: true
+    cutoffTimeMs?: true
+    active?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PatternCountAggregateInputType = {
+    id?: true
+    domain?: true
+    level?: true
+    description?: true
+    params?: true
+    cutoffTimeMs?: true
+    active?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PatternAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Pattern to aggregate.
+     */
+    where?: PatternWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Patterns to fetch.
+     */
+    orderBy?: PatternOrderByWithRelationInput | PatternOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PatternWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Patterns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Patterns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Patterns
+    **/
+    _count?: true | PatternCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PatternAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PatternSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PatternMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PatternMaxAggregateInputType
+  }
+
+  export type GetPatternAggregateType<T extends PatternAggregateArgs> = {
+        [P in keyof T & keyof AggregatePattern]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePattern[P]>
+      : GetScalarType<T[P], AggregatePattern[P]>
+  }
+
+
+
+
+  export type PatternGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PatternWhereInput
+    orderBy?: PatternOrderByWithAggregationInput | PatternOrderByWithAggregationInput[]
+    by: PatternScalarFieldEnum[] | PatternScalarFieldEnum
+    having?: PatternScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PatternCountAggregateInputType | true
+    _avg?: PatternAvgAggregateInputType
+    _sum?: PatternSumAggregateInputType
+    _min?: PatternMinAggregateInputType
+    _max?: PatternMaxAggregateInputType
+  }
+
+  export type PatternGroupByOutputType = {
+    id: string
+    domain: $Enums.Domain
+    level: number
+    description: string
+    params: JsonValue
+    cutoffTimeMs: number
+    active: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: PatternCountAggregateOutputType | null
+    _avg: PatternAvgAggregateOutputType | null
+    _sum: PatternSumAggregateOutputType | null
+    _min: PatternMinAggregateOutputType | null
+    _max: PatternMaxAggregateOutputType | null
+  }
+
+  type GetPatternGroupByPayload<T extends PatternGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PatternGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PatternGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PatternGroupByOutputType[P]>
+            : GetScalarType<T[P], PatternGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PatternSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    domain?: boolean
+    level?: boolean
+    description?: boolean
+    params?: boolean
+    cutoffTimeMs?: boolean
+    active?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    attempts?: boolean | Pattern$attemptsArgs<ExtArgs>
+    _count?: boolean | PatternCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pattern"]>
+
+  export type PatternSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    domain?: boolean
+    level?: boolean
+    description?: boolean
+    params?: boolean
+    cutoffTimeMs?: boolean
+    active?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["pattern"]>
+
+  export type PatternSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    domain?: boolean
+    level?: boolean
+    description?: boolean
+    params?: boolean
+    cutoffTimeMs?: boolean
+    active?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["pattern"]>
+
+  export type PatternSelectScalar = {
+    id?: boolean
+    domain?: boolean
+    level?: boolean
+    description?: boolean
+    params?: boolean
+    cutoffTimeMs?: boolean
+    active?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PatternOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "domain" | "level" | "description" | "params" | "cutoffTimeMs" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["pattern"]>
+  export type PatternInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attempts?: boolean | Pattern$attemptsArgs<ExtArgs>
+    _count?: boolean | PatternCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PatternIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type PatternIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $PatternPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Pattern"
+    objects: {
+      attempts: Prisma.$AttemptPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      domain: $Enums.Domain
+      level: number
+      description: string
+      params: Prisma.JsonValue
+      cutoffTimeMs: number
+      active: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["pattern"]>
+    composites: {}
+  }
+
+  type PatternGetPayload<S extends boolean | null | undefined | PatternDefaultArgs> = $Result.GetResult<Prisma.$PatternPayload, S>
+
+  type PatternCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PatternFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PatternCountAggregateInputType | true
+    }
+
+  export interface PatternDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Pattern'], meta: { name: 'Pattern' } }
+    /**
+     * Find zero or one Pattern that matches the filter.
+     * @param {PatternFindUniqueArgs} args - Arguments to find a Pattern
+     * @example
+     * // Get one Pattern
+     * const pattern = await prisma.pattern.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PatternFindUniqueArgs>(args: SelectSubset<T, PatternFindUniqueArgs<ExtArgs>>): Prisma__PatternClient<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Pattern that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PatternFindUniqueOrThrowArgs} args - Arguments to find a Pattern
+     * @example
+     * // Get one Pattern
+     * const pattern = await prisma.pattern.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PatternFindUniqueOrThrowArgs>(args: SelectSubset<T, PatternFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PatternClient<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Pattern that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PatternFindFirstArgs} args - Arguments to find a Pattern
+     * @example
+     * // Get one Pattern
+     * const pattern = await prisma.pattern.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PatternFindFirstArgs>(args?: SelectSubset<T, PatternFindFirstArgs<ExtArgs>>): Prisma__PatternClient<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Pattern that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PatternFindFirstOrThrowArgs} args - Arguments to find a Pattern
+     * @example
+     * // Get one Pattern
+     * const pattern = await prisma.pattern.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PatternFindFirstOrThrowArgs>(args?: SelectSubset<T, PatternFindFirstOrThrowArgs<ExtArgs>>): Prisma__PatternClient<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Patterns that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PatternFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Patterns
+     * const patterns = await prisma.pattern.findMany()
+     * 
+     * // Get first 10 Patterns
+     * const patterns = await prisma.pattern.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const patternWithIdOnly = await prisma.pattern.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PatternFindManyArgs>(args?: SelectSubset<T, PatternFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Pattern.
+     * @param {PatternCreateArgs} args - Arguments to create a Pattern.
+     * @example
+     * // Create one Pattern
+     * const Pattern = await prisma.pattern.create({
+     *   data: {
+     *     // ... data to create a Pattern
+     *   }
+     * })
+     * 
+     */
+    create<T extends PatternCreateArgs>(args: SelectSubset<T, PatternCreateArgs<ExtArgs>>): Prisma__PatternClient<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Patterns.
+     * @param {PatternCreateManyArgs} args - Arguments to create many Patterns.
+     * @example
+     * // Create many Patterns
+     * const pattern = await prisma.pattern.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PatternCreateManyArgs>(args?: SelectSubset<T, PatternCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Patterns and returns the data saved in the database.
+     * @param {PatternCreateManyAndReturnArgs} args - Arguments to create many Patterns.
+     * @example
+     * // Create many Patterns
+     * const pattern = await prisma.pattern.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Patterns and only return the `id`
+     * const patternWithIdOnly = await prisma.pattern.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PatternCreateManyAndReturnArgs>(args?: SelectSubset<T, PatternCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Pattern.
+     * @param {PatternDeleteArgs} args - Arguments to delete one Pattern.
+     * @example
+     * // Delete one Pattern
+     * const Pattern = await prisma.pattern.delete({
+     *   where: {
+     *     // ... filter to delete one Pattern
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PatternDeleteArgs>(args: SelectSubset<T, PatternDeleteArgs<ExtArgs>>): Prisma__PatternClient<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Pattern.
+     * @param {PatternUpdateArgs} args - Arguments to update one Pattern.
+     * @example
+     * // Update one Pattern
+     * const pattern = await prisma.pattern.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PatternUpdateArgs>(args: SelectSubset<T, PatternUpdateArgs<ExtArgs>>): Prisma__PatternClient<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Patterns.
+     * @param {PatternDeleteManyArgs} args - Arguments to filter Patterns to delete.
+     * @example
+     * // Delete a few Patterns
+     * const { count } = await prisma.pattern.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PatternDeleteManyArgs>(args?: SelectSubset<T, PatternDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Patterns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PatternUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Patterns
+     * const pattern = await prisma.pattern.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PatternUpdateManyArgs>(args: SelectSubset<T, PatternUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Patterns and returns the data updated in the database.
+     * @param {PatternUpdateManyAndReturnArgs} args - Arguments to update many Patterns.
+     * @example
+     * // Update many Patterns
+     * const pattern = await prisma.pattern.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Patterns and only return the `id`
+     * const patternWithIdOnly = await prisma.pattern.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PatternUpdateManyAndReturnArgs>(args: SelectSubset<T, PatternUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Pattern.
+     * @param {PatternUpsertArgs} args - Arguments to update or create a Pattern.
+     * @example
+     * // Update or create a Pattern
+     * const pattern = await prisma.pattern.upsert({
+     *   create: {
+     *     // ... data to create a Pattern
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Pattern we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PatternUpsertArgs>(args: SelectSubset<T, PatternUpsertArgs<ExtArgs>>): Prisma__PatternClient<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Patterns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PatternCountArgs} args - Arguments to filter Patterns to count.
+     * @example
+     * // Count the number of Patterns
+     * const count = await prisma.pattern.count({
+     *   where: {
+     *     // ... the filter for the Patterns we want to count
+     *   }
+     * })
+    **/
+    count<T extends PatternCountArgs>(
+      args?: Subset<T, PatternCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PatternCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Pattern.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PatternAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PatternAggregateArgs>(args: Subset<T, PatternAggregateArgs>): Prisma.PrismaPromise<GetPatternAggregateType<T>>
+
+    /**
+     * Group by Pattern.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PatternGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PatternGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PatternGroupByArgs['orderBy'] }
+        : { orderBy?: PatternGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PatternGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPatternGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Pattern model
+   */
+  readonly fields: PatternFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Pattern.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PatternClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    attempts<T extends Pattern$attemptsArgs<ExtArgs> = {}>(args?: Subset<T, Pattern$attemptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Pattern model
+   */
+  interface PatternFieldRefs {
+    readonly id: FieldRef<"Pattern", 'String'>
+    readonly domain: FieldRef<"Pattern", 'Domain'>
+    readonly level: FieldRef<"Pattern", 'Int'>
+    readonly description: FieldRef<"Pattern", 'String'>
+    readonly params: FieldRef<"Pattern", 'Json'>
+    readonly cutoffTimeMs: FieldRef<"Pattern", 'Int'>
+    readonly active: FieldRef<"Pattern", 'Boolean'>
+    readonly createdAt: FieldRef<"Pattern", 'DateTime'>
+    readonly updatedAt: FieldRef<"Pattern", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Pattern findUnique
+   */
+  export type PatternFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PatternInclude<ExtArgs> | null
+    /**
+     * Filter, which Pattern to fetch.
+     */
+    where: PatternWhereUniqueInput
+  }
+
+  /**
+   * Pattern findUniqueOrThrow
+   */
+  export type PatternFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PatternInclude<ExtArgs> | null
+    /**
+     * Filter, which Pattern to fetch.
+     */
+    where: PatternWhereUniqueInput
+  }
+
+  /**
+   * Pattern findFirst
+   */
+  export type PatternFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PatternInclude<ExtArgs> | null
+    /**
+     * Filter, which Pattern to fetch.
+     */
+    where?: PatternWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Patterns to fetch.
+     */
+    orderBy?: PatternOrderByWithRelationInput | PatternOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Patterns.
+     */
+    cursor?: PatternWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Patterns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Patterns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Patterns.
+     */
+    distinct?: PatternScalarFieldEnum | PatternScalarFieldEnum[]
+  }
+
+  /**
+   * Pattern findFirstOrThrow
+   */
+  export type PatternFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PatternInclude<ExtArgs> | null
+    /**
+     * Filter, which Pattern to fetch.
+     */
+    where?: PatternWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Patterns to fetch.
+     */
+    orderBy?: PatternOrderByWithRelationInput | PatternOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Patterns.
+     */
+    cursor?: PatternWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Patterns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Patterns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Patterns.
+     */
+    distinct?: PatternScalarFieldEnum | PatternScalarFieldEnum[]
+  }
+
+  /**
+   * Pattern findMany
+   */
+  export type PatternFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PatternInclude<ExtArgs> | null
+    /**
+     * Filter, which Patterns to fetch.
+     */
+    where?: PatternWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Patterns to fetch.
+     */
+    orderBy?: PatternOrderByWithRelationInput | PatternOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Patterns.
+     */
+    cursor?: PatternWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Patterns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Patterns.
+     */
+    skip?: number
+    distinct?: PatternScalarFieldEnum | PatternScalarFieldEnum[]
+  }
+
+  /**
+   * Pattern create
+   */
+  export type PatternCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PatternInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Pattern.
+     */
+    data: XOR<PatternCreateInput, PatternUncheckedCreateInput>
+  }
+
+  /**
+   * Pattern createMany
+   */
+  export type PatternCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Patterns.
+     */
+    data: PatternCreateManyInput | PatternCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Pattern createManyAndReturn
+   */
+  export type PatternCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * The data used to create many Patterns.
+     */
+    data: PatternCreateManyInput | PatternCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Pattern update
+   */
+  export type PatternUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PatternInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Pattern.
+     */
+    data: XOR<PatternUpdateInput, PatternUncheckedUpdateInput>
+    /**
+     * Choose, which Pattern to update.
+     */
+    where: PatternWhereUniqueInput
+  }
+
+  /**
+   * Pattern updateMany
+   */
+  export type PatternUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Patterns.
+     */
+    data: XOR<PatternUpdateManyMutationInput, PatternUncheckedUpdateManyInput>
+    /**
+     * Filter which Patterns to update
+     */
+    where?: PatternWhereInput
+    /**
+     * Limit how many Patterns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Pattern updateManyAndReturn
+   */
+  export type PatternUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * The data used to update Patterns.
+     */
+    data: XOR<PatternUpdateManyMutationInput, PatternUncheckedUpdateManyInput>
+    /**
+     * Filter which Patterns to update
+     */
+    where?: PatternWhereInput
+    /**
+     * Limit how many Patterns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Pattern upsert
+   */
+  export type PatternUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PatternInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Pattern to update in case it exists.
+     */
+    where: PatternWhereUniqueInput
+    /**
+     * In case the Pattern found by the `where` argument doesn't exist, create a new Pattern with this data.
+     */
+    create: XOR<PatternCreateInput, PatternUncheckedCreateInput>
+    /**
+     * In case the Pattern was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PatternUpdateInput, PatternUncheckedUpdateInput>
+  }
+
+  /**
+   * Pattern delete
+   */
+  export type PatternDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PatternInclude<ExtArgs> | null
+    /**
+     * Filter which Pattern to delete.
+     */
+    where: PatternWhereUniqueInput
+  }
+
+  /**
+   * Pattern deleteMany
+   */
+  export type PatternDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Patterns to delete
+     */
+    where?: PatternWhereInput
+    /**
+     * Limit how many Patterns to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Pattern.attempts
+   */
+  export type Pattern$attemptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    where?: AttemptWhereInput
+    orderBy?: AttemptOrderByWithRelationInput | AttemptOrderByWithRelationInput[]
+    cursor?: AttemptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AttemptScalarFieldEnum | AttemptScalarFieldEnum[]
+  }
+
+  /**
+   * Pattern without action
+   */
+  export type PatternDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pattern
+     */
+    select?: PatternSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pattern
+     */
+    omit?: PatternOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PatternInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Attempt
+   */
+
+  export type AggregateAttempt = {
+    _count: AttemptCountAggregateOutputType | null
+    _avg: AttemptAvgAggregateOutputType | null
+    _sum: AttemptSumAggregateOutputType | null
+    _min: AttemptMinAggregateOutputType | null
+    _max: AttemptMaxAggregateOutputType | null
+  }
+
+  export type AttemptAvgAggregateOutputType = {
+    presentedLevel: number | null
+    seed: number | null
+    timeToFirstCorrectMs: number | null
+    responseMs: number | null
+  }
+
+  export type AttemptSumAggregateOutputType = {
+    presentedLevel: number | null
+    seed: number | null
+    timeToFirstCorrectMs: number | null
+    responseMs: number | null
+  }
+
+  export type AttemptMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    patternId: string | null
+    domain: $Enums.Domain | null
+    presentedLevel: number | null
+    seed: number | null
+    solved: boolean | null
+    timeToFirstCorrectMs: number | null
+    presentedAt: Date | null
+    answeredAt: Date | null
+    responseMs: number | null
+    createdAt: Date | null
+  }
+
+  export type AttemptMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    patternId: string | null
+    domain: $Enums.Domain | null
+    presentedLevel: number | null
+    seed: number | null
+    solved: boolean | null
+    timeToFirstCorrectMs: number | null
+    presentedAt: Date | null
+    answeredAt: Date | null
+    responseMs: number | null
+    createdAt: Date | null
+  }
+
+  export type AttemptCountAggregateOutputType = {
+    id: number
+    userId: number
+    patternId: number
+    domain: number
+    presentedLevel: number
+    seed: number
+    solved: number
+    timeToFirstCorrectMs: number
+    presentedAt: number
+    answeredAt: number
+    responseMs: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AttemptAvgAggregateInputType = {
+    presentedLevel?: true
+    seed?: true
+    timeToFirstCorrectMs?: true
+    responseMs?: true
+  }
+
+  export type AttemptSumAggregateInputType = {
+    presentedLevel?: true
+    seed?: true
+    timeToFirstCorrectMs?: true
+    responseMs?: true
+  }
+
+  export type AttemptMinAggregateInputType = {
+    id?: true
+    userId?: true
+    patternId?: true
+    domain?: true
+    presentedLevel?: true
+    seed?: true
+    solved?: true
+    timeToFirstCorrectMs?: true
+    presentedAt?: true
+    answeredAt?: true
+    responseMs?: true
+    createdAt?: true
+  }
+
+  export type AttemptMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    patternId?: true
+    domain?: true
+    presentedLevel?: true
+    seed?: true
+    solved?: true
+    timeToFirstCorrectMs?: true
+    presentedAt?: true
+    answeredAt?: true
+    responseMs?: true
+    createdAt?: true
+  }
+
+  export type AttemptCountAggregateInputType = {
+    id?: true
+    userId?: true
+    patternId?: true
+    domain?: true
+    presentedLevel?: true
+    seed?: true
+    solved?: true
+    timeToFirstCorrectMs?: true
+    presentedAt?: true
+    answeredAt?: true
+    responseMs?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AttemptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Attempt to aggregate.
+     */
+    where?: AttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Attempts to fetch.
+     */
+    orderBy?: AttemptOrderByWithRelationInput | AttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Attempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Attempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Attempts
+    **/
+    _count?: true | AttemptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AttemptAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AttemptSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AttemptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AttemptMaxAggregateInputType
+  }
+
+  export type GetAttemptAggregateType<T extends AttemptAggregateArgs> = {
+        [P in keyof T & keyof AggregateAttempt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAttempt[P]>
+      : GetScalarType<T[P], AggregateAttempt[P]>
+  }
+
+
+
+
+  export type AttemptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AttemptWhereInput
+    orderBy?: AttemptOrderByWithAggregationInput | AttemptOrderByWithAggregationInput[]
+    by: AttemptScalarFieldEnum[] | AttemptScalarFieldEnum
+    having?: AttemptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AttemptCountAggregateInputType | true
+    _avg?: AttemptAvgAggregateInputType
+    _sum?: AttemptSumAggregateInputType
+    _min?: AttemptMinAggregateInputType
+    _max?: AttemptMaxAggregateInputType
+  }
+
+  export type AttemptGroupByOutputType = {
+    id: string
+    userId: string
+    patternId: string
+    domain: $Enums.Domain
+    presentedLevel: number
+    seed: number
+    solved: boolean
+    timeToFirstCorrectMs: number | null
+    presentedAt: Date
+    answeredAt: Date | null
+    responseMs: number | null
+    createdAt: Date
+    _count: AttemptCountAggregateOutputType | null
+    _avg: AttemptAvgAggregateOutputType | null
+    _sum: AttemptSumAggregateOutputType | null
+    _min: AttemptMinAggregateOutputType | null
+    _max: AttemptMaxAggregateOutputType | null
+  }
+
+  type GetAttemptGroupByPayload<T extends AttemptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AttemptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AttemptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AttemptGroupByOutputType[P]>
+            : GetScalarType<T[P], AttemptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AttemptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    patternId?: boolean
+    domain?: boolean
+    presentedLevel?: boolean
+    seed?: boolean
+    solved?: boolean
+    timeToFirstCorrectMs?: boolean
+    presentedAt?: boolean
+    answeredAt?: boolean
+    responseMs?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    pattern?: boolean | PatternDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["attempt"]>
+
+  export type AttemptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    patternId?: boolean
+    domain?: boolean
+    presentedLevel?: boolean
+    seed?: boolean
+    solved?: boolean
+    timeToFirstCorrectMs?: boolean
+    presentedAt?: boolean
+    answeredAt?: boolean
+    responseMs?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    pattern?: boolean | PatternDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["attempt"]>
+
+  export type AttemptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    patternId?: boolean
+    domain?: boolean
+    presentedLevel?: boolean
+    seed?: boolean
+    solved?: boolean
+    timeToFirstCorrectMs?: boolean
+    presentedAt?: boolean
+    answeredAt?: boolean
+    responseMs?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    pattern?: boolean | PatternDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["attempt"]>
+
+  export type AttemptSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    patternId?: boolean
+    domain?: boolean
+    presentedLevel?: boolean
+    seed?: boolean
+    solved?: boolean
+    timeToFirstCorrectMs?: boolean
+    presentedAt?: boolean
+    answeredAt?: boolean
+    responseMs?: boolean
+    createdAt?: boolean
+  }
+
+  export type AttemptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "patternId" | "domain" | "presentedLevel" | "seed" | "solved" | "timeToFirstCorrectMs" | "presentedAt" | "answeredAt" | "responseMs" | "createdAt", ExtArgs["result"]["attempt"]>
+  export type AttemptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    pattern?: boolean | PatternDefaultArgs<ExtArgs>
+  }
+  export type AttemptIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    pattern?: boolean | PatternDefaultArgs<ExtArgs>
+  }
+  export type AttemptIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    pattern?: boolean | PatternDefaultArgs<ExtArgs>
+  }
+
+  export type $AttemptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Attempt"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      pattern: Prisma.$PatternPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      patternId: string
+      domain: $Enums.Domain
+      presentedLevel: number
+      seed: number
+      solved: boolean
+      timeToFirstCorrectMs: number | null
+      presentedAt: Date
+      answeredAt: Date | null
+      responseMs: number | null
+      createdAt: Date
+    }, ExtArgs["result"]["attempt"]>
+    composites: {}
+  }
+
+  type AttemptGetPayload<S extends boolean | null | undefined | AttemptDefaultArgs> = $Result.GetResult<Prisma.$AttemptPayload, S>
+
+  type AttemptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AttemptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AttemptCountAggregateInputType | true
+    }
+
+  export interface AttemptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Attempt'], meta: { name: 'Attempt' } }
+    /**
+     * Find zero or one Attempt that matches the filter.
+     * @param {AttemptFindUniqueArgs} args - Arguments to find a Attempt
+     * @example
+     * // Get one Attempt
+     * const attempt = await prisma.attempt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AttemptFindUniqueArgs>(args: SelectSubset<T, AttemptFindUniqueArgs<ExtArgs>>): Prisma__AttemptClient<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Attempt that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AttemptFindUniqueOrThrowArgs} args - Arguments to find a Attempt
+     * @example
+     * // Get one Attempt
+     * const attempt = await prisma.attempt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AttemptFindUniqueOrThrowArgs>(args: SelectSubset<T, AttemptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AttemptClient<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Attempt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttemptFindFirstArgs} args - Arguments to find a Attempt
+     * @example
+     * // Get one Attempt
+     * const attempt = await prisma.attempt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AttemptFindFirstArgs>(args?: SelectSubset<T, AttemptFindFirstArgs<ExtArgs>>): Prisma__AttemptClient<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Attempt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttemptFindFirstOrThrowArgs} args - Arguments to find a Attempt
+     * @example
+     * // Get one Attempt
+     * const attempt = await prisma.attempt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AttemptFindFirstOrThrowArgs>(args?: SelectSubset<T, AttemptFindFirstOrThrowArgs<ExtArgs>>): Prisma__AttemptClient<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Attempts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttemptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Attempts
+     * const attempts = await prisma.attempt.findMany()
+     * 
+     * // Get first 10 Attempts
+     * const attempts = await prisma.attempt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const attemptWithIdOnly = await prisma.attempt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AttemptFindManyArgs>(args?: SelectSubset<T, AttemptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Attempt.
+     * @param {AttemptCreateArgs} args - Arguments to create a Attempt.
+     * @example
+     * // Create one Attempt
+     * const Attempt = await prisma.attempt.create({
+     *   data: {
+     *     // ... data to create a Attempt
+     *   }
+     * })
+     * 
+     */
+    create<T extends AttemptCreateArgs>(args: SelectSubset<T, AttemptCreateArgs<ExtArgs>>): Prisma__AttemptClient<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Attempts.
+     * @param {AttemptCreateManyArgs} args - Arguments to create many Attempts.
+     * @example
+     * // Create many Attempts
+     * const attempt = await prisma.attempt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AttemptCreateManyArgs>(args?: SelectSubset<T, AttemptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Attempts and returns the data saved in the database.
+     * @param {AttemptCreateManyAndReturnArgs} args - Arguments to create many Attempts.
+     * @example
+     * // Create many Attempts
+     * const attempt = await prisma.attempt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Attempts and only return the `id`
+     * const attemptWithIdOnly = await prisma.attempt.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AttemptCreateManyAndReturnArgs>(args?: SelectSubset<T, AttemptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Attempt.
+     * @param {AttemptDeleteArgs} args - Arguments to delete one Attempt.
+     * @example
+     * // Delete one Attempt
+     * const Attempt = await prisma.attempt.delete({
+     *   where: {
+     *     // ... filter to delete one Attempt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AttemptDeleteArgs>(args: SelectSubset<T, AttemptDeleteArgs<ExtArgs>>): Prisma__AttemptClient<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Attempt.
+     * @param {AttemptUpdateArgs} args - Arguments to update one Attempt.
+     * @example
+     * // Update one Attempt
+     * const attempt = await prisma.attempt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AttemptUpdateArgs>(args: SelectSubset<T, AttemptUpdateArgs<ExtArgs>>): Prisma__AttemptClient<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Attempts.
+     * @param {AttemptDeleteManyArgs} args - Arguments to filter Attempts to delete.
+     * @example
+     * // Delete a few Attempts
+     * const { count } = await prisma.attempt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AttemptDeleteManyArgs>(args?: SelectSubset<T, AttemptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Attempts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttemptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Attempts
+     * const attempt = await prisma.attempt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AttemptUpdateManyArgs>(args: SelectSubset<T, AttemptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Attempts and returns the data updated in the database.
+     * @param {AttemptUpdateManyAndReturnArgs} args - Arguments to update many Attempts.
+     * @example
+     * // Update many Attempts
+     * const attempt = await prisma.attempt.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Attempts and only return the `id`
+     * const attemptWithIdOnly = await prisma.attempt.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AttemptUpdateManyAndReturnArgs>(args: SelectSubset<T, AttemptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Attempt.
+     * @param {AttemptUpsertArgs} args - Arguments to update or create a Attempt.
+     * @example
+     * // Update or create a Attempt
+     * const attempt = await prisma.attempt.upsert({
+     *   create: {
+     *     // ... data to create a Attempt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Attempt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AttemptUpsertArgs>(args: SelectSubset<T, AttemptUpsertArgs<ExtArgs>>): Prisma__AttemptClient<$Result.GetResult<Prisma.$AttemptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Attempts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttemptCountArgs} args - Arguments to filter Attempts to count.
+     * @example
+     * // Count the number of Attempts
+     * const count = await prisma.attempt.count({
+     *   where: {
+     *     // ... the filter for the Attempts we want to count
+     *   }
+     * })
+    **/
+    count<T extends AttemptCountArgs>(
+      args?: Subset<T, AttemptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AttemptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Attempt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttemptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AttemptAggregateArgs>(args: Subset<T, AttemptAggregateArgs>): Prisma.PrismaPromise<GetAttemptAggregateType<T>>
+
+    /**
+     * Group by Attempt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AttemptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AttemptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AttemptGroupByArgs['orderBy'] }
+        : { orderBy?: AttemptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AttemptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAttemptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Attempt model
+   */
+  readonly fields: AttemptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Attempt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AttemptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    pattern<T extends PatternDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatternDefaultArgs<ExtArgs>>): Prisma__PatternClient<$Result.GetResult<Prisma.$PatternPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Attempt model
+   */
+  interface AttemptFieldRefs {
+    readonly id: FieldRef<"Attempt", 'String'>
+    readonly userId: FieldRef<"Attempt", 'String'>
+    readonly patternId: FieldRef<"Attempt", 'String'>
+    readonly domain: FieldRef<"Attempt", 'Domain'>
+    readonly presentedLevel: FieldRef<"Attempt", 'Int'>
+    readonly seed: FieldRef<"Attempt", 'Int'>
+    readonly solved: FieldRef<"Attempt", 'Boolean'>
+    readonly timeToFirstCorrectMs: FieldRef<"Attempt", 'Int'>
+    readonly presentedAt: FieldRef<"Attempt", 'DateTime'>
+    readonly answeredAt: FieldRef<"Attempt", 'DateTime'>
+    readonly responseMs: FieldRef<"Attempt", 'Int'>
+    readonly createdAt: FieldRef<"Attempt", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Attempt findUnique
+   */
+  export type AttemptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    /**
+     * Filter, which Attempt to fetch.
+     */
+    where: AttemptWhereUniqueInput
+  }
+
+  /**
+   * Attempt findUniqueOrThrow
+   */
+  export type AttemptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    /**
+     * Filter, which Attempt to fetch.
+     */
+    where: AttemptWhereUniqueInput
+  }
+
+  /**
+   * Attempt findFirst
+   */
+  export type AttemptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    /**
+     * Filter, which Attempt to fetch.
+     */
+    where?: AttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Attempts to fetch.
+     */
+    orderBy?: AttemptOrderByWithRelationInput | AttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Attempts.
+     */
+    cursor?: AttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Attempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Attempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Attempts.
+     */
+    distinct?: AttemptScalarFieldEnum | AttemptScalarFieldEnum[]
+  }
+
+  /**
+   * Attempt findFirstOrThrow
+   */
+  export type AttemptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    /**
+     * Filter, which Attempt to fetch.
+     */
+    where?: AttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Attempts to fetch.
+     */
+    orderBy?: AttemptOrderByWithRelationInput | AttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Attempts.
+     */
+    cursor?: AttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Attempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Attempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Attempts.
+     */
+    distinct?: AttemptScalarFieldEnum | AttemptScalarFieldEnum[]
+  }
+
+  /**
+   * Attempt findMany
+   */
+  export type AttemptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    /**
+     * Filter, which Attempts to fetch.
+     */
+    where?: AttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Attempts to fetch.
+     */
+    orderBy?: AttemptOrderByWithRelationInput | AttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Attempts.
+     */
+    cursor?: AttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Attempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Attempts.
+     */
+    skip?: number
+    distinct?: AttemptScalarFieldEnum | AttemptScalarFieldEnum[]
+  }
+
+  /**
+   * Attempt create
+   */
+  export type AttemptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Attempt.
+     */
+    data: XOR<AttemptCreateInput, AttemptUncheckedCreateInput>
+  }
+
+  /**
+   * Attempt createMany
+   */
+  export type AttemptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Attempts.
+     */
+    data: AttemptCreateManyInput | AttemptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Attempt createManyAndReturn
+   */
+  export type AttemptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * The data used to create many Attempts.
+     */
+    data: AttemptCreateManyInput | AttemptCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Attempt update
+   */
+  export type AttemptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Attempt.
+     */
+    data: XOR<AttemptUpdateInput, AttemptUncheckedUpdateInput>
+    /**
+     * Choose, which Attempt to update.
+     */
+    where: AttemptWhereUniqueInput
+  }
+
+  /**
+   * Attempt updateMany
+   */
+  export type AttemptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Attempts.
+     */
+    data: XOR<AttemptUpdateManyMutationInput, AttemptUncheckedUpdateManyInput>
+    /**
+     * Filter which Attempts to update
+     */
+    where?: AttemptWhereInput
+    /**
+     * Limit how many Attempts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Attempt updateManyAndReturn
+   */
+  export type AttemptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * The data used to update Attempts.
+     */
+    data: XOR<AttemptUpdateManyMutationInput, AttemptUncheckedUpdateManyInput>
+    /**
+     * Filter which Attempts to update
+     */
+    where?: AttemptWhereInput
+    /**
+     * Limit how many Attempts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Attempt upsert
+   */
+  export type AttemptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Attempt to update in case it exists.
+     */
+    where: AttemptWhereUniqueInput
+    /**
+     * In case the Attempt found by the `where` argument doesn't exist, create a new Attempt with this data.
+     */
+    create: XOR<AttemptCreateInput, AttemptUncheckedCreateInput>
+    /**
+     * In case the Attempt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AttemptUpdateInput, AttemptUncheckedUpdateInput>
+  }
+
+  /**
+   * Attempt delete
+   */
+  export type AttemptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+    /**
+     * Filter which Attempt to delete.
+     */
+    where: AttemptWhereUniqueInput
+  }
+
+  /**
+   * Attempt deleteMany
+   */
+  export type AttemptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Attempts to delete
+     */
+    where?: AttemptWhereInput
+    /**
+     * Limit how many Attempts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Attempt without action
+   */
+  export type AttemptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attempt
+     */
+    select?: AttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attempt
+     */
+    omit?: AttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttemptInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserDomainProgress
+   */
+
+  export type AggregateUserDomainProgress = {
+    _count: UserDomainProgressCountAggregateOutputType | null
+    _avg: UserDomainProgressAvgAggregateOutputType | null
+    _sum: UserDomainProgressSumAggregateOutputType | null
+    _min: UserDomainProgressMinAggregateOutputType | null
+    _max: UserDomainProgressMaxAggregateOutputType | null
+  }
+
+  export type UserDomainProgressAvgAggregateOutputType = {
+    currentLevel: number | null
+    highestUnlockedLevel: number | null
+  }
+
+  export type UserDomainProgressSumAggregateOutputType = {
+    currentLevel: number | null
+    highestUnlockedLevel: number | null
+  }
+
+  export type UserDomainProgressMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    domain: $Enums.Domain | null
+    currentLevel: number | null
+    highestUnlockedLevel: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserDomainProgressMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    domain: $Enums.Domain | null
+    currentLevel: number | null
+    highestUnlockedLevel: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserDomainProgressCountAggregateOutputType = {
+    id: number
+    userId: number
+    domain: number
+    currentLevel: number
+    highestUnlockedLevel: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UserDomainProgressAvgAggregateInputType = {
+    currentLevel?: true
+    highestUnlockedLevel?: true
+  }
+
+  export type UserDomainProgressSumAggregateInputType = {
+    currentLevel?: true
+    highestUnlockedLevel?: true
+  }
+
+  export type UserDomainProgressMinAggregateInputType = {
+    id?: true
+    userId?: true
+    domain?: true
+    currentLevel?: true
+    highestUnlockedLevel?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserDomainProgressMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    domain?: true
+    currentLevel?: true
+    highestUnlockedLevel?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserDomainProgressCountAggregateInputType = {
+    id?: true
+    userId?: true
+    domain?: true
+    currentLevel?: true
+    highestUnlockedLevel?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UserDomainProgressAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserDomainProgress to aggregate.
+     */
+    where?: UserDomainProgressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDomainProgresses to fetch.
+     */
+    orderBy?: UserDomainProgressOrderByWithRelationInput | UserDomainProgressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserDomainProgressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDomainProgresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDomainProgresses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserDomainProgresses
+    **/
+    _count?: true | UserDomainProgressCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserDomainProgressAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserDomainProgressSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserDomainProgressMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserDomainProgressMaxAggregateInputType
+  }
+
+  export type GetUserDomainProgressAggregateType<T extends UserDomainProgressAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserDomainProgress]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserDomainProgress[P]>
+      : GetScalarType<T[P], AggregateUserDomainProgress[P]>
+  }
+
+
+
+
+  export type UserDomainProgressGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserDomainProgressWhereInput
+    orderBy?: UserDomainProgressOrderByWithAggregationInput | UserDomainProgressOrderByWithAggregationInput[]
+    by: UserDomainProgressScalarFieldEnum[] | UserDomainProgressScalarFieldEnum
+    having?: UserDomainProgressScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserDomainProgressCountAggregateInputType | true
+    _avg?: UserDomainProgressAvgAggregateInputType
+    _sum?: UserDomainProgressSumAggregateInputType
+    _min?: UserDomainProgressMinAggregateInputType
+    _max?: UserDomainProgressMaxAggregateInputType
+  }
+
+  export type UserDomainProgressGroupByOutputType = {
+    id: string
+    userId: string
+    domain: $Enums.Domain
+    currentLevel: number
+    highestUnlockedLevel: number
+    createdAt: Date
+    updatedAt: Date
+    _count: UserDomainProgressCountAggregateOutputType | null
+    _avg: UserDomainProgressAvgAggregateOutputType | null
+    _sum: UserDomainProgressSumAggregateOutputType | null
+    _min: UserDomainProgressMinAggregateOutputType | null
+    _max: UserDomainProgressMaxAggregateOutputType | null
+  }
+
+  type GetUserDomainProgressGroupByPayload<T extends UserDomainProgressGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserDomainProgressGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserDomainProgressGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserDomainProgressGroupByOutputType[P]>
+            : GetScalarType<T[P], UserDomainProgressGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserDomainProgressSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    domain?: boolean
+    currentLevel?: boolean
+    highestUnlockedLevel?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userDomainProgress"]>
+
+  export type UserDomainProgressSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    domain?: boolean
+    currentLevel?: boolean
+    highestUnlockedLevel?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userDomainProgress"]>
+
+  export type UserDomainProgressSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    domain?: boolean
+    currentLevel?: boolean
+    highestUnlockedLevel?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userDomainProgress"]>
+
+  export type UserDomainProgressSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    domain?: boolean
+    currentLevel?: boolean
+    highestUnlockedLevel?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UserDomainProgressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "domain" | "currentLevel" | "highestUnlockedLevel" | "createdAt" | "updatedAt", ExtArgs["result"]["userDomainProgress"]>
+  export type UserDomainProgressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserDomainProgressIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserDomainProgressIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserDomainProgressPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserDomainProgress"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      domain: $Enums.Domain
+      currentLevel: number
+      highestUnlockedLevel: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["userDomainProgress"]>
+    composites: {}
+  }
+
+  type UserDomainProgressGetPayload<S extends boolean | null | undefined | UserDomainProgressDefaultArgs> = $Result.GetResult<Prisma.$UserDomainProgressPayload, S>
+
+  type UserDomainProgressCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserDomainProgressFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserDomainProgressCountAggregateInputType | true
+    }
+
+  export interface UserDomainProgressDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserDomainProgress'], meta: { name: 'UserDomainProgress' } }
+    /**
+     * Find zero or one UserDomainProgress that matches the filter.
+     * @param {UserDomainProgressFindUniqueArgs} args - Arguments to find a UserDomainProgress
+     * @example
+     * // Get one UserDomainProgress
+     * const userDomainProgress = await prisma.userDomainProgress.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserDomainProgressFindUniqueArgs>(args: SelectSubset<T, UserDomainProgressFindUniqueArgs<ExtArgs>>): Prisma__UserDomainProgressClient<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserDomainProgress that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserDomainProgressFindUniqueOrThrowArgs} args - Arguments to find a UserDomainProgress
+     * @example
+     * // Get one UserDomainProgress
+     * const userDomainProgress = await prisma.userDomainProgress.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserDomainProgressFindUniqueOrThrowArgs>(args: SelectSubset<T, UserDomainProgressFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserDomainProgressClient<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserDomainProgress that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDomainProgressFindFirstArgs} args - Arguments to find a UserDomainProgress
+     * @example
+     * // Get one UserDomainProgress
+     * const userDomainProgress = await prisma.userDomainProgress.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserDomainProgressFindFirstArgs>(args?: SelectSubset<T, UserDomainProgressFindFirstArgs<ExtArgs>>): Prisma__UserDomainProgressClient<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserDomainProgress that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDomainProgressFindFirstOrThrowArgs} args - Arguments to find a UserDomainProgress
+     * @example
+     * // Get one UserDomainProgress
+     * const userDomainProgress = await prisma.userDomainProgress.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserDomainProgressFindFirstOrThrowArgs>(args?: SelectSubset<T, UserDomainProgressFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserDomainProgressClient<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserDomainProgresses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDomainProgressFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserDomainProgresses
+     * const userDomainProgresses = await prisma.userDomainProgress.findMany()
+     * 
+     * // Get first 10 UserDomainProgresses
+     * const userDomainProgresses = await prisma.userDomainProgress.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userDomainProgressWithIdOnly = await prisma.userDomainProgress.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserDomainProgressFindManyArgs>(args?: SelectSubset<T, UserDomainProgressFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserDomainProgress.
+     * @param {UserDomainProgressCreateArgs} args - Arguments to create a UserDomainProgress.
+     * @example
+     * // Create one UserDomainProgress
+     * const UserDomainProgress = await prisma.userDomainProgress.create({
+     *   data: {
+     *     // ... data to create a UserDomainProgress
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserDomainProgressCreateArgs>(args: SelectSubset<T, UserDomainProgressCreateArgs<ExtArgs>>): Prisma__UserDomainProgressClient<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserDomainProgresses.
+     * @param {UserDomainProgressCreateManyArgs} args - Arguments to create many UserDomainProgresses.
+     * @example
+     * // Create many UserDomainProgresses
+     * const userDomainProgress = await prisma.userDomainProgress.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserDomainProgressCreateManyArgs>(args?: SelectSubset<T, UserDomainProgressCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserDomainProgresses and returns the data saved in the database.
+     * @param {UserDomainProgressCreateManyAndReturnArgs} args - Arguments to create many UserDomainProgresses.
+     * @example
+     * // Create many UserDomainProgresses
+     * const userDomainProgress = await prisma.userDomainProgress.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserDomainProgresses and only return the `id`
+     * const userDomainProgressWithIdOnly = await prisma.userDomainProgress.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserDomainProgressCreateManyAndReturnArgs>(args?: SelectSubset<T, UserDomainProgressCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserDomainProgress.
+     * @param {UserDomainProgressDeleteArgs} args - Arguments to delete one UserDomainProgress.
+     * @example
+     * // Delete one UserDomainProgress
+     * const UserDomainProgress = await prisma.userDomainProgress.delete({
+     *   where: {
+     *     // ... filter to delete one UserDomainProgress
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserDomainProgressDeleteArgs>(args: SelectSubset<T, UserDomainProgressDeleteArgs<ExtArgs>>): Prisma__UserDomainProgressClient<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserDomainProgress.
+     * @param {UserDomainProgressUpdateArgs} args - Arguments to update one UserDomainProgress.
+     * @example
+     * // Update one UserDomainProgress
+     * const userDomainProgress = await prisma.userDomainProgress.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserDomainProgressUpdateArgs>(args: SelectSubset<T, UserDomainProgressUpdateArgs<ExtArgs>>): Prisma__UserDomainProgressClient<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserDomainProgresses.
+     * @param {UserDomainProgressDeleteManyArgs} args - Arguments to filter UserDomainProgresses to delete.
+     * @example
+     * // Delete a few UserDomainProgresses
+     * const { count } = await prisma.userDomainProgress.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserDomainProgressDeleteManyArgs>(args?: SelectSubset<T, UserDomainProgressDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserDomainProgresses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDomainProgressUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserDomainProgresses
+     * const userDomainProgress = await prisma.userDomainProgress.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserDomainProgressUpdateManyArgs>(args: SelectSubset<T, UserDomainProgressUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserDomainProgresses and returns the data updated in the database.
+     * @param {UserDomainProgressUpdateManyAndReturnArgs} args - Arguments to update many UserDomainProgresses.
+     * @example
+     * // Update many UserDomainProgresses
+     * const userDomainProgress = await prisma.userDomainProgress.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserDomainProgresses and only return the `id`
+     * const userDomainProgressWithIdOnly = await prisma.userDomainProgress.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserDomainProgressUpdateManyAndReturnArgs>(args: SelectSubset<T, UserDomainProgressUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserDomainProgress.
+     * @param {UserDomainProgressUpsertArgs} args - Arguments to update or create a UserDomainProgress.
+     * @example
+     * // Update or create a UserDomainProgress
+     * const userDomainProgress = await prisma.userDomainProgress.upsert({
+     *   create: {
+     *     // ... data to create a UserDomainProgress
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserDomainProgress we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserDomainProgressUpsertArgs>(args: SelectSubset<T, UserDomainProgressUpsertArgs<ExtArgs>>): Prisma__UserDomainProgressClient<$Result.GetResult<Prisma.$UserDomainProgressPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserDomainProgresses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDomainProgressCountArgs} args - Arguments to filter UserDomainProgresses to count.
+     * @example
+     * // Count the number of UserDomainProgresses
+     * const count = await prisma.userDomainProgress.count({
+     *   where: {
+     *     // ... the filter for the UserDomainProgresses we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserDomainProgressCountArgs>(
+      args?: Subset<T, UserDomainProgressCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserDomainProgressCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserDomainProgress.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDomainProgressAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserDomainProgressAggregateArgs>(args: Subset<T, UserDomainProgressAggregateArgs>): Prisma.PrismaPromise<GetUserDomainProgressAggregateType<T>>
+
+    /**
+     * Group by UserDomainProgress.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDomainProgressGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserDomainProgressGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserDomainProgressGroupByArgs['orderBy'] }
+        : { orderBy?: UserDomainProgressGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserDomainProgressGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserDomainProgressGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserDomainProgress model
+   */
+  readonly fields: UserDomainProgressFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserDomainProgress.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserDomainProgressClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserDomainProgress model
+   */
+  interface UserDomainProgressFieldRefs {
+    readonly id: FieldRef<"UserDomainProgress", 'String'>
+    readonly userId: FieldRef<"UserDomainProgress", 'String'>
+    readonly domain: FieldRef<"UserDomainProgress", 'Domain'>
+    readonly currentLevel: FieldRef<"UserDomainProgress", 'Int'>
+    readonly highestUnlockedLevel: FieldRef<"UserDomainProgress", 'Int'>
+    readonly createdAt: FieldRef<"UserDomainProgress", 'DateTime'>
+    readonly updatedAt: FieldRef<"UserDomainProgress", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserDomainProgress findUnique
+   */
+  export type UserDomainProgressFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDomainProgress to fetch.
+     */
+    where: UserDomainProgressWhereUniqueInput
+  }
+
+  /**
+   * UserDomainProgress findUniqueOrThrow
+   */
+  export type UserDomainProgressFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDomainProgress to fetch.
+     */
+    where: UserDomainProgressWhereUniqueInput
+  }
+
+  /**
+   * UserDomainProgress findFirst
+   */
+  export type UserDomainProgressFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDomainProgress to fetch.
+     */
+    where?: UserDomainProgressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDomainProgresses to fetch.
+     */
+    orderBy?: UserDomainProgressOrderByWithRelationInput | UserDomainProgressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserDomainProgresses.
+     */
+    cursor?: UserDomainProgressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDomainProgresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDomainProgresses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserDomainProgresses.
+     */
+    distinct?: UserDomainProgressScalarFieldEnum | UserDomainProgressScalarFieldEnum[]
+  }
+
+  /**
+   * UserDomainProgress findFirstOrThrow
+   */
+  export type UserDomainProgressFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDomainProgress to fetch.
+     */
+    where?: UserDomainProgressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDomainProgresses to fetch.
+     */
+    orderBy?: UserDomainProgressOrderByWithRelationInput | UserDomainProgressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserDomainProgresses.
+     */
+    cursor?: UserDomainProgressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDomainProgresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDomainProgresses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserDomainProgresses.
+     */
+    distinct?: UserDomainProgressScalarFieldEnum | UserDomainProgressScalarFieldEnum[]
+  }
+
+  /**
+   * UserDomainProgress findMany
+   */
+  export type UserDomainProgressFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDomainProgresses to fetch.
+     */
+    where?: UserDomainProgressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDomainProgresses to fetch.
+     */
+    orderBy?: UserDomainProgressOrderByWithRelationInput | UserDomainProgressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserDomainProgresses.
+     */
+    cursor?: UserDomainProgressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDomainProgresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDomainProgresses.
+     */
+    skip?: number
+    distinct?: UserDomainProgressScalarFieldEnum | UserDomainProgressScalarFieldEnum[]
+  }
+
+  /**
+   * UserDomainProgress create
+   */
+  export type UserDomainProgressCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserDomainProgress.
+     */
+    data: XOR<UserDomainProgressCreateInput, UserDomainProgressUncheckedCreateInput>
+  }
+
+  /**
+   * UserDomainProgress createMany
+   */
+  export type UserDomainProgressCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserDomainProgresses.
+     */
+    data: UserDomainProgressCreateManyInput | UserDomainProgressCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserDomainProgress createManyAndReturn
+   */
+  export type UserDomainProgressCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserDomainProgresses.
+     */
+    data: UserDomainProgressCreateManyInput | UserDomainProgressCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserDomainProgress update
+   */
+  export type UserDomainProgressUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserDomainProgress.
+     */
+    data: XOR<UserDomainProgressUpdateInput, UserDomainProgressUncheckedUpdateInput>
+    /**
+     * Choose, which UserDomainProgress to update.
+     */
+    where: UserDomainProgressWhereUniqueInput
+  }
+
+  /**
+   * UserDomainProgress updateMany
+   */
+  export type UserDomainProgressUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserDomainProgresses.
+     */
+    data: XOR<UserDomainProgressUpdateManyMutationInput, UserDomainProgressUncheckedUpdateManyInput>
+    /**
+     * Filter which UserDomainProgresses to update
+     */
+    where?: UserDomainProgressWhereInput
+    /**
+     * Limit how many UserDomainProgresses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserDomainProgress updateManyAndReturn
+   */
+  export type UserDomainProgressUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * The data used to update UserDomainProgresses.
+     */
+    data: XOR<UserDomainProgressUpdateManyMutationInput, UserDomainProgressUncheckedUpdateManyInput>
+    /**
+     * Filter which UserDomainProgresses to update
+     */
+    where?: UserDomainProgressWhereInput
+    /**
+     * Limit how many UserDomainProgresses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserDomainProgress upsert
+   */
+  export type UserDomainProgressUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserDomainProgress to update in case it exists.
+     */
+    where: UserDomainProgressWhereUniqueInput
+    /**
+     * In case the UserDomainProgress found by the `where` argument doesn't exist, create a new UserDomainProgress with this data.
+     */
+    create: XOR<UserDomainProgressCreateInput, UserDomainProgressUncheckedCreateInput>
+    /**
+     * In case the UserDomainProgress was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserDomainProgressUpdateInput, UserDomainProgressUncheckedUpdateInput>
+  }
+
+  /**
+   * UserDomainProgress delete
+   */
+  export type UserDomainProgressDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
+    /**
+     * Filter which UserDomainProgress to delete.
+     */
+    where: UserDomainProgressWhereUniqueInput
+  }
+
+  /**
+   * UserDomainProgress deleteMany
+   */
+  export type UserDomainProgressDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserDomainProgresses to delete
+     */
+    where?: UserDomainProgressWhereInput
+    /**
+     * Limit how many UserDomainProgresses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserDomainProgress without action
+   */
+  export type UserDomainProgressDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDomainProgress
+     */
+    select?: UserDomainProgressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDomainProgress
+     */
+    omit?: UserDomainProgressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDomainProgressInclude<ExtArgs> | null
   }
 
 
@@ -5620,6 +9502,52 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const PatternScalarFieldEnum: {
+    id: 'id',
+    domain: 'domain',
+    level: 'level',
+    description: 'description',
+    params: 'params',
+    cutoffTimeMs: 'cutoffTimeMs',
+    active: 'active',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PatternScalarFieldEnum = (typeof PatternScalarFieldEnum)[keyof typeof PatternScalarFieldEnum]
+
+
+  export const AttemptScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    patternId: 'patternId',
+    domain: 'domain',
+    presentedLevel: 'presentedLevel',
+    seed: 'seed',
+    solved: 'solved',
+    timeToFirstCorrectMs: 'timeToFirstCorrectMs',
+    presentedAt: 'presentedAt',
+    answeredAt: 'answeredAt',
+    responseMs: 'responseMs',
+    createdAt: 'createdAt'
+  };
+
+  export type AttemptScalarFieldEnum = (typeof AttemptScalarFieldEnum)[keyof typeof AttemptScalarFieldEnum]
+
+
+  export const UserDomainProgressScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    domain: 'domain',
+    currentLevel: 'currentLevel',
+    highestUnlockedLevel: 'highestUnlockedLevel',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UserDomainProgressScalarFieldEnum = (typeof UserDomainProgressScalarFieldEnum)[keyof typeof UserDomainProgressScalarFieldEnum]
+
+
   export const SessionScalarFieldEnum: {
     id: 'id',
     expiresAt: 'expiresAt',
@@ -5673,6 +9601,13 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -5687,6 +9622,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -5730,6 +9674,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Domain'
+   */
+  export type EnumDomainFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Domain'>
+    
+
+
+  /**
+   * Reference to a field of type 'Domain[]'
+   */
+  export type ListEnumDomainFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Domain[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -5740,6 +9698,34 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -5761,6 +9747,8 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
+    attempts?: AttemptListRelationFilter
+    domainProgress?: UserDomainProgressListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -5775,6 +9763,8 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
+    attempts?: AttemptOrderByRelationAggregateInput
+    domainProgress?: UserDomainProgressOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -5792,6 +9782,8 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
+    attempts?: AttemptListRelationFilter
+    domainProgress?: UserDomainProgressListRelationFilter
   }, "id" | "email" | "username">
 
   export type UserOrderByWithAggregationInput = {
@@ -5822,6 +9814,247 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"User"> | string
     emailVerified?: BoolWithAggregatesFilter<"User"> | boolean
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
+  }
+
+  export type PatternWhereInput = {
+    AND?: PatternWhereInput | PatternWhereInput[]
+    OR?: PatternWhereInput[]
+    NOT?: PatternWhereInput | PatternWhereInput[]
+    id?: StringFilter<"Pattern"> | string
+    domain?: EnumDomainFilter<"Pattern"> | $Enums.Domain
+    level?: IntFilter<"Pattern"> | number
+    description?: StringFilter<"Pattern"> | string
+    params?: JsonFilter<"Pattern">
+    cutoffTimeMs?: IntFilter<"Pattern"> | number
+    active?: BoolFilter<"Pattern"> | boolean
+    createdAt?: DateTimeFilter<"Pattern"> | Date | string
+    updatedAt?: DateTimeFilter<"Pattern"> | Date | string
+    attempts?: AttemptListRelationFilter
+  }
+
+  export type PatternOrderByWithRelationInput = {
+    id?: SortOrder
+    domain?: SortOrder
+    level?: SortOrder
+    description?: SortOrder
+    params?: SortOrder
+    cutoffTimeMs?: SortOrder
+    active?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    attempts?: AttemptOrderByRelationAggregateInput
+  }
+
+  export type PatternWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    domain_level_description?: PatternDomainLevelDescriptionCompoundUniqueInput
+    AND?: PatternWhereInput | PatternWhereInput[]
+    OR?: PatternWhereInput[]
+    NOT?: PatternWhereInput | PatternWhereInput[]
+    domain?: EnumDomainFilter<"Pattern"> | $Enums.Domain
+    level?: IntFilter<"Pattern"> | number
+    description?: StringFilter<"Pattern"> | string
+    params?: JsonFilter<"Pattern">
+    cutoffTimeMs?: IntFilter<"Pattern"> | number
+    active?: BoolFilter<"Pattern"> | boolean
+    createdAt?: DateTimeFilter<"Pattern"> | Date | string
+    updatedAt?: DateTimeFilter<"Pattern"> | Date | string
+    attempts?: AttemptListRelationFilter
+  }, "id" | "domain_level_description">
+
+  export type PatternOrderByWithAggregationInput = {
+    id?: SortOrder
+    domain?: SortOrder
+    level?: SortOrder
+    description?: SortOrder
+    params?: SortOrder
+    cutoffTimeMs?: SortOrder
+    active?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PatternCountOrderByAggregateInput
+    _avg?: PatternAvgOrderByAggregateInput
+    _max?: PatternMaxOrderByAggregateInput
+    _min?: PatternMinOrderByAggregateInput
+    _sum?: PatternSumOrderByAggregateInput
+  }
+
+  export type PatternScalarWhereWithAggregatesInput = {
+    AND?: PatternScalarWhereWithAggregatesInput | PatternScalarWhereWithAggregatesInput[]
+    OR?: PatternScalarWhereWithAggregatesInput[]
+    NOT?: PatternScalarWhereWithAggregatesInput | PatternScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Pattern"> | string
+    domain?: EnumDomainWithAggregatesFilter<"Pattern"> | $Enums.Domain
+    level?: IntWithAggregatesFilter<"Pattern"> | number
+    description?: StringWithAggregatesFilter<"Pattern"> | string
+    params?: JsonWithAggregatesFilter<"Pattern">
+    cutoffTimeMs?: IntWithAggregatesFilter<"Pattern"> | number
+    active?: BoolWithAggregatesFilter<"Pattern"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Pattern"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Pattern"> | Date | string
+  }
+
+  export type AttemptWhereInput = {
+    AND?: AttemptWhereInput | AttemptWhereInput[]
+    OR?: AttemptWhereInput[]
+    NOT?: AttemptWhereInput | AttemptWhereInput[]
+    id?: StringFilter<"Attempt"> | string
+    userId?: StringFilter<"Attempt"> | string
+    patternId?: StringFilter<"Attempt"> | string
+    domain?: EnumDomainFilter<"Attempt"> | $Enums.Domain
+    presentedLevel?: IntFilter<"Attempt"> | number
+    seed?: IntFilter<"Attempt"> | number
+    solved?: BoolFilter<"Attempt"> | boolean
+    timeToFirstCorrectMs?: IntNullableFilter<"Attempt"> | number | null
+    presentedAt?: DateTimeFilter<"Attempt"> | Date | string
+    answeredAt?: DateTimeNullableFilter<"Attempt"> | Date | string | null
+    responseMs?: IntNullableFilter<"Attempt"> | number | null
+    createdAt?: DateTimeFilter<"Attempt"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    pattern?: XOR<PatternScalarRelationFilter, PatternWhereInput>
+  }
+
+  export type AttemptOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    patternId?: SortOrder
+    domain?: SortOrder
+    presentedLevel?: SortOrder
+    seed?: SortOrder
+    solved?: SortOrder
+    timeToFirstCorrectMs?: SortOrderInput | SortOrder
+    presentedAt?: SortOrder
+    answeredAt?: SortOrderInput | SortOrder
+    responseMs?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    pattern?: PatternOrderByWithRelationInput
+  }
+
+  export type AttemptWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AttemptWhereInput | AttemptWhereInput[]
+    OR?: AttemptWhereInput[]
+    NOT?: AttemptWhereInput | AttemptWhereInput[]
+    userId?: StringFilter<"Attempt"> | string
+    patternId?: StringFilter<"Attempt"> | string
+    domain?: EnumDomainFilter<"Attempt"> | $Enums.Domain
+    presentedLevel?: IntFilter<"Attempt"> | number
+    seed?: IntFilter<"Attempt"> | number
+    solved?: BoolFilter<"Attempt"> | boolean
+    timeToFirstCorrectMs?: IntNullableFilter<"Attempt"> | number | null
+    presentedAt?: DateTimeFilter<"Attempt"> | Date | string
+    answeredAt?: DateTimeNullableFilter<"Attempt"> | Date | string | null
+    responseMs?: IntNullableFilter<"Attempt"> | number | null
+    createdAt?: DateTimeFilter<"Attempt"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    pattern?: XOR<PatternScalarRelationFilter, PatternWhereInput>
+  }, "id">
+
+  export type AttemptOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    patternId?: SortOrder
+    domain?: SortOrder
+    presentedLevel?: SortOrder
+    seed?: SortOrder
+    solved?: SortOrder
+    timeToFirstCorrectMs?: SortOrderInput | SortOrder
+    presentedAt?: SortOrder
+    answeredAt?: SortOrderInput | SortOrder
+    responseMs?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: AttemptCountOrderByAggregateInput
+    _avg?: AttemptAvgOrderByAggregateInput
+    _max?: AttemptMaxOrderByAggregateInput
+    _min?: AttemptMinOrderByAggregateInput
+    _sum?: AttemptSumOrderByAggregateInput
+  }
+
+  export type AttemptScalarWhereWithAggregatesInput = {
+    AND?: AttemptScalarWhereWithAggregatesInput | AttemptScalarWhereWithAggregatesInput[]
+    OR?: AttemptScalarWhereWithAggregatesInput[]
+    NOT?: AttemptScalarWhereWithAggregatesInput | AttemptScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Attempt"> | string
+    userId?: StringWithAggregatesFilter<"Attempt"> | string
+    patternId?: StringWithAggregatesFilter<"Attempt"> | string
+    domain?: EnumDomainWithAggregatesFilter<"Attempt"> | $Enums.Domain
+    presentedLevel?: IntWithAggregatesFilter<"Attempt"> | number
+    seed?: IntWithAggregatesFilter<"Attempt"> | number
+    solved?: BoolWithAggregatesFilter<"Attempt"> | boolean
+    timeToFirstCorrectMs?: IntNullableWithAggregatesFilter<"Attempt"> | number | null
+    presentedAt?: DateTimeWithAggregatesFilter<"Attempt"> | Date | string
+    answeredAt?: DateTimeNullableWithAggregatesFilter<"Attempt"> | Date | string | null
+    responseMs?: IntNullableWithAggregatesFilter<"Attempt"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"Attempt"> | Date | string
+  }
+
+  export type UserDomainProgressWhereInput = {
+    AND?: UserDomainProgressWhereInput | UserDomainProgressWhereInput[]
+    OR?: UserDomainProgressWhereInput[]
+    NOT?: UserDomainProgressWhereInput | UserDomainProgressWhereInput[]
+    id?: StringFilter<"UserDomainProgress"> | string
+    userId?: StringFilter<"UserDomainProgress"> | string
+    domain?: EnumDomainFilter<"UserDomainProgress"> | $Enums.Domain
+    currentLevel?: IntFilter<"UserDomainProgress"> | number
+    highestUnlockedLevel?: IntFilter<"UserDomainProgress"> | number
+    createdAt?: DateTimeFilter<"UserDomainProgress"> | Date | string
+    updatedAt?: DateTimeFilter<"UserDomainProgress"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type UserDomainProgressOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    domain?: SortOrder
+    currentLevel?: SortOrder
+    highestUnlockedLevel?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserDomainProgressWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_domain?: UserDomainProgressUserIdDomainCompoundUniqueInput
+    AND?: UserDomainProgressWhereInput | UserDomainProgressWhereInput[]
+    OR?: UserDomainProgressWhereInput[]
+    NOT?: UserDomainProgressWhereInput | UserDomainProgressWhereInput[]
+    userId?: StringFilter<"UserDomainProgress"> | string
+    domain?: EnumDomainFilter<"UserDomainProgress"> | $Enums.Domain
+    currentLevel?: IntFilter<"UserDomainProgress"> | number
+    highestUnlockedLevel?: IntFilter<"UserDomainProgress"> | number
+    createdAt?: DateTimeFilter<"UserDomainProgress"> | Date | string
+    updatedAt?: DateTimeFilter<"UserDomainProgress"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_domain">
+
+  export type UserDomainProgressOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    domain?: SortOrder
+    currentLevel?: SortOrder
+    highestUnlockedLevel?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UserDomainProgressCountOrderByAggregateInput
+    _avg?: UserDomainProgressAvgOrderByAggregateInput
+    _max?: UserDomainProgressMaxOrderByAggregateInput
+    _min?: UserDomainProgressMinOrderByAggregateInput
+    _sum?: UserDomainProgressSumOrderByAggregateInput
+  }
+
+  export type UserDomainProgressScalarWhereWithAggregatesInput = {
+    AND?: UserDomainProgressScalarWhereWithAggregatesInput | UserDomainProgressScalarWhereWithAggregatesInput[]
+    OR?: UserDomainProgressScalarWhereWithAggregatesInput[]
+    NOT?: UserDomainProgressScalarWhereWithAggregatesInput | UserDomainProgressScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserDomainProgress"> | string
+    userId?: StringWithAggregatesFilter<"UserDomainProgress"> | string
+    domain?: EnumDomainWithAggregatesFilter<"UserDomainProgress"> | $Enums.Domain
+    currentLevel?: IntWithAggregatesFilter<"UserDomainProgress"> | number
+    highestUnlockedLevel?: IntWithAggregatesFilter<"UserDomainProgress"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"UserDomainProgress"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UserDomainProgress"> | Date | string
   }
 
   export type SessionWhereInput = {
@@ -6058,6 +10291,8 @@ export namespace Prisma {
     image?: string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    attempts?: AttemptCreateNestedManyWithoutUserInput
+    domainProgress?: UserDomainProgressCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -6072,6 +10307,8 @@ export namespace Prisma {
     image?: string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    attempts?: AttemptUncheckedCreateNestedManyWithoutUserInput
+    domainProgress?: UserDomainProgressUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -6086,6 +10323,8 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    attempts?: AttemptUpdateManyWithoutUserNestedInput
+    domainProgress?: UserDomainProgressUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -6100,6 +10339,8 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    attempts?: AttemptUncheckedUpdateManyWithoutUserNestedInput
+    domainProgress?: UserDomainProgressUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -6136,6 +10377,266 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     image?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type PatternCreateInput = {
+    id?: string
+    domain: $Enums.Domain
+    level: number
+    description: string
+    params: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs: number
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attempts?: AttemptCreateNestedManyWithoutPatternInput
+  }
+
+  export type PatternUncheckedCreateInput = {
+    id?: string
+    domain: $Enums.Domain
+    level: number
+    description: string
+    params: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs: number
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attempts?: AttemptUncheckedCreateNestedManyWithoutPatternInput
+  }
+
+  export type PatternUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    level?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    params?: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attempts?: AttemptUpdateManyWithoutPatternNestedInput
+  }
+
+  export type PatternUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    level?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    params?: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attempts?: AttemptUncheckedUpdateManyWithoutPatternNestedInput
+  }
+
+  export type PatternCreateManyInput = {
+    id?: string
+    domain: $Enums.Domain
+    level: number
+    description: string
+    params: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs: number
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PatternUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    level?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    params?: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PatternUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    level?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    params?: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttemptCreateInput = {
+    id?: string
+    domain: $Enums.Domain
+    presentedLevel: number
+    seed: number
+    solved: boolean
+    timeToFirstCorrectMs?: number | null
+    presentedAt?: Date | string
+    answeredAt?: Date | string | null
+    responseMs?: number | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutAttemptsInput
+    pattern: PatternCreateNestedOneWithoutAttemptsInput
+  }
+
+  export type AttemptUncheckedCreateInput = {
+    id?: string
+    userId: string
+    patternId: string
+    domain: $Enums.Domain
+    presentedLevel: number
+    seed: number
+    solved: boolean
+    timeToFirstCorrectMs?: number | null
+    presentedAt?: Date | string
+    answeredAt?: Date | string | null
+    responseMs?: number | null
+    createdAt?: Date | string
+  }
+
+  export type AttemptUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    presentedLevel?: IntFieldUpdateOperationsInput | number
+    seed?: IntFieldUpdateOperationsInput | number
+    solved?: BoolFieldUpdateOperationsInput | boolean
+    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
+    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAttemptsNestedInput
+    pattern?: PatternUpdateOneRequiredWithoutAttemptsNestedInput
+  }
+
+  export type AttemptUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    patternId?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    presentedLevel?: IntFieldUpdateOperationsInput | number
+    seed?: IntFieldUpdateOperationsInput | number
+    solved?: BoolFieldUpdateOperationsInput | boolean
+    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
+    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttemptCreateManyInput = {
+    id?: string
+    userId: string
+    patternId: string
+    domain: $Enums.Domain
+    presentedLevel: number
+    seed: number
+    solved: boolean
+    timeToFirstCorrectMs?: number | null
+    presentedAt?: Date | string
+    answeredAt?: Date | string | null
+    responseMs?: number | null
+    createdAt?: Date | string
+  }
+
+  export type AttemptUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    presentedLevel?: IntFieldUpdateOperationsInput | number
+    seed?: IntFieldUpdateOperationsInput | number
+    solved?: BoolFieldUpdateOperationsInput | boolean
+    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
+    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttemptUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    patternId?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    presentedLevel?: IntFieldUpdateOperationsInput | number
+    seed?: IntFieldUpdateOperationsInput | number
+    solved?: BoolFieldUpdateOperationsInput | boolean
+    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
+    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDomainProgressCreateInput = {
+    id?: string
+    domain: $Enums.Domain
+    currentLevel?: number
+    highestUnlockedLevel?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutDomainProgressInput
+  }
+
+  export type UserDomainProgressUncheckedCreateInput = {
+    id?: string
+    userId: string
+    domain: $Enums.Domain
+    currentLevel?: number
+    highestUnlockedLevel?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDomainProgressUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    highestUnlockedLevel?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutDomainProgressNestedInput
+  }
+
+  export type UserDomainProgressUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    highestUnlockedLevel?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDomainProgressCreateManyInput = {
+    id?: string
+    userId: string
+    domain: $Enums.Domain
+    currentLevel?: number
+    highestUnlockedLevel?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDomainProgressUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    highestUnlockedLevel?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDomainProgressUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    highestUnlockedLevel?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionCreateInput = {
@@ -6446,6 +10947,18 @@ export namespace Prisma {
     none?: AccountWhereInput
   }
 
+  export type AttemptListRelationFilter = {
+    every?: AttemptWhereInput
+    some?: AttemptWhereInput
+    none?: AttemptWhereInput
+  }
+
+  export type UserDomainProgressListRelationFilter = {
+    every?: UserDomainProgressWhereInput
+    some?: UserDomainProgressWhereInput
+    none?: UserDomainProgressWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -6456,6 +10969,14 @@ export namespace Prisma {
   }
 
   export type AccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AttemptOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserDomainProgressOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -6553,9 +11074,313 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type EnumDomainFilter<$PrismaModel = never> = {
+    equals?: $Enums.Domain | EnumDomainFieldRefInput<$PrismaModel>
+    in?: $Enums.Domain[] | ListEnumDomainFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Domain[] | ListEnumDomainFieldRefInput<$PrismaModel>
+    not?: NestedEnumDomainFilter<$PrismaModel> | $Enums.Domain
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type PatternDomainLevelDescriptionCompoundUniqueInput = {
+    domain: $Enums.Domain
+    level: number
+    description: string
+  }
+
+  export type PatternCountOrderByAggregateInput = {
+    id?: SortOrder
+    domain?: SortOrder
+    level?: SortOrder
+    description?: SortOrder
+    params?: SortOrder
+    cutoffTimeMs?: SortOrder
+    active?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PatternAvgOrderByAggregateInput = {
+    level?: SortOrder
+    cutoffTimeMs?: SortOrder
+  }
+
+  export type PatternMaxOrderByAggregateInput = {
+    id?: SortOrder
+    domain?: SortOrder
+    level?: SortOrder
+    description?: SortOrder
+    cutoffTimeMs?: SortOrder
+    active?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PatternMinOrderByAggregateInput = {
+    id?: SortOrder
+    domain?: SortOrder
+    level?: SortOrder
+    description?: SortOrder
+    cutoffTimeMs?: SortOrder
+    active?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PatternSumOrderByAggregateInput = {
+    level?: SortOrder
+    cutoffTimeMs?: SortOrder
+  }
+
+  export type EnumDomainWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Domain | EnumDomainFieldRefInput<$PrismaModel>
+    in?: $Enums.Domain[] | ListEnumDomainFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Domain[] | ListEnumDomainFieldRefInput<$PrismaModel>
+    not?: NestedEnumDomainWithAggregatesFilter<$PrismaModel> | $Enums.Domain
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDomainFilter<$PrismaModel>
+    _max?: NestedEnumDomainFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
+  }
+
+  export type PatternScalarRelationFilter = {
+    is?: PatternWhereInput
+    isNot?: PatternWhereInput
+  }
+
+  export type AttemptCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    patternId?: SortOrder
+    domain?: SortOrder
+    presentedLevel?: SortOrder
+    seed?: SortOrder
+    solved?: SortOrder
+    timeToFirstCorrectMs?: SortOrder
+    presentedAt?: SortOrder
+    answeredAt?: SortOrder
+    responseMs?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AttemptAvgOrderByAggregateInput = {
+    presentedLevel?: SortOrder
+    seed?: SortOrder
+    timeToFirstCorrectMs?: SortOrder
+    responseMs?: SortOrder
+  }
+
+  export type AttemptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    patternId?: SortOrder
+    domain?: SortOrder
+    presentedLevel?: SortOrder
+    seed?: SortOrder
+    solved?: SortOrder
+    timeToFirstCorrectMs?: SortOrder
+    presentedAt?: SortOrder
+    answeredAt?: SortOrder
+    responseMs?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AttemptMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    patternId?: SortOrder
+    domain?: SortOrder
+    presentedLevel?: SortOrder
+    seed?: SortOrder
+    solved?: SortOrder
+    timeToFirstCorrectMs?: SortOrder
+    presentedAt?: SortOrder
+    answeredAt?: SortOrder
+    responseMs?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AttemptSumOrderByAggregateInput = {
+    presentedLevel?: SortOrder
+    seed?: SortOrder
+    timeToFirstCorrectMs?: SortOrder
+    responseMs?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type UserDomainProgressUserIdDomainCompoundUniqueInput = {
+    userId: string
+    domain: $Enums.Domain
+  }
+
+  export type UserDomainProgressCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    domain?: SortOrder
+    currentLevel?: SortOrder
+    highestUnlockedLevel?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserDomainProgressAvgOrderByAggregateInput = {
+    currentLevel?: SortOrder
+    highestUnlockedLevel?: SortOrder
+  }
+
+  export type UserDomainProgressMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    domain?: SortOrder
+    currentLevel?: SortOrder
+    highestUnlockedLevel?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserDomainProgressMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    domain?: SortOrder
+    currentLevel?: SortOrder
+    highestUnlockedLevel?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserDomainProgressSumOrderByAggregateInput = {
+    currentLevel?: SortOrder
+    highestUnlockedLevel?: SortOrder
   }
 
   export type SessionCountOrderByAggregateInput = {
@@ -6589,17 +11414,6 @@ export namespace Prisma {
     ipAddress?: SortOrder
     userAgent?: SortOrder
     userId?: SortOrder
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type AccountCountOrderByAggregateInput = {
@@ -6650,20 +11464,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
   export type VerificationCountOrderByAggregateInput = {
     id?: SortOrder
     identifier?: SortOrder
@@ -6705,6 +11505,20 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
+  export type AttemptCreateNestedManyWithoutUserInput = {
+    create?: XOR<AttemptCreateWithoutUserInput, AttemptUncheckedCreateWithoutUserInput> | AttemptCreateWithoutUserInput[] | AttemptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AttemptCreateOrConnectWithoutUserInput | AttemptCreateOrConnectWithoutUserInput[]
+    createMany?: AttemptCreateManyUserInputEnvelope
+    connect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+  }
+
+  export type UserDomainProgressCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserDomainProgressCreateWithoutUserInput, UserDomainProgressUncheckedCreateWithoutUserInput> | UserDomainProgressCreateWithoutUserInput[] | UserDomainProgressUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDomainProgressCreateOrConnectWithoutUserInput | UserDomainProgressCreateOrConnectWithoutUserInput[]
+    createMany?: UserDomainProgressCreateManyUserInputEnvelope
+    connect?: UserDomainProgressWhereUniqueInput | UserDomainProgressWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -6717,6 +11531,20 @@ export namespace Prisma {
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
     createMany?: AccountCreateManyUserInputEnvelope
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+  }
+
+  export type AttemptUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AttemptCreateWithoutUserInput, AttemptUncheckedCreateWithoutUserInput> | AttemptCreateWithoutUserInput[] | AttemptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AttemptCreateOrConnectWithoutUserInput | AttemptCreateOrConnectWithoutUserInput[]
+    createMany?: AttemptCreateManyUserInputEnvelope
+    connect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+  }
+
+  export type UserDomainProgressUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserDomainProgressCreateWithoutUserInput, UserDomainProgressUncheckedCreateWithoutUserInput> | UserDomainProgressCreateWithoutUserInput[] | UserDomainProgressUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDomainProgressCreateOrConnectWithoutUserInput | UserDomainProgressCreateOrConnectWithoutUserInput[]
+    createMany?: UserDomainProgressCreateManyUserInputEnvelope
+    connect?: UserDomainProgressWhereUniqueInput | UserDomainProgressWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -6763,6 +11591,34 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
+  export type AttemptUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AttemptCreateWithoutUserInput, AttemptUncheckedCreateWithoutUserInput> | AttemptCreateWithoutUserInput[] | AttemptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AttemptCreateOrConnectWithoutUserInput | AttemptCreateOrConnectWithoutUserInput[]
+    upsert?: AttemptUpsertWithWhereUniqueWithoutUserInput | AttemptUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AttemptCreateManyUserInputEnvelope
+    set?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    disconnect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    delete?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    connect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    update?: AttemptUpdateWithWhereUniqueWithoutUserInput | AttemptUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AttemptUpdateManyWithWhereWithoutUserInput | AttemptUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AttemptScalarWhereInput | AttemptScalarWhereInput[]
+  }
+
+  export type UserDomainProgressUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserDomainProgressCreateWithoutUserInput, UserDomainProgressUncheckedCreateWithoutUserInput> | UserDomainProgressCreateWithoutUserInput[] | UserDomainProgressUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDomainProgressCreateOrConnectWithoutUserInput | UserDomainProgressCreateOrConnectWithoutUserInput[]
+    upsert?: UserDomainProgressUpsertWithWhereUniqueWithoutUserInput | UserDomainProgressUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserDomainProgressCreateManyUserInputEnvelope
+    set?: UserDomainProgressWhereUniqueInput | UserDomainProgressWhereUniqueInput[]
+    disconnect?: UserDomainProgressWhereUniqueInput | UserDomainProgressWhereUniqueInput[]
+    delete?: UserDomainProgressWhereUniqueInput | UserDomainProgressWhereUniqueInput[]
+    connect?: UserDomainProgressWhereUniqueInput | UserDomainProgressWhereUniqueInput[]
+    update?: UserDomainProgressUpdateWithWhereUniqueWithoutUserInput | UserDomainProgressUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserDomainProgressUpdateManyWithWhereWithoutUserInput | UserDomainProgressUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserDomainProgressScalarWhereInput | UserDomainProgressScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -6791,6 +11647,142 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
+  export type AttemptUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AttemptCreateWithoutUserInput, AttemptUncheckedCreateWithoutUserInput> | AttemptCreateWithoutUserInput[] | AttemptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AttemptCreateOrConnectWithoutUserInput | AttemptCreateOrConnectWithoutUserInput[]
+    upsert?: AttemptUpsertWithWhereUniqueWithoutUserInput | AttemptUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AttemptCreateManyUserInputEnvelope
+    set?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    disconnect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    delete?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    connect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    update?: AttemptUpdateWithWhereUniqueWithoutUserInput | AttemptUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AttemptUpdateManyWithWhereWithoutUserInput | AttemptUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AttemptScalarWhereInput | AttemptScalarWhereInput[]
+  }
+
+  export type UserDomainProgressUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserDomainProgressCreateWithoutUserInput, UserDomainProgressUncheckedCreateWithoutUserInput> | UserDomainProgressCreateWithoutUserInput[] | UserDomainProgressUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDomainProgressCreateOrConnectWithoutUserInput | UserDomainProgressCreateOrConnectWithoutUserInput[]
+    upsert?: UserDomainProgressUpsertWithWhereUniqueWithoutUserInput | UserDomainProgressUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserDomainProgressCreateManyUserInputEnvelope
+    set?: UserDomainProgressWhereUniqueInput | UserDomainProgressWhereUniqueInput[]
+    disconnect?: UserDomainProgressWhereUniqueInput | UserDomainProgressWhereUniqueInput[]
+    delete?: UserDomainProgressWhereUniqueInput | UserDomainProgressWhereUniqueInput[]
+    connect?: UserDomainProgressWhereUniqueInput | UserDomainProgressWhereUniqueInput[]
+    update?: UserDomainProgressUpdateWithWhereUniqueWithoutUserInput | UserDomainProgressUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserDomainProgressUpdateManyWithWhereWithoutUserInput | UserDomainProgressUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserDomainProgressScalarWhereInput | UserDomainProgressScalarWhereInput[]
+  }
+
+  export type AttemptCreateNestedManyWithoutPatternInput = {
+    create?: XOR<AttemptCreateWithoutPatternInput, AttemptUncheckedCreateWithoutPatternInput> | AttemptCreateWithoutPatternInput[] | AttemptUncheckedCreateWithoutPatternInput[]
+    connectOrCreate?: AttemptCreateOrConnectWithoutPatternInput | AttemptCreateOrConnectWithoutPatternInput[]
+    createMany?: AttemptCreateManyPatternInputEnvelope
+    connect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+  }
+
+  export type AttemptUncheckedCreateNestedManyWithoutPatternInput = {
+    create?: XOR<AttemptCreateWithoutPatternInput, AttemptUncheckedCreateWithoutPatternInput> | AttemptCreateWithoutPatternInput[] | AttemptUncheckedCreateWithoutPatternInput[]
+    connectOrCreate?: AttemptCreateOrConnectWithoutPatternInput | AttemptCreateOrConnectWithoutPatternInput[]
+    createMany?: AttemptCreateManyPatternInputEnvelope
+    connect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+  }
+
+  export type EnumDomainFieldUpdateOperationsInput = {
+    set?: $Enums.Domain
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type AttemptUpdateManyWithoutPatternNestedInput = {
+    create?: XOR<AttemptCreateWithoutPatternInput, AttemptUncheckedCreateWithoutPatternInput> | AttemptCreateWithoutPatternInput[] | AttemptUncheckedCreateWithoutPatternInput[]
+    connectOrCreate?: AttemptCreateOrConnectWithoutPatternInput | AttemptCreateOrConnectWithoutPatternInput[]
+    upsert?: AttemptUpsertWithWhereUniqueWithoutPatternInput | AttemptUpsertWithWhereUniqueWithoutPatternInput[]
+    createMany?: AttemptCreateManyPatternInputEnvelope
+    set?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    disconnect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    delete?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    connect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    update?: AttemptUpdateWithWhereUniqueWithoutPatternInput | AttemptUpdateWithWhereUniqueWithoutPatternInput[]
+    updateMany?: AttemptUpdateManyWithWhereWithoutPatternInput | AttemptUpdateManyWithWhereWithoutPatternInput[]
+    deleteMany?: AttemptScalarWhereInput | AttemptScalarWhereInput[]
+  }
+
+  export type AttemptUncheckedUpdateManyWithoutPatternNestedInput = {
+    create?: XOR<AttemptCreateWithoutPatternInput, AttemptUncheckedCreateWithoutPatternInput> | AttemptCreateWithoutPatternInput[] | AttemptUncheckedCreateWithoutPatternInput[]
+    connectOrCreate?: AttemptCreateOrConnectWithoutPatternInput | AttemptCreateOrConnectWithoutPatternInput[]
+    upsert?: AttemptUpsertWithWhereUniqueWithoutPatternInput | AttemptUpsertWithWhereUniqueWithoutPatternInput[]
+    createMany?: AttemptCreateManyPatternInputEnvelope
+    set?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    disconnect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    delete?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    connect?: AttemptWhereUniqueInput | AttemptWhereUniqueInput[]
+    update?: AttemptUpdateWithWhereUniqueWithoutPatternInput | AttemptUpdateWithWhereUniqueWithoutPatternInput[]
+    updateMany?: AttemptUpdateManyWithWhereWithoutPatternInput | AttemptUpdateManyWithWhereWithoutPatternInput[]
+    deleteMany?: AttemptScalarWhereInput | AttemptScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutAttemptsInput = {
+    create?: XOR<UserCreateWithoutAttemptsInput, UserUncheckedCreateWithoutAttemptsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAttemptsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type PatternCreateNestedOneWithoutAttemptsInput = {
+    create?: XOR<PatternCreateWithoutAttemptsInput, PatternUncheckedCreateWithoutAttemptsInput>
+    connectOrCreate?: PatternCreateOrConnectWithoutAttemptsInput
+    connect?: PatternWhereUniqueInput
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type UserUpdateOneRequiredWithoutAttemptsNestedInput = {
+    create?: XOR<UserCreateWithoutAttemptsInput, UserUncheckedCreateWithoutAttemptsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAttemptsInput
+    upsert?: UserUpsertWithoutAttemptsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAttemptsInput, UserUpdateWithoutAttemptsInput>, UserUncheckedUpdateWithoutAttemptsInput>
+  }
+
+  export type PatternUpdateOneRequiredWithoutAttemptsNestedInput = {
+    create?: XOR<PatternCreateWithoutAttemptsInput, PatternUncheckedCreateWithoutAttemptsInput>
+    connectOrCreate?: PatternCreateOrConnectWithoutAttemptsInput
+    upsert?: PatternUpsertWithoutAttemptsInput
+    connect?: PatternWhereUniqueInput
+    update?: XOR<XOR<PatternUpdateToOneWithWhereWithoutAttemptsInput, PatternUpdateWithoutAttemptsInput>, PatternUncheckedUpdateWithoutAttemptsInput>
+  }
+
+  export type UserCreateNestedOneWithoutDomainProgressInput = {
+    create?: XOR<UserCreateWithoutDomainProgressInput, UserUncheckedCreateWithoutDomainProgressInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDomainProgressInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutDomainProgressNestedInput = {
+    create?: XOR<UserCreateWithoutDomainProgressInput, UserUncheckedCreateWithoutDomainProgressInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDomainProgressInput
+    upsert?: UserUpsertWithoutDomainProgressInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDomainProgressInput, UserUpdateWithoutDomainProgressInput>, UserUncheckedUpdateWithoutDomainProgressInput>
+  }
+
   export type UserCreateNestedOneWithoutSessionsInput = {
     create?: XOR<UserCreateWithoutSessionsInput, UserUncheckedCreateWithoutSessionsInput>
     connectOrCreate?: UserCreateOrConnectWithoutSessionsInput
@@ -6809,10 +11801,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
@@ -6945,6 +11933,73 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumDomainFilter<$PrismaModel = never> = {
+    equals?: $Enums.Domain | EnumDomainFieldRefInput<$PrismaModel>
+    in?: $Enums.Domain[] | ListEnumDomainFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Domain[] | ListEnumDomainFieldRefInput<$PrismaModel>
+    not?: NestedEnumDomainFilter<$PrismaModel> | $Enums.Domain
+  }
+
+  export type NestedEnumDomainWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Domain | EnumDomainFieldRefInput<$PrismaModel>
+    in?: $Enums.Domain[] | ListEnumDomainFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Domain[] | ListEnumDomainFieldRefInput<$PrismaModel>
+    not?: NestedEnumDomainWithAggregatesFilter<$PrismaModel> | $Enums.Domain
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDomainFilter<$PrismaModel>
+    _max?: NestedEnumDomainFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -6954,6 +12009,33 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7040,6 +12122,72 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AttemptCreateWithoutUserInput = {
+    id?: string
+    domain: $Enums.Domain
+    presentedLevel: number
+    seed: number
+    solved: boolean
+    timeToFirstCorrectMs?: number | null
+    presentedAt?: Date | string
+    answeredAt?: Date | string | null
+    responseMs?: number | null
+    createdAt?: Date | string
+    pattern: PatternCreateNestedOneWithoutAttemptsInput
+  }
+
+  export type AttemptUncheckedCreateWithoutUserInput = {
+    id?: string
+    patternId: string
+    domain: $Enums.Domain
+    presentedLevel: number
+    seed: number
+    solved: boolean
+    timeToFirstCorrectMs?: number | null
+    presentedAt?: Date | string
+    answeredAt?: Date | string | null
+    responseMs?: number | null
+    createdAt?: Date | string
+  }
+
+  export type AttemptCreateOrConnectWithoutUserInput = {
+    where: AttemptWhereUniqueInput
+    create: XOR<AttemptCreateWithoutUserInput, AttemptUncheckedCreateWithoutUserInput>
+  }
+
+  export type AttemptCreateManyUserInputEnvelope = {
+    data: AttemptCreateManyUserInput | AttemptCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserDomainProgressCreateWithoutUserInput = {
+    id?: string
+    domain: $Enums.Domain
+    currentLevel?: number
+    highestUnlockedLevel?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDomainProgressUncheckedCreateWithoutUserInput = {
+    id?: string
+    domain: $Enums.Domain
+    currentLevel?: number
+    highestUnlockedLevel?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDomainProgressCreateOrConnectWithoutUserInput = {
+    where: UserDomainProgressWhereUniqueInput
+    create: XOR<UserDomainProgressCreateWithoutUserInput, UserDomainProgressUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserDomainProgressCreateManyUserInputEnvelope = {
+    data: UserDomainProgressCreateManyUserInput | UserDomainProgressCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
     where: SessionWhereUniqueInput
     update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
@@ -7105,6 +12253,339 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Account"> | Date | string
   }
 
+  export type AttemptUpsertWithWhereUniqueWithoutUserInput = {
+    where: AttemptWhereUniqueInput
+    update: XOR<AttemptUpdateWithoutUserInput, AttemptUncheckedUpdateWithoutUserInput>
+    create: XOR<AttemptCreateWithoutUserInput, AttemptUncheckedCreateWithoutUserInput>
+  }
+
+  export type AttemptUpdateWithWhereUniqueWithoutUserInput = {
+    where: AttemptWhereUniqueInput
+    data: XOR<AttemptUpdateWithoutUserInput, AttemptUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AttemptUpdateManyWithWhereWithoutUserInput = {
+    where: AttemptScalarWhereInput
+    data: XOR<AttemptUpdateManyMutationInput, AttemptUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type AttemptScalarWhereInput = {
+    AND?: AttemptScalarWhereInput | AttemptScalarWhereInput[]
+    OR?: AttemptScalarWhereInput[]
+    NOT?: AttemptScalarWhereInput | AttemptScalarWhereInput[]
+    id?: StringFilter<"Attempt"> | string
+    userId?: StringFilter<"Attempt"> | string
+    patternId?: StringFilter<"Attempt"> | string
+    domain?: EnumDomainFilter<"Attempt"> | $Enums.Domain
+    presentedLevel?: IntFilter<"Attempt"> | number
+    seed?: IntFilter<"Attempt"> | number
+    solved?: BoolFilter<"Attempt"> | boolean
+    timeToFirstCorrectMs?: IntNullableFilter<"Attempt"> | number | null
+    presentedAt?: DateTimeFilter<"Attempt"> | Date | string
+    answeredAt?: DateTimeNullableFilter<"Attempt"> | Date | string | null
+    responseMs?: IntNullableFilter<"Attempt"> | number | null
+    createdAt?: DateTimeFilter<"Attempt"> | Date | string
+  }
+
+  export type UserDomainProgressUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserDomainProgressWhereUniqueInput
+    update: XOR<UserDomainProgressUpdateWithoutUserInput, UserDomainProgressUncheckedUpdateWithoutUserInput>
+    create: XOR<UserDomainProgressCreateWithoutUserInput, UserDomainProgressUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserDomainProgressUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserDomainProgressWhereUniqueInput
+    data: XOR<UserDomainProgressUpdateWithoutUserInput, UserDomainProgressUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserDomainProgressUpdateManyWithWhereWithoutUserInput = {
+    where: UserDomainProgressScalarWhereInput
+    data: XOR<UserDomainProgressUpdateManyMutationInput, UserDomainProgressUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserDomainProgressScalarWhereInput = {
+    AND?: UserDomainProgressScalarWhereInput | UserDomainProgressScalarWhereInput[]
+    OR?: UserDomainProgressScalarWhereInput[]
+    NOT?: UserDomainProgressScalarWhereInput | UserDomainProgressScalarWhereInput[]
+    id?: StringFilter<"UserDomainProgress"> | string
+    userId?: StringFilter<"UserDomainProgress"> | string
+    domain?: EnumDomainFilter<"UserDomainProgress"> | $Enums.Domain
+    currentLevel?: IntFilter<"UserDomainProgress"> | number
+    highestUnlockedLevel?: IntFilter<"UserDomainProgress"> | number
+    createdAt?: DateTimeFilter<"UserDomainProgress"> | Date | string
+    updatedAt?: DateTimeFilter<"UserDomainProgress"> | Date | string
+  }
+
+  export type AttemptCreateWithoutPatternInput = {
+    id?: string
+    domain: $Enums.Domain
+    presentedLevel: number
+    seed: number
+    solved: boolean
+    timeToFirstCorrectMs?: number | null
+    presentedAt?: Date | string
+    answeredAt?: Date | string | null
+    responseMs?: number | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutAttemptsInput
+  }
+
+  export type AttemptUncheckedCreateWithoutPatternInput = {
+    id?: string
+    userId: string
+    domain: $Enums.Domain
+    presentedLevel: number
+    seed: number
+    solved: boolean
+    timeToFirstCorrectMs?: number | null
+    presentedAt?: Date | string
+    answeredAt?: Date | string | null
+    responseMs?: number | null
+    createdAt?: Date | string
+  }
+
+  export type AttemptCreateOrConnectWithoutPatternInput = {
+    where: AttemptWhereUniqueInput
+    create: XOR<AttemptCreateWithoutPatternInput, AttemptUncheckedCreateWithoutPatternInput>
+  }
+
+  export type AttemptCreateManyPatternInputEnvelope = {
+    data: AttemptCreateManyPatternInput | AttemptCreateManyPatternInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AttemptUpsertWithWhereUniqueWithoutPatternInput = {
+    where: AttemptWhereUniqueInput
+    update: XOR<AttemptUpdateWithoutPatternInput, AttemptUncheckedUpdateWithoutPatternInput>
+    create: XOR<AttemptCreateWithoutPatternInput, AttemptUncheckedCreateWithoutPatternInput>
+  }
+
+  export type AttemptUpdateWithWhereUniqueWithoutPatternInput = {
+    where: AttemptWhereUniqueInput
+    data: XOR<AttemptUpdateWithoutPatternInput, AttemptUncheckedUpdateWithoutPatternInput>
+  }
+
+  export type AttemptUpdateManyWithWhereWithoutPatternInput = {
+    where: AttemptScalarWhereInput
+    data: XOR<AttemptUpdateManyMutationInput, AttemptUncheckedUpdateManyWithoutPatternInput>
+  }
+
+  export type UserCreateWithoutAttemptsInput = {
+    id?: string
+    email: string
+    username: string
+    displayUsername: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    emailVerified?: boolean
+    image?: string | null
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    domainProgress?: UserDomainProgressCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAttemptsInput = {
+    id?: string
+    email: string
+    username: string
+    displayUsername: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    emailVerified?: boolean
+    image?: string | null
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    domainProgress?: UserDomainProgressUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAttemptsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAttemptsInput, UserUncheckedCreateWithoutAttemptsInput>
+  }
+
+  export type PatternCreateWithoutAttemptsInput = {
+    id?: string
+    domain: $Enums.Domain
+    level: number
+    description: string
+    params: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs: number
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PatternUncheckedCreateWithoutAttemptsInput = {
+    id?: string
+    domain: $Enums.Domain
+    level: number
+    description: string
+    params: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs: number
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PatternCreateOrConnectWithoutAttemptsInput = {
+    where: PatternWhereUniqueInput
+    create: XOR<PatternCreateWithoutAttemptsInput, PatternUncheckedCreateWithoutAttemptsInput>
+  }
+
+  export type UserUpsertWithoutAttemptsInput = {
+    update: XOR<UserUpdateWithoutAttemptsInput, UserUncheckedUpdateWithoutAttemptsInput>
+    create: XOR<UserCreateWithoutAttemptsInput, UserUncheckedCreateWithoutAttemptsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAttemptsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAttemptsInput, UserUncheckedUpdateWithoutAttemptsInput>
+  }
+
+  export type UserUpdateWithoutAttemptsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    displayUsername?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    domainProgress?: UserDomainProgressUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAttemptsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    displayUsername?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    domainProgress?: UserDomainProgressUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type PatternUpsertWithoutAttemptsInput = {
+    update: XOR<PatternUpdateWithoutAttemptsInput, PatternUncheckedUpdateWithoutAttemptsInput>
+    create: XOR<PatternCreateWithoutAttemptsInput, PatternUncheckedCreateWithoutAttemptsInput>
+    where?: PatternWhereInput
+  }
+
+  export type PatternUpdateToOneWithWhereWithoutAttemptsInput = {
+    where?: PatternWhereInput
+    data: XOR<PatternUpdateWithoutAttemptsInput, PatternUncheckedUpdateWithoutAttemptsInput>
+  }
+
+  export type PatternUpdateWithoutAttemptsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    level?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    params?: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PatternUncheckedUpdateWithoutAttemptsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    level?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    params?: JsonNullValueInput | InputJsonValue
+    cutoffTimeMs?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCreateWithoutDomainProgressInput = {
+    id?: string
+    email: string
+    username: string
+    displayUsername: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    emailVerified?: boolean
+    image?: string | null
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    attempts?: AttemptCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutDomainProgressInput = {
+    id?: string
+    email: string
+    username: string
+    displayUsername: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    name: string
+    emailVerified?: boolean
+    image?: string | null
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    attempts?: AttemptUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutDomainProgressInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDomainProgressInput, UserUncheckedCreateWithoutDomainProgressInput>
+  }
+
+  export type UserUpsertWithoutDomainProgressInput = {
+    update: XOR<UserUpdateWithoutDomainProgressInput, UserUncheckedUpdateWithoutDomainProgressInput>
+    create: XOR<UserCreateWithoutDomainProgressInput, UserUncheckedCreateWithoutDomainProgressInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDomainProgressInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDomainProgressInput, UserUncheckedUpdateWithoutDomainProgressInput>
+  }
+
+  export type UserUpdateWithoutDomainProgressInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    displayUsername?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    attempts?: AttemptUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDomainProgressInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    displayUsername?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    attempts?: AttemptUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id?: string
     email: string
@@ -7116,6 +12597,8 @@ export namespace Prisma {
     emailVerified?: boolean
     image?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
+    attempts?: AttemptCreateNestedManyWithoutUserInput
+    domainProgress?: UserDomainProgressCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -7129,6 +12612,8 @@ export namespace Prisma {
     emailVerified?: boolean
     image?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    attempts?: AttemptUncheckedCreateNestedManyWithoutUserInput
+    domainProgress?: UserDomainProgressUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -7158,6 +12643,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    attempts?: AttemptUpdateManyWithoutUserNestedInput
+    domainProgress?: UserDomainProgressUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -7171,6 +12658,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    attempts?: AttemptUncheckedUpdateManyWithoutUserNestedInput
+    domainProgress?: UserDomainProgressUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -7184,6 +12673,8 @@ export namespace Prisma {
     emailVerified?: boolean
     image?: string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
+    attempts?: AttemptCreateNestedManyWithoutUserInput
+    domainProgress?: UserDomainProgressCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -7197,6 +12688,8 @@ export namespace Prisma {
     emailVerified?: boolean
     image?: string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    attempts?: AttemptUncheckedCreateNestedManyWithoutUserInput
+    domainProgress?: UserDomainProgressUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -7226,6 +12719,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    attempts?: AttemptUpdateManyWithoutUserNestedInput
+    domainProgress?: UserDomainProgressUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -7239,6 +12734,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    attempts?: AttemptUncheckedUpdateManyWithoutUserNestedInput
+    domainProgress?: UserDomainProgressUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -7262,6 +12759,29 @@ export namespace Prisma {
     refreshTokenExpiresAt?: Date | string | null
     scope?: string | null
     password?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AttemptCreateManyUserInput = {
+    id?: string
+    patternId: string
+    domain: $Enums.Domain
+    presentedLevel: number
+    seed: number
+    solved: boolean
+    timeToFirstCorrectMs?: number | null
+    presentedAt?: Date | string
+    answeredAt?: Date | string | null
+    responseMs?: number | null
+    createdAt?: Date | string
+  }
+
+  export type UserDomainProgressCreateManyUserInput = {
+    id?: string
+    domain: $Enums.Domain
+    currentLevel?: number
+    highestUnlockedLevel?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -7339,6 +12859,131 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttemptUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    presentedLevel?: IntFieldUpdateOperationsInput | number
+    seed?: IntFieldUpdateOperationsInput | number
+    solved?: BoolFieldUpdateOperationsInput | boolean
+    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
+    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pattern?: PatternUpdateOneRequiredWithoutAttemptsNestedInput
+  }
+
+  export type AttemptUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    patternId?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    presentedLevel?: IntFieldUpdateOperationsInput | number
+    seed?: IntFieldUpdateOperationsInput | number
+    solved?: BoolFieldUpdateOperationsInput | boolean
+    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
+    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttemptUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    patternId?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    presentedLevel?: IntFieldUpdateOperationsInput | number
+    seed?: IntFieldUpdateOperationsInput | number
+    solved?: BoolFieldUpdateOperationsInput | boolean
+    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
+    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDomainProgressUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    highestUnlockedLevel?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDomainProgressUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    highestUnlockedLevel?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDomainProgressUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    highestUnlockedLevel?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttemptCreateManyPatternInput = {
+    id?: string
+    userId: string
+    domain: $Enums.Domain
+    presentedLevel: number
+    seed: number
+    solved: boolean
+    timeToFirstCorrectMs?: number | null
+    presentedAt?: Date | string
+    answeredAt?: Date | string | null
+    responseMs?: number | null
+    createdAt?: Date | string
+  }
+
+  export type AttemptUpdateWithoutPatternInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    presentedLevel?: IntFieldUpdateOperationsInput | number
+    seed?: IntFieldUpdateOperationsInput | number
+    solved?: BoolFieldUpdateOperationsInput | boolean
+    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
+    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAttemptsNestedInput
+  }
+
+  export type AttemptUncheckedUpdateWithoutPatternInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    presentedLevel?: IntFieldUpdateOperationsInput | number
+    seed?: IntFieldUpdateOperationsInput | number
+    solved?: BoolFieldUpdateOperationsInput | boolean
+    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
+    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttemptUncheckedUpdateManyWithoutPatternInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
+    presentedLevel?: IntFieldUpdateOperationsInput | number
+    seed?: IntFieldUpdateOperationsInput | number
+    solved?: BoolFieldUpdateOperationsInput | boolean
+    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
+    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.4.0
- * Query Engine version: ab56fe763f921d033a6c195e7ddeb3e255bdbb57
+ * Prisma Client JS version: 7.4.2
+ * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
  */
 Prisma.prismaVersion = {
-  client: "7.4.0",
-  engine: "ab56fe763f921d033a6c195e7ddeb3e255bdbb57"
+  client: "7.4.2",
+  engine: "94a226be1cf2967af2541cca5529f0f7ba866919"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -132,6 +132,43 @@ exports.Prisma.UserScalarFieldEnum = {
   image: 'image'
 };
 
+exports.Prisma.PatternScalarFieldEnum = {
+  id: 'id',
+  domain: 'domain',
+  level: 'level',
+  description: 'description',
+  params: 'params',
+  cutoffTimeMs: 'cutoffTimeMs',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AttemptScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  patternId: 'patternId',
+  domain: 'domain',
+  presentedLevel: 'presentedLevel',
+  seed: 'seed',
+  solved: 'solved',
+  timeToFirstCorrectMs: 'timeToFirstCorrectMs',
+  presentedAt: 'presentedAt',
+  answeredAt: 'answeredAt',
+  responseMs: 'responseMs',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.UserDomainProgressScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  domain: 'domain',
+  currentLevel: 'currentLevel',
+  highestUnlockedLevel: 'highestUnlockedLevel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SessionScalarFieldEnum = {
   id: 'id',
   expiresAt: 'expiresAt',
@@ -173,6 +210,10 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -183,9 +224,23 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.Domain = exports.$Enums.Domain = {
+  ADD: 'ADD',
+  MUL: 'MUL',
+  SUB: 'SUB',
+  DIV: 'DIV'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Pattern: 'Pattern',
+  Attempt: 'Attempt',
+  UserDomainProgress: 'UserDomainProgress',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification'

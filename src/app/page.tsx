@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { AccountMenu } from "@/components/account-menu";
 import { getServerSession } from "@/lib/session";
 
 export default async function Home() {
@@ -15,9 +14,7 @@ export default async function Home() {
               S
             </span>
           </Link>
-          {session ? (
-            <AccountMenu />
-          ) : (
+          {!session ? (
             <div className="flex items-center gap-2 text-sm font-semibold">
               <Link className="rounded-full px-4 py-2" href="/login">
                 Sign in
@@ -29,7 +26,7 @@ export default async function Home() {
                 Create account
               </Link>
             </div>
-          )}
+          ) : null}
         </header>
 
         <main className="mx-auto mt-24 w-full max-w-3xl text-center">
@@ -47,7 +44,7 @@ export default async function Home() {
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               className="inline-flex items-center justify-center rounded-full bg-[#151515] px-7 py-3 text-sm font-semibold text-white transition hover:bg-black"
-              href="/training"
+              href="/dashboard"
             >
               Start training
             </Link>
@@ -122,7 +119,7 @@ export default async function Home() {
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
                 className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#151515]"
-                href="/training"
+                href="/dashboard"
               >
                 Start training
               </Link>
