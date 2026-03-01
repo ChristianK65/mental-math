@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { formatPrompt } from "@/features/training/format-prompt";
+import { persistTrainingAttempt } from "@/features/training/attempt-client";
 import { useTrainingQuestions } from "@/features/training/use-training-questions";
 import { useTrainingTimer } from "@/features/training/use-training-timer";
 
 export default function TrainingPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [runId] = useState(() => crypto.randomUUID());
   const selectedOperations = searchParams.getAll("operations");
   const selectedCount = searchParams.get("count") ?? "10";
   const { questions, isLoadingQuestions, questionsError } = useTrainingQuestions(selectedOperations, selectedCount);
@@ -20,13 +22,20 @@ export default function TrainingPage() {
   const [answerInput, setAnswerInput] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const [errorFlash, setErrorFlash] = useState(false);
+  const [isSubmittingAttempt, setIsSubmittingAttempt] = useState(false);
+  const answerInputRef = useRef<HTMLInputElement | null>(null);
+  const [firstSubmission, setFirstSubmission] = useState<{
+    submittedAnswer: string;
+    responseMs: number;
+  } | null>(null);
+  const [skipResponseMs, setSkipResponseMs] = useState<number | null>(null);
 
   const totalQuestions = questions.length;
   const hasLoadedQuestions = !isLoadingQuestions && !questionsError && totalQuestions > 0;
   const currentQuestion = questions.length > 0
     ? questions[Math.min(currentIndex, questions.length - 1)]
     : undefined;
-  const isInteractionDisabled = !hasLoadedQuestions;
+  const isInteractionDisabled = !hasLoadedQuestions || isSubmittingAttempt;
   const currentQuestionNumber = currentIndex + 1;
   const progressPercent = totalQuestions > 0 ? (currentQuestionNumber / totalQuestions) * 100 : 0;
   const progressOffset = 100 - progressPercent;
@@ -37,8 +46,10 @@ export default function TrainingPage() {
       return;
     }
 
- 
     restart();
+    window.requestAnimationFrame(() => {
+      answerInputRef.current?.focus();
+    });
   }, [hasLoadedQuestions, restart, stop]);
 
   const advanceOrFinish = (form: HTMLFormElement) => {
@@ -52,13 +63,16 @@ export default function TrainingPage() {
     restart();
     setAnswerInput("");
     setShowAnswer(false);
+    setFirstSubmission(null);
+    setSkipResponseMs(null);
     form.reset();
+    window.requestAnimationFrame(() => {
+      answerInputRef.current?.focus();
+    });
   };
 
-  const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!currentQuestion) {
+  const handleSubmit = async (form: HTMLFormElement) => {
+    if (!currentQuestion || isSubmittingAttempt) {
       return;
     }
 
@@ -67,15 +81,24 @@ export default function TrainingPage() {
     const normalized = Number(trimmedAnswer);
 
     if (showAnswer) {
-      if (currentQuestion) {
-        console.log({
-          question: currentQuestion,
-          answer: null,
-          solved: false,
-          elapsedMs: null,
+      const lockedSubmission = firstSubmission;
+
+      try {
+        setIsSubmittingAttempt(true);
+        await persistTrainingAttempt({
+          runId,
+          patternId: currentQuestion.patternId,
+          seed: currentQuestion.seed,
+          firstSubmittedAnswer: lockedSubmission ? lockedSubmission.submittedAnswer : null,
+          firstResponseMs: lockedSubmission ? lockedSubmission.responseMs : (skipResponseMs ?? elapsedMs),
+          skipped: lockedSubmission ? false : true,
         });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsSubmittingAttempt(false);
       }
-      advanceOrFinish(event.currentTarget);
+      advanceOrFinish(form);
       return;
     }
 
@@ -83,16 +106,36 @@ export default function TrainingPage() {
       return;
     }
 
+    if (!firstSubmission) {
+      setFirstSubmission({
+        submittedAnswer: trimmedAnswer,
+        responseMs: elapsedMs,
+      });
+    }
+
     if (normalized === expectedAnswer) {
-      if (currentQuestion) {
-        console.log({
-          question: currentQuestion,
-          answer: normalized,
-          solved: true,
-          elapsedMs: elapsedMs,
+      const lockedSubmission = firstSubmission ?? {
+        submittedAnswer: trimmedAnswer,
+        responseMs: elapsedMs,
+      };
+
+      try {
+        setIsSubmittingAttempt(true);
+        await persistTrainingAttempt({
+          runId,
+          patternId: currentQuestion.patternId,
+          seed: currentQuestion.seed,
+          firstSubmittedAnswer: lockedSubmission.submittedAnswer,
+          firstResponseMs: lockedSubmission.responseMs,
+          skipped: false,
         });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsSubmittingAttempt(false);
       }
-      advanceOrFinish(event.currentTarget);
+
+      advanceOrFinish(form);
       return;
     }
 
@@ -106,11 +149,12 @@ export default function TrainingPage() {
   };
 
   const handleDontKnow = () => {
-    if (!currentQuestion) {
+    if (!currentQuestion || isSubmittingAttempt) {
       return;
     }
 
     setShowAnswer(true);
+    setSkipResponseMs(elapsedMs);
     stop();
   };
 
@@ -197,9 +241,13 @@ export default function TrainingPage() {
               </p>
               <form
                 className="mt-6 flex flex-col gap-4 sm:flex-row"
-                onSubmit={handleSubmit}
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void handleSubmit(event.currentTarget);
+                }}
               >
                 <input
+                  ref={answerInputRef}
                   className={`w-full rounded-2xl border border-[#1b1b1b]/15 bg-white px-4 py-3 text-lg outline-none transition focus:border-[#1b1b1b]/40 ${showAnswer ? "cursor-not-allowed bg-[#f3f0eb] text-[#1b1b1b]/50" : ""} ${errorFlash ? "border-red-400 bg-red-50 ring-4 ring-red-200" : ""}`}
                   name="answer"
                   type="text"

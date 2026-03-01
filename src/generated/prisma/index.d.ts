@@ -62,11 +62,25 @@ export namespace $Enums {
 
 export type Domain = (typeof Domain)[keyof typeof Domain]
 
+
+export const AttemptOutcome: {
+  CORRECT: 'CORRECT',
+  WRONG: 'WRONG',
+  TIMEOUT: 'TIMEOUT',
+  SKIPPED: 'SKIPPED'
+};
+
+export type AttemptOutcome = (typeof AttemptOutcome)[keyof typeof AttemptOutcome]
+
 }
 
 export type Domain = $Enums.Domain
 
 export const Domain: typeof $Enums.Domain
+
+export type AttemptOutcome = $Enums.AttemptOutcome
+
+export const AttemptOutcome: typeof $Enums.AttemptOutcome
 
 /**
  * ##  Prisma Client ʲˢ
@@ -3896,29 +3910,37 @@ export namespace Prisma {
   export type AttemptAvgAggregateOutputType = {
     presentedLevel: number | null
     seed: number | null
-    timeToFirstCorrectMs: number | null
-    responseMs: number | null
+    firstSubmittedAnswer: Decimal | null
+    firstResponseMs: number | null
+    leftOperand: Decimal | null
+    rightOperand: Decimal | null
+    expectedAnswer: Decimal | null
   }
 
   export type AttemptSumAggregateOutputType = {
     presentedLevel: number | null
     seed: number | null
-    timeToFirstCorrectMs: number | null
-    responseMs: number | null
+    firstSubmittedAnswer: Decimal | null
+    firstResponseMs: number | null
+    leftOperand: Decimal | null
+    rightOperand: Decimal | null
+    expectedAnswer: Decimal | null
   }
 
   export type AttemptMinAggregateOutputType = {
     id: string | null
     userId: string | null
     patternId: string | null
+    runId: string | null
     domain: $Enums.Domain | null
     presentedLevel: number | null
     seed: number | null
-    solved: boolean | null
-    timeToFirstCorrectMs: number | null
-    presentedAt: Date | null
-    answeredAt: Date | null
-    responseMs: number | null
+    outcome: $Enums.AttemptOutcome | null
+    firstSubmittedAnswer: Decimal | null
+    firstResponseMs: number | null
+    leftOperand: Decimal | null
+    rightOperand: Decimal | null
+    expectedAnswer: Decimal | null
     createdAt: Date | null
   }
 
@@ -3926,14 +3948,16 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     patternId: string | null
+    runId: string | null
     domain: $Enums.Domain | null
     presentedLevel: number | null
     seed: number | null
-    solved: boolean | null
-    timeToFirstCorrectMs: number | null
-    presentedAt: Date | null
-    answeredAt: Date | null
-    responseMs: number | null
+    outcome: $Enums.AttemptOutcome | null
+    firstSubmittedAnswer: Decimal | null
+    firstResponseMs: number | null
+    leftOperand: Decimal | null
+    rightOperand: Decimal | null
+    expectedAnswer: Decimal | null
     createdAt: Date | null
   }
 
@@ -3941,14 +3965,16 @@ export namespace Prisma {
     id: number
     userId: number
     patternId: number
+    runId: number
     domain: number
     presentedLevel: number
     seed: number
-    solved: number
-    timeToFirstCorrectMs: number
-    presentedAt: number
-    answeredAt: number
-    responseMs: number
+    outcome: number
+    firstSubmittedAnswer: number
+    firstResponseMs: number
+    leftOperand: number
+    rightOperand: number
+    expectedAnswer: number
     createdAt: number
     _all: number
   }
@@ -3957,29 +3983,37 @@ export namespace Prisma {
   export type AttemptAvgAggregateInputType = {
     presentedLevel?: true
     seed?: true
-    timeToFirstCorrectMs?: true
-    responseMs?: true
+    firstSubmittedAnswer?: true
+    firstResponseMs?: true
+    leftOperand?: true
+    rightOperand?: true
+    expectedAnswer?: true
   }
 
   export type AttemptSumAggregateInputType = {
     presentedLevel?: true
     seed?: true
-    timeToFirstCorrectMs?: true
-    responseMs?: true
+    firstSubmittedAnswer?: true
+    firstResponseMs?: true
+    leftOperand?: true
+    rightOperand?: true
+    expectedAnswer?: true
   }
 
   export type AttemptMinAggregateInputType = {
     id?: true
     userId?: true
     patternId?: true
+    runId?: true
     domain?: true
     presentedLevel?: true
     seed?: true
-    solved?: true
-    timeToFirstCorrectMs?: true
-    presentedAt?: true
-    answeredAt?: true
-    responseMs?: true
+    outcome?: true
+    firstSubmittedAnswer?: true
+    firstResponseMs?: true
+    leftOperand?: true
+    rightOperand?: true
+    expectedAnswer?: true
     createdAt?: true
   }
 
@@ -3987,14 +4021,16 @@ export namespace Prisma {
     id?: true
     userId?: true
     patternId?: true
+    runId?: true
     domain?: true
     presentedLevel?: true
     seed?: true
-    solved?: true
-    timeToFirstCorrectMs?: true
-    presentedAt?: true
-    answeredAt?: true
-    responseMs?: true
+    outcome?: true
+    firstSubmittedAnswer?: true
+    firstResponseMs?: true
+    leftOperand?: true
+    rightOperand?: true
+    expectedAnswer?: true
     createdAt?: true
   }
 
@@ -4002,14 +4038,16 @@ export namespace Prisma {
     id?: true
     userId?: true
     patternId?: true
+    runId?: true
     domain?: true
     presentedLevel?: true
     seed?: true
-    solved?: true
-    timeToFirstCorrectMs?: true
-    presentedAt?: true
-    answeredAt?: true
-    responseMs?: true
+    outcome?: true
+    firstSubmittedAnswer?: true
+    firstResponseMs?: true
+    leftOperand?: true
+    rightOperand?: true
+    expectedAnswer?: true
     createdAt?: true
     _all?: true
   }
@@ -4104,14 +4142,16 @@ export namespace Prisma {
     id: string
     userId: string
     patternId: string
+    runId: string
     domain: $Enums.Domain
     presentedLevel: number
     seed: number
-    solved: boolean
-    timeToFirstCorrectMs: number | null
-    presentedAt: Date
-    answeredAt: Date | null
-    responseMs: number | null
+    outcome: $Enums.AttemptOutcome
+    firstSubmittedAnswer: Decimal | null
+    firstResponseMs: number
+    leftOperand: Decimal
+    rightOperand: Decimal | null
+    expectedAnswer: Decimal
     createdAt: Date
     _count: AttemptCountAggregateOutputType | null
     _avg: AttemptAvgAggregateOutputType | null
@@ -4138,14 +4178,16 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     patternId?: boolean
+    runId?: boolean
     domain?: boolean
     presentedLevel?: boolean
     seed?: boolean
-    solved?: boolean
-    timeToFirstCorrectMs?: boolean
-    presentedAt?: boolean
-    answeredAt?: boolean
-    responseMs?: boolean
+    outcome?: boolean
+    firstSubmittedAnswer?: boolean
+    firstResponseMs?: boolean
+    leftOperand?: boolean
+    rightOperand?: boolean
+    expectedAnswer?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     pattern?: boolean | PatternDefaultArgs<ExtArgs>
@@ -4155,14 +4197,16 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     patternId?: boolean
+    runId?: boolean
     domain?: boolean
     presentedLevel?: boolean
     seed?: boolean
-    solved?: boolean
-    timeToFirstCorrectMs?: boolean
-    presentedAt?: boolean
-    answeredAt?: boolean
-    responseMs?: boolean
+    outcome?: boolean
+    firstSubmittedAnswer?: boolean
+    firstResponseMs?: boolean
+    leftOperand?: boolean
+    rightOperand?: boolean
+    expectedAnswer?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     pattern?: boolean | PatternDefaultArgs<ExtArgs>
@@ -4172,14 +4216,16 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     patternId?: boolean
+    runId?: boolean
     domain?: boolean
     presentedLevel?: boolean
     seed?: boolean
-    solved?: boolean
-    timeToFirstCorrectMs?: boolean
-    presentedAt?: boolean
-    answeredAt?: boolean
-    responseMs?: boolean
+    outcome?: boolean
+    firstSubmittedAnswer?: boolean
+    firstResponseMs?: boolean
+    leftOperand?: boolean
+    rightOperand?: boolean
+    expectedAnswer?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     pattern?: boolean | PatternDefaultArgs<ExtArgs>
@@ -4189,18 +4235,20 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     patternId?: boolean
+    runId?: boolean
     domain?: boolean
     presentedLevel?: boolean
     seed?: boolean
-    solved?: boolean
-    timeToFirstCorrectMs?: boolean
-    presentedAt?: boolean
-    answeredAt?: boolean
-    responseMs?: boolean
+    outcome?: boolean
+    firstSubmittedAnswer?: boolean
+    firstResponseMs?: boolean
+    leftOperand?: boolean
+    rightOperand?: boolean
+    expectedAnswer?: boolean
     createdAt?: boolean
   }
 
-  export type AttemptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "patternId" | "domain" | "presentedLevel" | "seed" | "solved" | "timeToFirstCorrectMs" | "presentedAt" | "answeredAt" | "responseMs" | "createdAt", ExtArgs["result"]["attempt"]>
+  export type AttemptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "patternId" | "runId" | "domain" | "presentedLevel" | "seed" | "outcome" | "firstSubmittedAnswer" | "firstResponseMs" | "leftOperand" | "rightOperand" | "expectedAnswer" | "createdAt", ExtArgs["result"]["attempt"]>
   export type AttemptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     pattern?: boolean | PatternDefaultArgs<ExtArgs>
@@ -4224,14 +4272,16 @@ export namespace Prisma {
       id: string
       userId: string
       patternId: string
+      runId: string
       domain: $Enums.Domain
       presentedLevel: number
       seed: number
-      solved: boolean
-      timeToFirstCorrectMs: number | null
-      presentedAt: Date
-      answeredAt: Date | null
-      responseMs: number | null
+      outcome: $Enums.AttemptOutcome
+      firstSubmittedAnswer: Prisma.Decimal | null
+      firstResponseMs: number
+      leftOperand: Prisma.Decimal
+      rightOperand: Prisma.Decimal | null
+      expectedAnswer: Prisma.Decimal
       createdAt: Date
     }, ExtArgs["result"]["attempt"]>
     composites: {}
@@ -4661,14 +4711,16 @@ export namespace Prisma {
     readonly id: FieldRef<"Attempt", 'String'>
     readonly userId: FieldRef<"Attempt", 'String'>
     readonly patternId: FieldRef<"Attempt", 'String'>
+    readonly runId: FieldRef<"Attempt", 'String'>
     readonly domain: FieldRef<"Attempt", 'Domain'>
     readonly presentedLevel: FieldRef<"Attempt", 'Int'>
     readonly seed: FieldRef<"Attempt", 'Int'>
-    readonly solved: FieldRef<"Attempt", 'Boolean'>
-    readonly timeToFirstCorrectMs: FieldRef<"Attempt", 'Int'>
-    readonly presentedAt: FieldRef<"Attempt", 'DateTime'>
-    readonly answeredAt: FieldRef<"Attempt", 'DateTime'>
-    readonly responseMs: FieldRef<"Attempt", 'Int'>
+    readonly outcome: FieldRef<"Attempt", 'AttemptOutcome'>
+    readonly firstSubmittedAnswer: FieldRef<"Attempt", 'Decimal'>
+    readonly firstResponseMs: FieldRef<"Attempt", 'Int'>
+    readonly leftOperand: FieldRef<"Attempt", 'Decimal'>
+    readonly rightOperand: FieldRef<"Attempt", 'Decimal'>
+    readonly expectedAnswer: FieldRef<"Attempt", 'Decimal'>
     readonly createdAt: FieldRef<"Attempt", 'DateTime'>
   }
     
@@ -9521,14 +9573,16 @@ export namespace Prisma {
     id: 'id',
     userId: 'userId',
     patternId: 'patternId',
+    runId: 'runId',
     domain: 'domain',
     presentedLevel: 'presentedLevel',
     seed: 'seed',
-    solved: 'solved',
-    timeToFirstCorrectMs: 'timeToFirstCorrectMs',
-    presentedAt: 'presentedAt',
-    answeredAt: 'answeredAt',
-    responseMs: 'responseMs',
+    outcome: 'outcome',
+    firstSubmittedAnswer: 'firstSubmittedAnswer',
+    firstResponseMs: 'firstResponseMs',
+    leftOperand: 'leftOperand',
+    rightOperand: 'rightOperand',
+    expectedAnswer: 'expectedAnswer',
     createdAt: 'createdAt'
   };
 
@@ -9712,6 +9766,34 @@ export namespace Prisma {
    * Reference to a field of type 'QueryMode'
    */
   export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'AttemptOutcome'
+   */
+  export type EnumAttemptOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttemptOutcome'>
+    
+
+
+  /**
+   * Reference to a field of type 'AttemptOutcome[]'
+   */
+  export type ListEnumAttemptOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttemptOutcome[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
@@ -9901,14 +9983,16 @@ export namespace Prisma {
     id?: StringFilter<"Attempt"> | string
     userId?: StringFilter<"Attempt"> | string
     patternId?: StringFilter<"Attempt"> | string
+    runId?: StringFilter<"Attempt"> | string
     domain?: EnumDomainFilter<"Attempt"> | $Enums.Domain
     presentedLevel?: IntFilter<"Attempt"> | number
     seed?: IntFilter<"Attempt"> | number
-    solved?: BoolFilter<"Attempt"> | boolean
-    timeToFirstCorrectMs?: IntNullableFilter<"Attempt"> | number | null
-    presentedAt?: DateTimeFilter<"Attempt"> | Date | string
-    answeredAt?: DateTimeNullableFilter<"Attempt"> | Date | string | null
-    responseMs?: IntNullableFilter<"Attempt"> | number | null
+    outcome?: EnumAttemptOutcomeFilter<"Attempt"> | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: DecimalNullableFilter<"Attempt"> | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFilter<"Attempt"> | number
+    leftOperand?: DecimalFilter<"Attempt"> | Decimal | DecimalJsLike | number | string
+    rightOperand?: DecimalNullableFilter<"Attempt"> | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFilter<"Attempt"> | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFilter<"Attempt"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     pattern?: XOR<PatternScalarRelationFilter, PatternWhereInput>
@@ -9918,14 +10002,16 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     patternId?: SortOrder
+    runId?: SortOrder
     domain?: SortOrder
     presentedLevel?: SortOrder
     seed?: SortOrder
-    solved?: SortOrder
-    timeToFirstCorrectMs?: SortOrderInput | SortOrder
-    presentedAt?: SortOrder
-    answeredAt?: SortOrderInput | SortOrder
-    responseMs?: SortOrderInput | SortOrder
+    outcome?: SortOrder
+    firstSubmittedAnswer?: SortOrderInput | SortOrder
+    firstResponseMs?: SortOrder
+    leftOperand?: SortOrder
+    rightOperand?: SortOrderInput | SortOrder
+    expectedAnswer?: SortOrder
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
     pattern?: PatternOrderByWithRelationInput
@@ -9938,14 +10024,16 @@ export namespace Prisma {
     NOT?: AttemptWhereInput | AttemptWhereInput[]
     userId?: StringFilter<"Attempt"> | string
     patternId?: StringFilter<"Attempt"> | string
+    runId?: StringFilter<"Attempt"> | string
     domain?: EnumDomainFilter<"Attempt"> | $Enums.Domain
     presentedLevel?: IntFilter<"Attempt"> | number
     seed?: IntFilter<"Attempt"> | number
-    solved?: BoolFilter<"Attempt"> | boolean
-    timeToFirstCorrectMs?: IntNullableFilter<"Attempt"> | number | null
-    presentedAt?: DateTimeFilter<"Attempt"> | Date | string
-    answeredAt?: DateTimeNullableFilter<"Attempt"> | Date | string | null
-    responseMs?: IntNullableFilter<"Attempt"> | number | null
+    outcome?: EnumAttemptOutcomeFilter<"Attempt"> | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: DecimalNullableFilter<"Attempt"> | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFilter<"Attempt"> | number
+    leftOperand?: DecimalFilter<"Attempt"> | Decimal | DecimalJsLike | number | string
+    rightOperand?: DecimalNullableFilter<"Attempt"> | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFilter<"Attempt"> | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFilter<"Attempt"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     pattern?: XOR<PatternScalarRelationFilter, PatternWhereInput>
@@ -9955,14 +10043,16 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     patternId?: SortOrder
+    runId?: SortOrder
     domain?: SortOrder
     presentedLevel?: SortOrder
     seed?: SortOrder
-    solved?: SortOrder
-    timeToFirstCorrectMs?: SortOrderInput | SortOrder
-    presentedAt?: SortOrder
-    answeredAt?: SortOrderInput | SortOrder
-    responseMs?: SortOrderInput | SortOrder
+    outcome?: SortOrder
+    firstSubmittedAnswer?: SortOrderInput | SortOrder
+    firstResponseMs?: SortOrder
+    leftOperand?: SortOrder
+    rightOperand?: SortOrderInput | SortOrder
+    expectedAnswer?: SortOrder
     createdAt?: SortOrder
     _count?: AttemptCountOrderByAggregateInput
     _avg?: AttemptAvgOrderByAggregateInput
@@ -9978,14 +10068,16 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Attempt"> | string
     userId?: StringWithAggregatesFilter<"Attempt"> | string
     patternId?: StringWithAggregatesFilter<"Attempt"> | string
+    runId?: StringWithAggregatesFilter<"Attempt"> | string
     domain?: EnumDomainWithAggregatesFilter<"Attempt"> | $Enums.Domain
     presentedLevel?: IntWithAggregatesFilter<"Attempt"> | number
     seed?: IntWithAggregatesFilter<"Attempt"> | number
-    solved?: BoolWithAggregatesFilter<"Attempt"> | boolean
-    timeToFirstCorrectMs?: IntNullableWithAggregatesFilter<"Attempt"> | number | null
-    presentedAt?: DateTimeWithAggregatesFilter<"Attempt"> | Date | string
-    answeredAt?: DateTimeNullableWithAggregatesFilter<"Attempt"> | Date | string | null
-    responseMs?: IntNullableWithAggregatesFilter<"Attempt"> | number | null
+    outcome?: EnumAttemptOutcomeWithAggregatesFilter<"Attempt"> | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: DecimalNullableWithAggregatesFilter<"Attempt"> | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntWithAggregatesFilter<"Attempt"> | number
+    leftOperand?: DecimalWithAggregatesFilter<"Attempt"> | Decimal | DecimalJsLike | number | string
+    rightOperand?: DecimalNullableWithAggregatesFilter<"Attempt"> | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalWithAggregatesFilter<"Attempt"> | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeWithAggregatesFilter<"Attempt"> | Date | string
   }
 
@@ -10469,14 +10561,16 @@ export namespace Prisma {
 
   export type AttemptCreateInput = {
     id?: string
+    runId: string
     domain: $Enums.Domain
     presentedLevel: number
     seed: number
-    solved: boolean
-    timeToFirstCorrectMs?: number | null
-    presentedAt?: Date | string
-    answeredAt?: Date | string | null
-    responseMs?: number | null
+    outcome: $Enums.AttemptOutcome
+    firstSubmittedAnswer?: Decimal | DecimalJsLike | number | string | null
+    firstResponseMs: number
+    leftOperand: Decimal | DecimalJsLike | number | string
+    rightOperand?: Decimal | DecimalJsLike | number | string | null
+    expectedAnswer: Decimal | DecimalJsLike | number | string
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutAttemptsInput
     pattern: PatternCreateNestedOneWithoutAttemptsInput
@@ -10486,27 +10580,31 @@ export namespace Prisma {
     id?: string
     userId: string
     patternId: string
+    runId: string
     domain: $Enums.Domain
     presentedLevel: number
     seed: number
-    solved: boolean
-    timeToFirstCorrectMs?: number | null
-    presentedAt?: Date | string
-    answeredAt?: Date | string | null
-    responseMs?: number | null
+    outcome: $Enums.AttemptOutcome
+    firstSubmittedAnswer?: Decimal | DecimalJsLike | number | string | null
+    firstResponseMs: number
+    leftOperand: Decimal | DecimalJsLike | number | string
+    rightOperand?: Decimal | DecimalJsLike | number | string | null
+    expectedAnswer: Decimal | DecimalJsLike | number | string
     createdAt?: Date | string
   }
 
   export type AttemptUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
     domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
     presentedLevel?: IntFieldUpdateOperationsInput | number
     seed?: IntFieldUpdateOperationsInput | number
-    solved?: BoolFieldUpdateOperationsInput | boolean
-    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
-    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    outcome?: EnumAttemptOutcomeFieldUpdateOperationsInput | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFieldUpdateOperationsInput | number
+    leftOperand?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rightOperand?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutAttemptsNestedInput
     pattern?: PatternUpdateOneRequiredWithoutAttemptsNestedInput
@@ -10516,14 +10614,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     patternId?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
     domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
     presentedLevel?: IntFieldUpdateOperationsInput | number
     seed?: IntFieldUpdateOperationsInput | number
-    solved?: BoolFieldUpdateOperationsInput | boolean
-    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
-    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    outcome?: EnumAttemptOutcomeFieldUpdateOperationsInput | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFieldUpdateOperationsInput | number
+    leftOperand?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rightOperand?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -10531,27 +10631,31 @@ export namespace Prisma {
     id?: string
     userId: string
     patternId: string
+    runId: string
     domain: $Enums.Domain
     presentedLevel: number
     seed: number
-    solved: boolean
-    timeToFirstCorrectMs?: number | null
-    presentedAt?: Date | string
-    answeredAt?: Date | string | null
-    responseMs?: number | null
+    outcome: $Enums.AttemptOutcome
+    firstSubmittedAnswer?: Decimal | DecimalJsLike | number | string | null
+    firstResponseMs: number
+    leftOperand: Decimal | DecimalJsLike | number | string
+    rightOperand?: Decimal | DecimalJsLike | number | string | null
+    expectedAnswer: Decimal | DecimalJsLike | number | string
     createdAt?: Date | string
   }
 
   export type AttemptUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
     domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
     presentedLevel?: IntFieldUpdateOperationsInput | number
     seed?: IntFieldUpdateOperationsInput | number
-    solved?: BoolFieldUpdateOperationsInput | boolean
-    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
-    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    outcome?: EnumAttemptOutcomeFieldUpdateOperationsInput | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFieldUpdateOperationsInput | number
+    leftOperand?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rightOperand?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -10559,14 +10663,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     patternId?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
     domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
     presentedLevel?: IntFieldUpdateOperationsInput | number
     seed?: IntFieldUpdateOperationsInput | number
-    solved?: BoolFieldUpdateOperationsInput | boolean
-    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
-    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    outcome?: EnumAttemptOutcomeFieldUpdateOperationsInput | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFieldUpdateOperationsInput | number
+    leftOperand?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rightOperand?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11217,26 +11323,33 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  export type EnumAttemptOutcomeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttemptOutcome | EnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    in?: $Enums.AttemptOutcome[] | ListEnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttemptOutcome[] | ListEnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttemptOutcomeFilter<$PrismaModel> | $Enums.AttemptOutcome
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  export type DecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
   export type UserScalarRelationFilter = {
@@ -11253,36 +11366,43 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     patternId?: SortOrder
+    runId?: SortOrder
     domain?: SortOrder
     presentedLevel?: SortOrder
     seed?: SortOrder
-    solved?: SortOrder
-    timeToFirstCorrectMs?: SortOrder
-    presentedAt?: SortOrder
-    answeredAt?: SortOrder
-    responseMs?: SortOrder
+    outcome?: SortOrder
+    firstSubmittedAnswer?: SortOrder
+    firstResponseMs?: SortOrder
+    leftOperand?: SortOrder
+    rightOperand?: SortOrder
+    expectedAnswer?: SortOrder
     createdAt?: SortOrder
   }
 
   export type AttemptAvgOrderByAggregateInput = {
     presentedLevel?: SortOrder
     seed?: SortOrder
-    timeToFirstCorrectMs?: SortOrder
-    responseMs?: SortOrder
+    firstSubmittedAnswer?: SortOrder
+    firstResponseMs?: SortOrder
+    leftOperand?: SortOrder
+    rightOperand?: SortOrder
+    expectedAnswer?: SortOrder
   }
 
   export type AttemptMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     patternId?: SortOrder
+    runId?: SortOrder
     domain?: SortOrder
     presentedLevel?: SortOrder
     seed?: SortOrder
-    solved?: SortOrder
-    timeToFirstCorrectMs?: SortOrder
-    presentedAt?: SortOrder
-    answeredAt?: SortOrder
-    responseMs?: SortOrder
+    outcome?: SortOrder
+    firstSubmittedAnswer?: SortOrder
+    firstResponseMs?: SortOrder
+    leftOperand?: SortOrder
+    rightOperand?: SortOrder
+    expectedAnswer?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -11290,52 +11410,69 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     patternId?: SortOrder
+    runId?: SortOrder
     domain?: SortOrder
     presentedLevel?: SortOrder
     seed?: SortOrder
-    solved?: SortOrder
-    timeToFirstCorrectMs?: SortOrder
-    presentedAt?: SortOrder
-    answeredAt?: SortOrder
-    responseMs?: SortOrder
+    outcome?: SortOrder
+    firstSubmittedAnswer?: SortOrder
+    firstResponseMs?: SortOrder
+    leftOperand?: SortOrder
+    rightOperand?: SortOrder
+    expectedAnswer?: SortOrder
     createdAt?: SortOrder
   }
 
   export type AttemptSumOrderByAggregateInput = {
     presentedLevel?: SortOrder
     seed?: SortOrder
-    timeToFirstCorrectMs?: SortOrder
-    responseMs?: SortOrder
+    firstSubmittedAnswer?: SortOrder
+    firstResponseMs?: SortOrder
+    leftOperand?: SortOrder
+    rightOperand?: SortOrder
+    expectedAnswer?: SortOrder
   }
 
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
+  export type EnumAttemptOutcomeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttemptOutcome | EnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    in?: $Enums.AttemptOutcome[] | ListEnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttemptOutcome[] | ListEnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttemptOutcomeWithAggregatesFilter<$PrismaModel> | $Enums.AttemptOutcome
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAttemptOutcomeFilter<$PrismaModel>
+    _max?: NestedEnumAttemptOutcomeFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+  export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type UserDomainProgressUserIdDomainCompoundUniqueInput = {
@@ -11416,6 +11553,17 @@ export namespace Prisma {
     userId?: SortOrder
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type AccountCountOrderByAggregateInput = {
     id?: SortOrder
     accountId?: SortOrder
@@ -11462,6 +11610,20 @@ export namespace Prisma {
     password?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type VerificationCountOrderByAggregateInput = {
@@ -11741,16 +11903,24 @@ export namespace Prisma {
     connect?: PatternWhereUniqueInput
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type EnumAttemptOutcomeFieldUpdateOperationsInput = {
+    set?: $Enums.AttemptOutcome
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
+  export type NullableDecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string | null
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type UserUpdateOneRequiredWithoutAttemptsNestedInput = {
@@ -11801,6 +11971,10 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
@@ -12000,6 +12174,77 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumAttemptOutcomeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttemptOutcome | EnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    in?: $Enums.AttemptOutcome[] | ListEnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttemptOutcome[] | ListEnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttemptOutcomeFilter<$PrismaModel> | $Enums.AttemptOutcome
+  }
+
+  export type NestedDecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type NestedEnumAttemptOutcomeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttemptOutcome | EnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    in?: $Enums.AttemptOutcome[] | ListEnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttemptOutcome[] | ListEnumAttemptOutcomeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttemptOutcomeWithAggregatesFilter<$PrismaModel> | $Enums.AttemptOutcome
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAttemptOutcomeFilter<$PrismaModel>
+    _max?: NestedEnumAttemptOutcomeFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -12009,33 +12254,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -12124,14 +12342,16 @@ export namespace Prisma {
 
   export type AttemptCreateWithoutUserInput = {
     id?: string
+    runId: string
     domain: $Enums.Domain
     presentedLevel: number
     seed: number
-    solved: boolean
-    timeToFirstCorrectMs?: number | null
-    presentedAt?: Date | string
-    answeredAt?: Date | string | null
-    responseMs?: number | null
+    outcome: $Enums.AttemptOutcome
+    firstSubmittedAnswer?: Decimal | DecimalJsLike | number | string | null
+    firstResponseMs: number
+    leftOperand: Decimal | DecimalJsLike | number | string
+    rightOperand?: Decimal | DecimalJsLike | number | string | null
+    expectedAnswer: Decimal | DecimalJsLike | number | string
     createdAt?: Date | string
     pattern: PatternCreateNestedOneWithoutAttemptsInput
   }
@@ -12139,14 +12359,16 @@ export namespace Prisma {
   export type AttemptUncheckedCreateWithoutUserInput = {
     id?: string
     patternId: string
+    runId: string
     domain: $Enums.Domain
     presentedLevel: number
     seed: number
-    solved: boolean
-    timeToFirstCorrectMs?: number | null
-    presentedAt?: Date | string
-    answeredAt?: Date | string | null
-    responseMs?: number | null
+    outcome: $Enums.AttemptOutcome
+    firstSubmittedAnswer?: Decimal | DecimalJsLike | number | string | null
+    firstResponseMs: number
+    leftOperand: Decimal | DecimalJsLike | number | string
+    rightOperand?: Decimal | DecimalJsLike | number | string | null
+    expectedAnswer: Decimal | DecimalJsLike | number | string
     createdAt?: Date | string
   }
 
@@ -12276,14 +12498,16 @@ export namespace Prisma {
     id?: StringFilter<"Attempt"> | string
     userId?: StringFilter<"Attempt"> | string
     patternId?: StringFilter<"Attempt"> | string
+    runId?: StringFilter<"Attempt"> | string
     domain?: EnumDomainFilter<"Attempt"> | $Enums.Domain
     presentedLevel?: IntFilter<"Attempt"> | number
     seed?: IntFilter<"Attempt"> | number
-    solved?: BoolFilter<"Attempt"> | boolean
-    timeToFirstCorrectMs?: IntNullableFilter<"Attempt"> | number | null
-    presentedAt?: DateTimeFilter<"Attempt"> | Date | string
-    answeredAt?: DateTimeNullableFilter<"Attempt"> | Date | string | null
-    responseMs?: IntNullableFilter<"Attempt"> | number | null
+    outcome?: EnumAttemptOutcomeFilter<"Attempt"> | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: DecimalNullableFilter<"Attempt"> | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFilter<"Attempt"> | number
+    leftOperand?: DecimalFilter<"Attempt"> | Decimal | DecimalJsLike | number | string
+    rightOperand?: DecimalNullableFilter<"Attempt"> | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFilter<"Attempt"> | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFilter<"Attempt"> | Date | string
   }
 
@@ -12318,14 +12542,16 @@ export namespace Prisma {
 
   export type AttemptCreateWithoutPatternInput = {
     id?: string
+    runId: string
     domain: $Enums.Domain
     presentedLevel: number
     seed: number
-    solved: boolean
-    timeToFirstCorrectMs?: number | null
-    presentedAt?: Date | string
-    answeredAt?: Date | string | null
-    responseMs?: number | null
+    outcome: $Enums.AttemptOutcome
+    firstSubmittedAnswer?: Decimal | DecimalJsLike | number | string | null
+    firstResponseMs: number
+    leftOperand: Decimal | DecimalJsLike | number | string
+    rightOperand?: Decimal | DecimalJsLike | number | string | null
+    expectedAnswer: Decimal | DecimalJsLike | number | string
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutAttemptsInput
   }
@@ -12333,14 +12559,16 @@ export namespace Prisma {
   export type AttemptUncheckedCreateWithoutPatternInput = {
     id?: string
     userId: string
+    runId: string
     domain: $Enums.Domain
     presentedLevel: number
     seed: number
-    solved: boolean
-    timeToFirstCorrectMs?: number | null
-    presentedAt?: Date | string
-    answeredAt?: Date | string | null
-    responseMs?: number | null
+    outcome: $Enums.AttemptOutcome
+    firstSubmittedAnswer?: Decimal | DecimalJsLike | number | string | null
+    firstResponseMs: number
+    leftOperand: Decimal | DecimalJsLike | number | string
+    rightOperand?: Decimal | DecimalJsLike | number | string | null
+    expectedAnswer: Decimal | DecimalJsLike | number | string
     createdAt?: Date | string
   }
 
@@ -12766,14 +12994,16 @@ export namespace Prisma {
   export type AttemptCreateManyUserInput = {
     id?: string
     patternId: string
+    runId: string
     domain: $Enums.Domain
     presentedLevel: number
     seed: number
-    solved: boolean
-    timeToFirstCorrectMs?: number | null
-    presentedAt?: Date | string
-    answeredAt?: Date | string | null
-    responseMs?: number | null
+    outcome: $Enums.AttemptOutcome
+    firstSubmittedAnswer?: Decimal | DecimalJsLike | number | string | null
+    firstResponseMs: number
+    leftOperand: Decimal | DecimalJsLike | number | string
+    rightOperand?: Decimal | DecimalJsLike | number | string | null
+    expectedAnswer: Decimal | DecimalJsLike | number | string
     createdAt?: Date | string
   }
 
@@ -12863,14 +13093,16 @@ export namespace Prisma {
 
   export type AttemptUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
     domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
     presentedLevel?: IntFieldUpdateOperationsInput | number
     seed?: IntFieldUpdateOperationsInput | number
-    solved?: BoolFieldUpdateOperationsInput | boolean
-    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
-    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    outcome?: EnumAttemptOutcomeFieldUpdateOperationsInput | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFieldUpdateOperationsInput | number
+    leftOperand?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rightOperand?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pattern?: PatternUpdateOneRequiredWithoutAttemptsNestedInput
   }
@@ -12878,28 +13110,32 @@ export namespace Prisma {
   export type AttemptUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     patternId?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
     domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
     presentedLevel?: IntFieldUpdateOperationsInput | number
     seed?: IntFieldUpdateOperationsInput | number
-    solved?: BoolFieldUpdateOperationsInput | boolean
-    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
-    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    outcome?: EnumAttemptOutcomeFieldUpdateOperationsInput | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFieldUpdateOperationsInput | number
+    leftOperand?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rightOperand?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AttemptUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     patternId?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
     domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
     presentedLevel?: IntFieldUpdateOperationsInput | number
     seed?: IntFieldUpdateOperationsInput | number
-    solved?: BoolFieldUpdateOperationsInput | boolean
-    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
-    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    outcome?: EnumAttemptOutcomeFieldUpdateOperationsInput | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFieldUpdateOperationsInput | number
+    leftOperand?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rightOperand?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -12933,27 +13169,31 @@ export namespace Prisma {
   export type AttemptCreateManyPatternInput = {
     id?: string
     userId: string
+    runId: string
     domain: $Enums.Domain
     presentedLevel: number
     seed: number
-    solved: boolean
-    timeToFirstCorrectMs?: number | null
-    presentedAt?: Date | string
-    answeredAt?: Date | string | null
-    responseMs?: number | null
+    outcome: $Enums.AttemptOutcome
+    firstSubmittedAnswer?: Decimal | DecimalJsLike | number | string | null
+    firstResponseMs: number
+    leftOperand: Decimal | DecimalJsLike | number | string
+    rightOperand?: Decimal | DecimalJsLike | number | string | null
+    expectedAnswer: Decimal | DecimalJsLike | number | string
     createdAt?: Date | string
   }
 
   export type AttemptUpdateWithoutPatternInput = {
     id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
     domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
     presentedLevel?: IntFieldUpdateOperationsInput | number
     seed?: IntFieldUpdateOperationsInput | number
-    solved?: BoolFieldUpdateOperationsInput | boolean
-    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
-    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    outcome?: EnumAttemptOutcomeFieldUpdateOperationsInput | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFieldUpdateOperationsInput | number
+    leftOperand?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rightOperand?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutAttemptsNestedInput
   }
@@ -12961,28 +13201,32 @@ export namespace Prisma {
   export type AttemptUncheckedUpdateWithoutPatternInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
     domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
     presentedLevel?: IntFieldUpdateOperationsInput | number
     seed?: IntFieldUpdateOperationsInput | number
-    solved?: BoolFieldUpdateOperationsInput | boolean
-    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
-    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    outcome?: EnumAttemptOutcomeFieldUpdateOperationsInput | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFieldUpdateOperationsInput | number
+    leftOperand?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rightOperand?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AttemptUncheckedUpdateManyWithoutPatternInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
     domain?: EnumDomainFieldUpdateOperationsInput | $Enums.Domain
     presentedLevel?: IntFieldUpdateOperationsInput | number
     seed?: IntFieldUpdateOperationsInput | number
-    solved?: BoolFieldUpdateOperationsInput | boolean
-    timeToFirstCorrectMs?: NullableIntFieldUpdateOperationsInput | number | null
-    presentedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    answeredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    responseMs?: NullableIntFieldUpdateOperationsInput | number | null
+    outcome?: EnumAttemptOutcomeFieldUpdateOperationsInput | $Enums.AttemptOutcome
+    firstSubmittedAnswer?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    firstResponseMs?: IntFieldUpdateOperationsInput | number
+    leftOperand?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rightOperand?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    expectedAnswer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

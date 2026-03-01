@@ -148,14 +148,16 @@ exports.Prisma.AttemptScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   patternId: 'patternId',
+  runId: 'runId',
   domain: 'domain',
   presentedLevel: 'presentedLevel',
   seed: 'seed',
-  solved: 'solved',
-  timeToFirstCorrectMs: 'timeToFirstCorrectMs',
-  presentedAt: 'presentedAt',
-  answeredAt: 'answeredAt',
-  responseMs: 'responseMs',
+  outcome: 'outcome',
+  firstSubmittedAnswer: 'firstSubmittedAnswer',
+  firstResponseMs: 'firstResponseMs',
+  leftOperand: 'leftOperand',
+  rightOperand: 'rightOperand',
+  expectedAnswer: 'expectedAnswer',
   createdAt: 'createdAt'
 };
 
@@ -234,6 +236,13 @@ exports.Domain = exports.$Enums.Domain = {
   MUL: 'MUL',
   SUB: 'SUB',
   DIV: 'DIV'
+};
+
+exports.AttemptOutcome = exports.$Enums.AttemptOutcome = {
+  CORRECT: 'CORRECT',
+  WRONG: 'WRONG',
+  TIMEOUT: 'TIMEOUT',
+  SKIPPED: 'SKIPPED'
 };
 
 exports.Prisma.ModelName = {
