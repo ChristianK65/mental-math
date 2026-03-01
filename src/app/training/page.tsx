@@ -55,7 +55,7 @@ export default function TrainingPage() {
   const advanceOrFinish = (form: HTMLFormElement) => {
     if (currentIndex >= totalQuestions - 1) {
       stop();
-      router.push("/training/overview");
+      router.push(`/training/overview?runId=${encodeURIComponent(runId)}`);
       return;
     }
 
