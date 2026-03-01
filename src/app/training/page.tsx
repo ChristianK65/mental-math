@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { formatPrompt } from "@/features/training/format-prompt";
-import { persistTrainingAttempt } from "@/features/training/attempt-client";
 import { useTrainingQuestions } from "@/features/training/use-training-questions";
-import { useTrainingTimer } from "@/features/training/use-training-timer";
+import { useTrainingRun } from "@/features/training/use-training-run";
 
 export default function TrainingPage() {
   const router = useRouter();
@@ -16,147 +15,40 @@ export default function TrainingPage() {
   const selectedOperations = searchParams.getAll("operations");
   const selectedCount = searchParams.get("count") ?? "10";
   const { questions, isLoadingQuestions, questionsError } = useTrainingQuestions(selectedOperations, selectedCount);
-  const { elapsedMs, restart, stop, formatElapsed } = useTrainingTimer();
+  const handleRunComplete = useCallback((completedRunId: string) => {
+    router.push(`/training/overview?runId=${encodeURIComponent(completedRunId)}`);
+  }, [router]);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answerInput, setAnswerInput] = useState("");
-  const [showAnswer, setShowAnswer] = useState(false);
-  const [errorFlash, setErrorFlash] = useState(false);
-  const [isSubmittingAttempt, setIsSubmittingAttempt] = useState(false);
-  const answerInputRef = useRef<HTMLInputElement | null>(null);
-  const [firstSubmission, setFirstSubmission] = useState<{
-    submittedAnswer: string;
-    responseMs: number;
-  } | null>(null);
-  const [skipResponseMs, setSkipResponseMs] = useState<number | null>(null);
+  const {
+    answerInput,
+    answerInputRef,
+    currentQuestion,
+    currentQuestionNumber,
+    elapsedMs,
+    errorFlash,
+    formatElapsed,
+    isInteractionDisabled,
+    markDontKnow,
+    progressOffset,
+    setAnswerInput,
+    showAnswer,
+    submitAnswer,
+    totalQuestions,
+  } = useTrainingRun({
+    questions,
+    isLoadingQuestions,
+    questionsError,
+    runId,
+    onComplete: handleRunComplete,
+  });
 
-  const totalQuestions = questions.length;
-  const hasLoadedQuestions = !isLoadingQuestions && !questionsError && totalQuestions > 0;
-  const currentQuestion = questions.length > 0
-    ? questions[Math.min(currentIndex, questions.length - 1)]
-    : undefined;
-  const isInteractionDisabled = !hasLoadedQuestions || isSubmittingAttempt;
-  const currentQuestionNumber = currentIndex + 1;
-  const progressPercent = totalQuestions > 0 ? (currentQuestionNumber / totalQuestions) * 100 : 0;
-  const progressOffset = 100 - progressPercent;
-
-  useEffect(() => {
-    if (!hasLoadedQuestions) {
-      stop();
-      return;
-    }
-
-    restart();
-    window.requestAnimationFrame(() => {
-      answerInputRef.current?.focus();
-    });
-  }, [hasLoadedQuestions, restart, stop]);
-
-  const advanceOrFinish = (form: HTMLFormElement) => {
-    if (currentIndex >= totalQuestions - 1) {
-      stop();
-      router.push(`/training/overview?runId=${encodeURIComponent(runId)}`);
-      return;
-    }
-
-    setCurrentIndex((prev) => Math.min(prev + 1, totalQuestions - 1));
-    restart();
-    setAnswerInput("");
-    setShowAnswer(false);
-    setFirstSubmission(null);
-    setSkipResponseMs(null);
-    form.reset();
-    window.requestAnimationFrame(() => {
-      answerInputRef.current?.focus();
-    });
-  };
-
-  const handleSubmit = async (form: HTMLFormElement) => {
-    if (!currentQuestion || isSubmittingAttempt) {
-      return;
-    }
-
-    const expectedAnswer = currentQuestion.answer;
-    const trimmedAnswer = answerInput.trim();
-    const normalized = Number(trimmedAnswer);
-
-    if (showAnswer) {
-      const lockedSubmission = firstSubmission;
-
-      try {
-        setIsSubmittingAttempt(true);
-        await persistTrainingAttempt({
-          runId,
-          patternId: currentQuestion.patternId,
-          seed: currentQuestion.seed,
-          firstSubmittedAnswer: lockedSubmission ? lockedSubmission.submittedAnswer : null,
-          firstResponseMs: lockedSubmission ? lockedSubmission.responseMs : (skipResponseMs ?? elapsedMs),
-          skipped: lockedSubmission ? false : true,
-        });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsSubmittingAttempt(false);
-      }
-      advanceOrFinish(form);
-      return;
-    }
-
-    if (trimmedAnswer === "" || Number.isNaN(normalized)) {
-      return;
-    }
-
-    if (!firstSubmission) {
-      setFirstSubmission({
-        submittedAnswer: trimmedAnswer,
-        responseMs: elapsedMs,
-      });
-    }
-
-    if (normalized === expectedAnswer) {
-      const lockedSubmission = firstSubmission ?? {
-        submittedAnswer: trimmedAnswer,
-        responseMs: elapsedMs,
-      };
-
-      try {
-        setIsSubmittingAttempt(true);
-        await persistTrainingAttempt({
-          runId,
-          patternId: currentQuestion.patternId,
-          seed: currentQuestion.seed,
-          firstSubmittedAnswer: lockedSubmission.submittedAnswer,
-          firstResponseMs: lockedSubmission.responseMs,
-          skipped: false,
-        });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsSubmittingAttempt(false);
-      }
-
-      advanceOrFinish(form);
-      return;
-    }
-
-    setErrorFlash(false);
-    window.requestAnimationFrame(() => {
-      setErrorFlash(true);
-    });
-    window.setTimeout(() => {
-      setErrorFlash(false);
-    }, 500);
-  };
-
-  const handleDontKnow = () => {
-    if (!currentQuestion || isSubmittingAttempt) {
-      return;
-    }
-
-    setShowAnswer(true);
-    setSkipResponseMs(elapsedMs);
-    stop();
-  };
+  const answerInputClassName = [
+    "w-full rounded-2xl border border-[#1b1b1b]/15 bg-white px-4 py-3 text-lg outline-none transition focus:border-[#1b1b1b]/40",
+    showAnswer ? "cursor-not-allowed bg-[#f3f0eb] text-[#1b1b1b]/50" : "",
+    errorFlash ? "border-red-400 bg-red-50 ring-4 ring-red-200" : "",
+  ]
+    .filter((token) => token.length > 0)
+    .join(" ");
 
   return (
     <div className="min-h-screen bg-[#f8f6f2] text-[#1b1b1b]">
@@ -243,12 +135,12 @@ export default function TrainingPage() {
                 className="mt-6 flex flex-col gap-4 sm:flex-row"
                 onSubmit={(event) => {
                   event.preventDefault();
-                  void handleSubmit(event.currentTarget);
+                  void submitAnswer(event.currentTarget);
                 }}
               >
                 <input
                   ref={answerInputRef}
-                  className={`w-full rounded-2xl border border-[#1b1b1b]/15 bg-white px-4 py-3 text-lg outline-none transition focus:border-[#1b1b1b]/40 ${showAnswer ? "cursor-not-allowed bg-[#f3f0eb] text-[#1b1b1b]/50" : ""} ${errorFlash ? "border-red-400 bg-red-50 ring-4 ring-red-200" : ""}`}
+                  className={answerInputClassName}
                   name="answer"
                   type="text"
                   inputMode="numeric"
@@ -264,14 +156,14 @@ export default function TrainingPage() {
                     <button
                       className="rounded-full border border-[#1b1b1b]/20 px-5 py-3 text-sm font-semibold transition hover:border-[#1b1b1b]/40"
                       type="button"
-                      onClick={handleDontKnow}
+                      onClick={markDontKnow}
                       disabled={isInteractionDisabled}
                     >
                       Don&apos;t know
                     </button>
                   ) : null}
                   <button
-                    className={`rounded-full px-6 py-3 text-sm font-semibold transition ${showAnswer ? "w-full bg-[#1b1b1b] text-white hover:bg-black" : "bg-[#1b1b1b] text-white hover:bg-black"}`}
+                    className={`rounded-full bg-[#1b1b1b] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black ${showAnswer ? "w-full" : ""}`}
                     type="submit"
                     disabled={isInteractionDisabled}
                   >
