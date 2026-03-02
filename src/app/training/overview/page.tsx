@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { Domain } from "@/generated/prisma";
 import { getServerSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 
@@ -12,6 +13,15 @@ const operatorByDomain = {
   MUL: "×",
   DIV: "÷",
 } as const;
+
+const orderedDomains: Domain[] = [Domain.ADD, Domain.SUB, Domain.MUL, Domain.DIV];
+
+const domainLabel: Record<Domain, string> = {
+  ADD: "Addition",
+  SUB: "Subtraction",
+  MUL: "Multiplication",
+  DIV: "Division",
+};
 
 function readSingleParam(value: string | string[] | undefined) {
   if (typeof value === "string") {
@@ -116,6 +126,30 @@ export default async function TrainingOverviewPage({
     skipped: attempts.filter((attempt) => attempt.outcome === "SKIPPED").length,
   };
 
+  const progressRows = await prisma.userDomainProgress.findMany({
+    where: {
+      userId: session.user.id,
+      domain: {
+        in: orderedDomains,
+      },
+    },
+    select: {
+      domain: true,
+      currentLevel: true,
+      highestUnlockedLevel: true,
+    },
+  });
+
+  const progressByDomain = new Map(progressRows.map((row) => [row.domain, row]));
+  const levels = orderedDomains.map((domain) => {
+    const row = progressByDomain.get(domain);
+    return {
+      domain,
+      currentLevel: row?.currentLevel ?? 1,
+      highestUnlockedLevel: row?.highestUnlockedLevel ?? 1,
+    };
+  });
+
   return (
     <div className="min-h-screen bg-[#f8f6f2] text-[#1b1b1b]">
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 sm:px-10">
@@ -149,6 +183,22 @@ export default async function TrainingOverviewPage({
           </div>
 
           <div className="mt-6 overflow-x-auto">
+            <div className="mb-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {levels.map((entry) => (
+                <div key={entry.domain} className="rounded-2xl border border-[#1b1b1b]/10 bg-[#f8f6f2] px-3 py-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1b1b1b]/55">
+                    {operatorByDomain[entry.domain]} {domainLabel[entry.domain]}
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-[#1b1b1b]/85">
+                    Current Lv {entry.currentLevel}
+                  </p>
+                  <p className="text-[11px] text-[#1b1b1b]/55">
+                    Highest {entry.highestUnlockedLevel}
+                  </p>
+                </div>
+              ))}
+            </div>
+
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="border-b border-[#1b1b1b]/10 text-left text-xs uppercase tracking-[0.18em] text-[#1b1b1b]/55">

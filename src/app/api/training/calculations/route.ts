@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import type { CalculationQuestion } from "@/features/training/types";
 import { generateQuestionFromPattern } from "@/features/training/question-generator";
+import { selectPlayableLevel } from "@/features/training/level-selection";
 import { Domain } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "@/lib/session";
@@ -57,20 +58,52 @@ export async function GET(request: Request) {
 
     const activeDomains = selectedDomains.length > 0 ? selectedDomains : defaultDomains;
 
-    const levelOnePatterns = await prisma.pattern.findMany({
+    const activePatterns = await prisma.pattern.findMany({
       where: {
         active: true,
         domain: {
           in: activeDomains,
         },
-        level: 1,
       },
       orderBy: {
         description: "asc",
       },
     });
 
-    if (levelOnePatterns.length === 0) {
+    if (activePatterns.length === 0) {
+      return NextResponse.json({ calculations: [] as CalculationQuestion[] });
+    }
+
+    const domainProgressRows = await prisma.userDomainProgress.findMany({
+      where: {
+        userId: session.user.id,
+        domain: {
+          in: activeDomains,
+        },
+      },
+      select: {
+        domain: true,
+        currentLevel: true,
+      },
+    });
+
+    const currentLevelByDomain = new Map<Domain, number>();
+    for (const row of domainProgressRows) {
+      currentLevelByDomain.set(row.domain, row.currentLevel);
+    }
+
+    const patternsByDomain = new Map<Domain, typeof activePatterns>();
+    for (const pattern of activePatterns) {
+      const existing = patternsByDomain.get(pattern.domain);
+      if (existing) {
+        existing.push(pattern);
+      } else {
+        patternsByDomain.set(pattern.domain, [pattern]);
+      }
+    }
+
+    const domainQueue = Array.from(patternsByDomain.keys());
+    if (domainQueue.length === 0) {
       return NextResponse.json({ calculations: [] as CalculationQuestion[] });
     }
 
@@ -80,7 +113,25 @@ export async function GET(request: Request) {
     const maxAttempts = targetCount * 8;
 
     while (calculations.length < targetCount && attempts < maxAttempts) {
-      const pattern = levelOnePatterns[cursor % levelOnePatterns.length];
+      const domain = domainQueue[cursor % domainQueue.length];
+      const domainPatterns = patternsByDomain.get(domain) ?? [];
+
+      if (domainPatterns.length === 0) {
+        cursor += 1;
+        attempts += 1;
+        continue;
+      }
+
+      const levels = domainPatterns.map((pattern) => pattern.level);
+      const currentLevel = currentLevelByDomain.get(domain) ?? 1;
+      const selectedLevel = selectPlayableLevel({
+        currentLevel,
+        availableLevels: levels,
+      });
+      const levelPatterns = domainPatterns.filter((pattern) => pattern.level === selectedLevel);
+      const patternPool = levelPatterns.length > 0 ? levelPatterns : domainPatterns;
+      const pattern = patternPool[Math.floor(Math.random() * patternPool.length)];
+
       cursor += 1;
       attempts += 1;
 

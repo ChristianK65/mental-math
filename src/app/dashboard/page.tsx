@@ -1,17 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { Domain } from "@/generated/prisma";
+import { prisma } from "@/lib/prisma";
 import { getServerSession } from "@/lib/session";
-
-type TrendPoint = {
-  day: string;
-  sessions: number;
-};
-
-type HeatmapCell = {
-  dateKey: string;
-  intensity: 0 | 1 | 2 | 3 | 4;
-};
 
 type OperationOption = {
   id: string;
@@ -20,32 +12,6 @@ type OperationOption = {
   defaultChecked?: boolean;
 };
 
-const mockStreak = {
-  current: 12,
-  longest: 21,
-  trainedThisWeek: 5,
-};
-
-const mockTrend: TrendPoint[] = [
-  { day: "Mon", sessions: 2 },
-  { day: "Tue", sessions: 3 },
-  { day: "Wed", sessions: 1 },
-  { day: "Thu", sessions: 4 },
-  { day: "Fri", sessions: 3 },
-  { day: "Sat", sessions: 5 },
-  { day: "Sun", sessions: 2 },
-];
-
-const weekdayLabels = ["Mon", "Wed", "Fri", "Sun"];
-
-const intensityClasses = [
-  "bg-[#151515]/5",
-  "bg-[#151515]/15",
-  "bg-[#151515]/30",
-  "bg-[#151515]/50",
-  "bg-[#151515]/75",
-];
-
 const operationOptions: OperationOption[] = [
   { id: "addition", label: "Addition", symbol: "+", defaultChecked: true },
   { id: "subtraction", label: "Subtraction", symbol: "−", defaultChecked: true },
@@ -53,21 +19,20 @@ const operationOptions: OperationOption[] = [
   { id: "division", label: "Division", symbol: "÷", defaultChecked: true },
 ];
 
-const generateHeatmap = (): HeatmapCell[][] => {
-  const totalDays = 84;
-  const cells = Array.from({ length: totalDays }, (_, index) => {
-    const cycle = (index * 7 + 3) % 10;
-    const intensity = (cycle > 7 ? 0 : ((cycle % 5) as 0 | 1 | 2 | 3 | 4));
+const orderedDomains: Domain[] = [Domain.ADD, Domain.SUB, Domain.MUL, Domain.DIV];
 
-    return {
-      dateKey: `mock-day-${index + 1}`,
-      intensity,
-    };
-  });
+const domainLabel: Record<Domain, string> = {
+  ADD: "Addition",
+  SUB: "Subtraction",
+  MUL: "Multiplication",
+  DIV: "Division",
+};
 
-  return Array.from({ length: 12 }, (_, weekIndex) =>
-    cells.slice(weekIndex * 7, weekIndex * 7 + 7)
-  );
+const domainSymbol: Record<Domain, string> = {
+  ADD: "+",
+  SUB: "−",
+  MUL: "×",
+  DIV: "÷",
 };
 
 export default async function DashboardPage() {
@@ -77,8 +42,29 @@ export default async function DashboardPage() {
     redirect("/");
   }
 
-  const peakSessions = Math.max(...mockTrend.map((item) => item.sessions));
-  const heatmapWeeks = generateHeatmap();
+  const progressRows = await prisma.userDomainProgress.findMany({
+    where: {
+      userId: session.user.id,
+      domain: {
+        in: orderedDomains,
+      },
+    },
+    select: {
+      domain: true,
+      currentLevel: true,
+      highestUnlockedLevel: true,
+    },
+  });
+  const progressByDomain = new Map(progressRows.map((row) => [row.domain, row]));
+  const levels = orderedDomains.map((domain) => {
+    const row = progressByDomain.get(domain);
+
+    return {
+      domain,
+      currentLevel: row?.currentLevel ?? 1,
+      highestUnlockedLevel: row?.highestUnlockedLevel ?? 1,
+    };
+  });
 
   return (
     <div className="min-h-screen bg-[#f8f3ea] text-[#151515]">
@@ -165,108 +151,31 @@ export default async function DashboardPage() {
             </form>
           </section>
 
-          <div className="grid gap-6 lg:grid-cols-[1.05fr_1fr]">
-            <section className="rounded-3xl border border-[#151515]/10 bg-white p-7 sm:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#151515]/55">
-                Progress snapshot
+          <section className="rounded-3xl border border-[#151515]/10 bg-white p-7 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#151515]/55">
+              Progress snapshot
+            </p>
+            <div className="mt-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#151515]/55">
+                Domain levels
               </p>
-              <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
-                <div className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-3">
-                  <p className="uppercase tracking-[0.16em] text-[#151515]/55">Streak</p>
-                  <p className="mt-1 text-xl font-semibold">{mockStreak.current}d</p>
-                </div>
-                <div className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-3">
-                  <p className="uppercase tracking-[0.16em] text-[#151515]/55">Longest</p>
-                  <p className="mt-1 text-xl font-semibold">{mockStreak.longest}d</p>
-                </div>
-                <div className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-3">
-                  <p className="uppercase tracking-[0.16em] text-[#151515]/55">Week</p>
-                  <p className="mt-1 text-xl font-semibold">{mockStreak.trainedThisWeek}</p>
-                </div>
-              </div>
-            </section>
-
-            <section className="rounded-3xl border border-[#151515]/10 bg-white p-7 sm:p-8">
-              <div className="flex items-end justify-between gap-3">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#151515]/55">
-                    Session trend
-                  </p>
-                  <h2 className="mt-3 text-2xl font-semibold font-[var(--font-display)]">
-                    Last 7 days
-                  </h2>
-                </div>
-                <p className="text-sm text-[#151515]/60">Sessions / day</p>
-              </div>
-
-              <div className="mt-8 flex h-52 items-end gap-3">
-                {mockTrend.map((point) => {
-                  const heightPercent = Math.max(
-                    16,
-                    Math.round((point.sessions / peakSessions) * 100)
-                  );
-
-                  return (
-                    <div key={point.day} className="flex flex-1 flex-col items-center gap-2">
-                      <div className="w-full rounded-t-2xl border border-[#151515]/10 bg-[#151515]/85" style={{ height: `${heightPercent}%` }} />
-                      <span className="text-xs font-semibold text-[#151515]/60">{point.day}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          </div>
-
-          <section className="rounded-3xl border border-[#151515]/10 bg-white p-7 sm:p-8 lg:col-span-2">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#151515]/55">
-                  Training heatmap
-                </p>
-                <h3 className="mt-3 text-2xl font-semibold font-[var(--font-display)]">
-                  Last 12 weeks
-                </h3>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-[#151515]/55">
-                <span>Less</span>
-                {intensityClasses.map((shade) => (
-                  <span
-                    key={shade}
-                    className={`h-3 w-3 rounded-sm border border-[#151515]/10 ${shade}`}
-                  />
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {levels.map((entry) => (
+                  <div
+                    key={entry.domain}
+                    className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-3"
+                  >
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#151515]/55">
+                      {domainSymbol[entry.domain]} {domainLabel[entry.domain]}
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-[#151515]/85">
+                      Lv {entry.currentLevel}
+                    </p>
+                    <p className="text-[11px] text-[#151515]/55">
+                      Highest {entry.highestUnlockedLevel}
+                    </p>
+                  </div>
                 ))}
-                <span>More</span>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-[auto_1fr] gap-3">
-              <div className="grid grid-rows-7 gap-1.5 pt-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#151515]/45">
-                {["Mon", "", "Wed", "", "Fri", "", "Sun"].map((label, index) => (
-                  <span key={`label-${index}`} className="h-4 leading-4">
-                    {label}
-                  </span>
-                ))}
-              </div>
-
-              <div className="overflow-x-auto pb-1">
-                <div className="inline-grid grid-flow-col gap-1.5">
-                  {heatmapWeeks.map((week, weekIndex) => (
-                    <div key={`week-${weekIndex}`} className="grid grid-rows-7 gap-1.5">
-                      {week.map((cell) => (
-                        <span
-                          key={cell.dateKey}
-                          className={`h-4 w-4 rounded-[4px] border border-[#151515]/10 ${intensityClasses[cell.intensity]}`}
-                          title={cell.intensity === 0 ? "No session" : `${cell.intensity} session${cell.intensity > 1 ? "s" : ""}`}
-                        />
-                      ))}
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-3 grid grid-cols-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#151515]/45">
-                  {weekdayLabels.map((label) => (
-                    <span key={label}>{label}</span>
-                  ))}
-                </div>
               </div>
             </div>
           </section>

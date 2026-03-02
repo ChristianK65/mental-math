@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { Prisma } from "@/generated/prisma";
 import { generateQuestionFromPattern } from "@/features/training/question-generator";
+import { evaluateLevelProgression } from "@/features/training/progression-rules";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "@/lib/session";
 
@@ -143,8 +144,69 @@ export async function POST(request: Request) {
       expectedAnswer,
     };
 
-    await prisma.attempt.create({
-      data: attemptData,
+    await prisma.$transaction(async (tx) => {
+      const progress = await tx.userDomainProgress.upsert({
+        where: {
+          userId_domain: {
+            userId: session.user.id,
+            domain: pattern.domain,
+          },
+        },
+        update: {},
+        create: {
+          userId: session.user.id,
+          domain: pattern.domain,
+          currentLevel: 1,
+          highestUnlockedLevel: 1,
+        },
+        select: {
+          id: true,
+          currentLevel: true,
+          highestUnlockedLevel: true,
+        },
+      });
+
+      await tx.attempt.create({
+        data: attemptData,
+      });
+
+      if (pattern.level !== progress.currentLevel) {
+        return;
+      }
+
+      const recentLevelAttempts = await tx.attempt.findMany({
+        where: {
+          userId: session.user.id,
+          domain: pattern.domain,
+          presentedLevel: progress.currentLevel,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 20,
+        select: {
+          outcome: true,
+        },
+      });
+
+      const progression = evaluateLevelProgression({
+        currentLevel: progress.currentLevel,
+        recentOutcomesDesc: recentLevelAttempts.map((attempt) => attempt.outcome),
+      });
+
+      if (progression.nextLevel === progress.currentLevel) {
+        return;
+      }
+
+      await tx.userDomainProgress.update({
+        where: {
+          id: progress.id,
+        },
+        data: {
+          currentLevel: progression.nextLevel,
+          highestUnlockedLevel: Math.max(progress.highestUnlockedLevel, progression.nextLevel),
+        },
+      });
     });
 
     return NextResponse.json({ success: true });
