@@ -3,6 +3,9 @@
 \usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{amsmath}
+\usepackage{pgfplots}
+
+\pgfplotsset{compat=1.18}
 
 \title{Mental Math Progression \& Level System (v1)}
 \date{}
@@ -22,10 +25,10 @@
         \item Relative speed (time-to-first-correct; median vs population)
         \item Skip behavior
     \end{itemize}
-    \item No hard-coded time thresholds.
+    \item Long-term target: remove hard-coded thresholds and use population-adaptive percentiles.
 \end{itemize}
 
-The system adapts automatically using population response-time percentiles.
+In v1, cutoffs are hard-coded for simplicity; later versions can fully adapt automatically using population response-time percentiles.
 
 \section{High-Level Structure}
 
@@ -157,15 +160,112 @@ Demote if any of the following holds:
 
 Only allow demotion after a minimum exposure at that level (20 attempts).
 
-\section{Level Selection During Play}
+\subsection*{Soft Demotion Target}
 
-When user is at Level $L$:
+Demotion is intentionally soft:
 
 \begin{itemize}[leftmargin=*]
-    \item 70\% questions from Level $L$
-    \item 10\% from Level $L + 1$ (challenge)
-    \item 20\% from Level $L - 1$ (confidence)
+    \item If the user is at level $L$, a demotion moves to $L-1$ (minimum level is $1$).
+    \item This is true even if the triggering failures happened on a sampled lower level $k < L$.
+    \item Example: if user is at level $10$ and repeated failures are observed on level $8$ questions, demotion target is level $9$ (not level $7$).
 \end{itemize}
+
+Formally:
+
+\[
+L_{new} = \max(1, L - 1)
+\]
+
+\section{Level Selection During Play}
+
+Let the user's current level in a domain be $L$. During play, sample question level $k$ from the set:
+
+\[
+k \in \{1,2,\dots,L,L+1\}
+\]
+
+Use fixed top-level buckets:
+
+\[
+p(L)=0.50, \qquad p(L+1)=0.10
+\]
+
+The remaining mass is assigned to all lower levels:
+
+\[
+\sum_{k=1}^{L-1} p(k)=0.40
+\]
+
+Distribute this $0.40$ over levels $1..L-1$ with geometric taper:
+
+\[
+u(k)=r^{(L-1)-k}, \qquad 1 \le k \le L-1, \quad 0<r<1
+\]
+
+\[
+p(k)=0.40\cdot\frac{u(k)}{\sum_{j=1}^{L-1} u(j)}, \qquad 1 \le k \le L-1
+\]
+
+\[
+\text{If } L=1:\quad p(1)=0.90,\; p(2)=0.10
+\]
+
+So the current level is always most likely, the next level is fixed at $10\%$, and all lower levels remain possible with decreasing probability.
+
+\subsection*{Symbol definitions}
+
+\begin{itemize}[leftmargin=*]
+    \item $L$: current user level in the domain
+    \item $k$: sampled question level
+    \item $r \in (0,1)$: geometric decay factor for lower levels (smaller $r$ means faster taper)
+    \item $u(k)$: unnormalized geometric weight for lower levels
+\end{itemize}
+
+\subsection*{Stability after demotion}
+
+The level sampling rule above is always the same, regardless of why a demotion happened.
+After demotion, only $L$ changes; the same weighting formula and hyperparameters are reused.
+
+\subsection*{Example distribution (bar chart)}
+
+Example with $L=10$ and $r=0.6$ (final $p(k)$):
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.95\linewidth,
+    height=6.0cm,
+    ymin=0,
+    ymax=0.5,
+    ylabel={Probability},
+    xlabel={Question level $k$},
+    xtick={1,2,3,4,5,6,7,8,9,10,11},
+    xticklabels={1,2,3,4,5,6,7,8,9,10,$L{+}1$},
+    bar width=7pt,
+    enlarge x limits=0.02,
+    nodes near coords,
+    nodes near coords align={vertical},
+    every node near coord/.append style={font=\scriptsize},
+    tick label style={font=\small},
+    label style={font=\small}
+]
+\addplot coordinates {
+    (1,0.0027)
+    (2,0.0045)
+    (3,0.0075)
+    (4,0.0126)
+    (5,0.0209)
+    (6,0.0349)
+    (7,0.0582)
+    (8,0.0969)
+    (9,0.1616)
+    (10,0.5000)
+    (11,0.1000)
+};
+\end{axis}
+\end{tikzpicture}
+\end{center}
 
 Within a level:
 

@@ -3,162 +3,325 @@
 \usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{longtable}
 
-\title{Mental Math Trainer --- Architecture}
-\date{1 March 2026}
+\title{Mental Math --- System Architecture (v1)}
+\date{}
 
 \begin{document}
 
 \maketitle
 
-\section{Purpose}
+\section{Purpose \& Scope}
 
-This document defines the architecture for a mental math trainer built with:
-
-\begin{itemize}[leftmargin=*]
-	\item Next.js App Router + TypeScript
-	\item PostgreSQL + Prisma
-	\item better-auth
-	\item Tailwind CSS
-\end{itemize}
-
-Primary objective: support a domain-based difficulty system (ADD, SUB, MUL, DIV) with deterministic question generation and user progression.
-
-\section{Current State (as implemented)}
-
-\subsection*{App Layers}
+This document defines the current architecture of the Mental Math application as implemented in the repository.
+The stack is intentionally fixed for v1 and optimized for:
 
 \begin{itemize}[leftmargin=*]
-	\item \textbf{UI layer} (App Router pages):
-	\begin{itemize}
-		\item Dashboard setup: choose operations and question count.
-		\item Training screen: render questions, timer, answer input, skip flow.
-		\item Overview page exists but is currently empty.
-	\end{itemize}
-	\item \textbf{API layer}:
-	\begin{itemize}
-		\item \texttt{GET /api/training/calculations} returns generated questions.
-		\item Endpoint requires an authenticated session.
-	\end{itemize}
-	\item \textbf{Domain layer}:
-	\begin{itemize}
-		\item \texttt{question-generator.ts} parses pattern params and generates deterministic questions from \texttt{(domain, params, seed)}.
-	\end{itemize}
-	\item \textbf{Persistence layer} (Prisma):
-	\begin{itemize}
-		\item Pattern catalog exists.
-		\item Attempt and user progress tables exist.
-		\item Training flow currently does \emph{not} persist attempts yet.
-	\end{itemize}
+	\item Fast product iteration with one TypeScript codebase.
+	\item Server-rendered authenticated pages with minimal backend overhead.
+	\item Deterministic, seed-based question generation.
+	\item Persistent storage of user attempts for future progression logic.
 \end{itemize}
 
-\subsection*{Important Current Limitation}
+This architecture describes the \textbf{current implemented system}, not future optional changes.
 
-The question API currently fetches only \texttt{level = 1} patterns. That means difficulty progression data model exists, but progression logic is not yet integrated in the serving path.
+\section{Fixed Technology Stack}
 
-\section{Core Domain Model}
-
-\subsection*{Entities}
+\subsection*{Application Runtime}
 
 \begin{itemize}[leftmargin=*]
-	\item \textbf{User}: authentication identity.
-	\item \textbf{Pattern}: difficulty unit per domain and level; contains generation constraints in \texttt{params} JSON and a \texttt{cutoffTimeMs} target.
-	\item \textbf{Attempt}: one user interaction with one generated question instance.
-	\item \textbf{UserDomainProgress}: current and highest unlocked level per user and domain.
+	\item \textbf{Framework}: Next.js 16 (App Router)
+	\item \textbf{Language}: TypeScript
+	\item \textbf{UI}: React 19 + Tailwind CSS 4
+	\item \textbf{Server model}: Next.js route handlers + server components
 \end{itemize}
 
-\subsection*{Question Identity}
+\subsection*{Authentication}
 
-A generated question is represented by:
+\begin{itemize}[leftmargin=*]
+	\item \textbf{Auth library}: better-auth
+	\item \textbf{Adapter}: better-auth Prisma adapter
+	\item \textbf{Mode}: Email + password with username plugin
+\end{itemize}
 
-\begin{center}
-\texttt{(patternId, seed)}
-\end{center}
+\subsection*{Data Layer}
 
-With deterministic RNG, this pair is enough to reconstruct the prompt and expected answer.
+\begin{itemize}[leftmargin=*]
+	\item \textbf{Database}: PostgreSQL
+	\item \textbf{ORM}: Prisma (Prisma Client + PostgreSQL adapter)
+	\item \textbf{Schema ownership}: \texttt{prisma/schema.prisma}
+	\item \textbf{Seed strategy}: deterministic pattern upsert via \texttt{prisma/seed.ts}
+\end{itemize}
 
-\section{Request and Data Flow}
+\section{System Context}
 
-\subsection*{Read Flow (today)}
+At runtime, the system has four primary concerns:
 
 \begin{enumerate}[leftmargin=*]
-	\item Client reads selected operations and count from URL query.
-	\item Client calls \texttt{/api/training/calculations}.
-	\item API verifies session via better-auth.
-	\item API loads active patterns (currently fixed to level 1).
-	\item API generates deterministic questions from seeds.
-	\item API returns list to client for local session execution.
+	\item \textbf{Web UI}: Landing, auth, dashboard, training, and overview pages.
+	\item \textbf{Session \& Identity}: Sign-up/login/session validation via better-auth.
+	\item \textbf{Training API}: Question retrieval and attempt persistence endpoints.
+	\item \textbf{Persistence}: User, pattern, and attempt storage in PostgreSQL.
 \end{enumerate}
 
-\subsection*{Write Flow (intended architecture)}
+\section{High-Level Module Architecture}
+
+\subsection*{1) Presentation Layer (Next.js App Router)}
+
+Main routes:
+
+\begin{itemize}[leftmargin=*]
+	\item \texttt{/} (landing page)
+	\item \texttt{/login}, \texttt{/signup}
+	\item \texttt{/dashboard}
+	\item \texttt{/training}
+	\item \texttt{/training/overview}
+\end{itemize}
+
+Characteristics:
+
+\begin{itemize}[leftmargin=*]
+	\item Dashboard and overview are server-rendered and gated by session checks.
+	\item Training run UI is client-side to support real-time timer/input interaction.
+\end{itemize}
+
+\subsection*{2) API Layer (Route Handlers)}
+
+\begin{itemize}[leftmargin=*]
+	\item \texttt{/api/auth/[...all]} delegates to better-auth Next.js handler.
+	\item \texttt{GET /api/training/calculations} returns generated questions from active level-1 patterns.
+	\item \texttt{POST /api/training/attempts} validates and persists a single first-attempt event.
+\end{itemize}
+
+All training routes require an authenticated session.
+
+\subsection*{3) Domain Logic Layer (Training Feature)}
+
+Core modules under \texttt{src/features/training}:
+
+\begin{itemize}[leftmargin=*]
+	\item \texttt{question-generator.ts}: deterministic generator from \texttt{(domain, params, seed)}.
+	\item \texttt{use-training-questions.ts}: fetch lifecycle for question batch loading.
+	\item \texttt{use-training-run.ts}: run state machine (submit, wrong feedback, skip, advance, complete).
+	\item \texttt{attempt-client.ts}: persistence call abstraction.
+\end{itemize}
+
+\subsection*{4) Infrastructure Layer}
+
+\begin{itemize}[leftmargin=*]
+	\item \texttt{src/lib/prisma.ts}: singleton Prisma client construction.
+	\item \texttt{src/lib/auth.ts}: better-auth instance configuration.
+	\item \texttt{src/lib/session.ts}: server-side session retrieval helper.
+\end{itemize}
+
+\section{Data Model Architecture}
+
+\subsection*{Core Product Entities}
+
+\begin{itemize}[leftmargin=*]
+	\item \texttt{User}: identity/account owner.
+	\item \texttt{Pattern}: reusable generator rule (domain, level, constraints, cutoff).
+	\item \texttt{Attempt}: immutable first-attempt event for one question presentation.
+	\item \texttt{UserDomainProgress}: per-user progress state by domain (prepared for progression logic).
+\end{itemize}
+
+\subsection*{Auth Support Entities}
+
+\begin{itemize}[leftmargin=*]
+	\item \texttt{Session}, \texttt{Account}, \texttt{Verification}
+\end{itemize}
+
+These are owned by better-auth and integrated through Prisma.
+
+\subsection*{Key Enums}
+
+\begin{itemize}[leftmargin=*]
+	\item \texttt{Domain}: \texttt{ADD}, \texttt{SUB}, \texttt{MUL}, \texttt{DIV}
+	\item \texttt{AttemptOutcome}: \texttt{CORRECT}, \texttt{WRONG}, \texttt{TIMEOUT}, \texttt{SKIPPED}
+\end{itemize}
+
+\subsection*{Important Relational Constraints}
+
+\begin{itemize}[leftmargin=*]
+	\item Unique pattern identity: \texttt{(domain, level, description)}.
+	\item Unique user-progress tuple: \texttt{(userId, domain)}.
+	\item Attempt indices optimized for user timeline, run replay, and pattern-level analysis.
+\end{itemize}
+
+\section{Training Runtime Flow}
+
+\subsection*{A. Session Start}
 
 \begin{enumerate}[leftmargin=*]
-	\item Client submits result for each question: \texttt{patternId}, \texttt{seed}, answer metadata, timings.
-	\item API validates payload and recomputes expected answer server-side.
-	\item API writes \texttt{Attempt} row.
-	\item API updates \texttt{UserDomainProgress} according to progression algorithm.
+	\item User selects operations and count on dashboard.
+	\item Browser navigates to \texttt{/training?operations=...\&count=...}.
+	\item Client creates a \texttt{runId} (UUID) for this run.
 \end{enumerate}
 
-\section{Difficulty System Architecture}
+\subsection*{B. Question Batch Loading}
 
-\subsection*{Design Principles}
+\begin{enumerate}[leftmargin=*]
+	\item Client calls \texttt{GET /api/training/calculations}.
+	\item Server validates session.
+	\item Operations are mapped to domains; count is parsed with min/max bounds.
+	\item Server fetches active patterns for selected domains and loads per-domain \texttt{UserDomainProgress.currentLevel} (defaulting to level 1 when absent).
+	\item For each target question, server samples a playable level per domain using weighted progression distribution over \(\{1..L, L+1\}\), constrained by available seeded levels.
+	\item Server samples a pattern from the selected domain and sampled level.
+	\item For each question target, server samples a random seed and generates a deterministic question.
+	\item Response contains \texttt{[\{patternId, seed, left, operator, right, answer\}]}.
+\end{enumerate}
 
-\begin{itemize}[leftmargin=*]
-	\item Progression is \textbf{per domain}, not global.
-	\item A level maps to one or more \textbf{patterns}.
-	\item Serving and progression decisions are made from persisted attempts.
-	\item Question generation remains stateless and deterministic.
-\end{itemize}
+\subsection*{C. Per-Question Interaction}
 
-\subsection*{Serving Strategy}
-
-For each selected domain, resolve the user's current level from \texttt{UserDomainProgress}, then sample patterns with:
-
-\begin{itemize}[leftmargin=*]
-	\item majority from current level $L$
-	\item small slice from $L-1$ (stability)
-	\item small slice from $L+1$ (challenge)
-\end{itemize}
-
-Exact percentages are a policy parameter and can be tuned independently of schema.
-
-\subsection*{Promotion/Demotion Ownership}
-
-Promotion/demotion logic must run server-side during attempt ingestion. The client should never decide level changes.
-
-\section{Module Boundaries}
+For each question in the run:
 
 \begin{itemize}[leftmargin=*]
-	\item \textbf{Auth module}: \texttt{lib/auth.ts}, \texttt{lib/session.ts}, auth API route.
-	\item \textbf{Training generation module}: \texttt{features/training/question-generator.ts}.
-	\item \textbf{Training fetch client module}: \texttt{features/training/use-training-questions.ts}.
-	\item \textbf{Training runtime UI}: \texttt{app/training/page.tsx}.
-	\item \textbf{Persistence module}: Prisma models and queries.
+	\item Timer starts at question load.
+	\item First user submission is captured with response time.
+	\item Correct first answer persists immediately and advances.
+	\item Wrong first answer flashes feedback; user can retry locally.
+	\item ``Don't know'' marks skip, reveals answer, then persists as skipped on continue.
 \end{itemize}
 
-Rule: generation logic is pure; persistence and progression stay in API/server modules.
+\subsection*{D. Attempt Persistence \& Outcome Assignment}
 
-\section{Security and Integrity}
+On \texttt{POST /api/training/attempts}:
+
+\begin{enumerate}[leftmargin=*]
+	\item Request payload is structurally validated.
+	\item Server loads pattern and regenerates expected question from \texttt{seed}.
+	\item Server derives outcome:
+	\begin{itemize}
+		\item \texttt{SKIPPED} if skipped flag is true.
+		\item \texttt{WRONG} if first submitted answer \(\neq\) expected answer.
+		\item \texttt{CORRECT} if answer matches and \(firstResponseMs \le cutoffTimeMs\).
+		\item \texttt{TIMEOUT} if answer matches but exceeds cutoff.
+	\end{itemize}
+	\item Immutable attempt row is written.
+\end{enumerate}
+
+\subsection*{E. Run Completion and Review}
+
+\begin{enumerate}[leftmargin=*]
+	\item On final question completion, client navigates to \texttt{/training/overview?runId=...}.
+	\item Overview page loads attempts for the run in chronological order.
+	\item UI renders summary counters and row-level results.
+\end{enumerate}
+
+\section{Deterministic Generation Design}
+
+The architecture intentionally models a question by \texttt{(patternId, seed)}.
+
+Benefits:
 
 \begin{itemize}[leftmargin=*]
-	\item All training APIs require session.
-	\item Attempt correctness is computed server-side from \texttt{patternId + seed}; do not trust client-side \texttt{solved} flags.
-	\item Keep pattern constraints authoritative in DB; client is presentation only.
+	\item No need to persist full question text at creation time.
+	\item Reproducible verification of answers on the server.
+	\item Lower storage overhead with auditable replay.
 \end{itemize}
 
-\section{Incremental Delivery Plan}
+\subsection*{Generation Constraints by Domain}
 
-\textbf{Step 1 (this doc):} architecture baseline and module boundaries.
+\begin{itemize}[leftmargin=*]
+	\item ADD: digit counts + exact carry count
+	\item SUB: digit counts + exact borrow count (+ optional negatives)
+	\item MUL: digit counts + multiplication carry count
+	\item DIV: digit counts + exact integer constraints and quotient floor
+\end{itemize}
 
-\textbf{Step 2:} add attempt ingestion endpoint (POST), with server-side answer verification.
+Generator attempts are bounded to prevent unbounded loops for infeasible constraints.
 
-\textbf{Step 3:} wire training UI submit/skip actions to persist attempts.
+\section{Auth \& Security Boundaries}
 
-\textbf{Step 4:} implement level resolver (read \texttt{UserDomainProgress}) and stop serving only level 1.
+\begin{itemize}[leftmargin=*]
+	\item Training APIs are session-protected.
+	\item Attempt outcome is computed server-side; client cannot self-assign correctness.
+	\item Persisted numeric values are converted into Prisma \texttt{Decimal} where relevant.
+	\item Database write scope is minimized to required attempt fields.
+\end{itemize}
 
-\textbf{Step 5:} implement progression updater (promotion/demotion policy).
+\section{Operational Architecture}
 
-\textbf{Step 6:} implement overview metrics from real attempts (replace mocks).
+\subsection*{Environment Configuration}
 
+Minimum required runtime variables:
+
+\begin{itemize}[leftmargin=*]
+	\item \texttt{DATABASE\_URL}
+\end{itemize}
+
+\subsection*{Schema Lifecycle}
+
+\begin{enumerate}[leftmargin=*]
+	\item Apply Prisma migrations.
+	\item Seed base patterns via \texttt{prisma/seed.ts}.
+	\item Start application server.
+\end{enumerate}
+
+\subsection*{Client Generation}
+
+Prisma client is generated into \texttt{src/generated/prisma}, then consumed by app code.
+
+\section{Current State and Deliberate v1 Limits}
+
+The architecture is production-shaped but intentionally narrow:
+
+\begin{itemize}[leftmargin=*]
+	\item Level selection uses weighted per-domain sampling based on \texttt{UserDomainProgress.currentLevel}; promotion/demotion writes are still not yet wired.
+	\item Dashboard progress widgets are currently mock visuals.
+	\item Progression table exists but promotion/demotion orchestration is not yet wired in training selection.
+\end{itemize}
+
+These are product-scope decisions, not architectural inconsistencies.
+
+\section{Quality Attributes}
+
+\subsection*{Strengths in v1}
+
+\begin{itemize}[leftmargin=*]
+	\item \textbf{Determinism}: server can always reconstruct expected answers.
+	\item \textbf{Integrity}: outcomes derive from server logic, not client assertions.
+	\item \textbf{Simplicity}: one monolithic codebase and one relational datastore.
+	\item \textbf{Extensibility}: existing pattern/progress schema supports progression upgrades.
+\end{itemize}
+
+\subsection*{Known Tradeoffs}
+
+\begin{itemize}[leftmargin=*]
+	\item Tight coupling between web app and API (intentional in Next.js monolith).
+	\item Minimal observability tooling in v1.
+	\item Limited anti-abuse/rate-limiting controls on public endpoints.
+\end{itemize}
+
+\section{Reference Component Map}
+
+\begin{longtable}{@{}p{0.28\linewidth}p{0.68\linewidth}@{}}
+\toprule
+Component & Responsibility \\
+\midrule
+\texttt{src/app/dashboard/page.tsx} & Session-gated configuration UI for operations and batch size. \\
+\texttt{src/app/training/page.tsx} & Interactive run experience and run lifecycle orchestration. \\
+\texttt{src/features/training/use-training-run.ts} & Run state machine for first-attempt capture and progression across questions. \\
+\texttt{src/app/api/training/calculations/route.ts} & Auth-protected question batch generation from active patterns. \\
+\texttt{src/app/api/training/attempts/route.ts} & Auth-protected attempt validation, outcome derivation, and persistence. \\
+\texttt{src/features/training/question-generator.ts} & Deterministic constrained generator for ADD/SUB/MUL/DIV domains. \\
+\texttt{src/lib/auth.ts} & better-auth initialization with Prisma adapter and plugins. \\
+\texttt{src/lib/prisma.ts} & Shared Prisma client creation and non-production singleton reuse. \\
+\texttt{prisma/schema.prisma} & Canonical data model, relations, enums, and indexing strategy. \\
+\bottomrule
+\end{longtable}
+
+\section{Versioning Note}
+
+This document is architecture baseline \textbf{v1} for the current repository state.
+Future updates should revise this file when introducing:
+
+\begin{itemize}[leftmargin=*]
+	\item Dynamic per-user level selection in question retrieval.
+	\item Automated progression writes into \texttt{UserDomainProgress}.
+	\item Analytics/telemetry and operational hardening changes.
+\end{itemize}
 
 \end{document}
