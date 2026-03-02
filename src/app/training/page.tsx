@@ -4,9 +4,12 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 
+import { BrandMark } from "@/components/brand-mark";
+import { formatElapsed } from "@/features/training/use-training-timer";
 import { formatPrompt } from "@/features/training/format-prompt";
 import { useTrainingQuestions } from "@/features/training/use-training-questions";
 import { useTrainingRun } from "@/features/training/use-training-run";
+import { cn } from "@/lib/cn";
 
 export default function TrainingPage() {
   const router = useRouter();
@@ -26,7 +29,6 @@ export default function TrainingPage() {
     currentQuestionNumber,
     elapsedMs,
     errorFlash,
-    formatElapsed,
     isInteractionDisabled,
     markDontKnow,
     progressOffset,
@@ -42,22 +44,18 @@ export default function TrainingPage() {
     onComplete: handleRunComplete,
   });
 
-  const answerInputClassName = [
+  const answerInputClassName = cn(
     "w-full rounded-2xl border border-[#1b1b1b]/15 bg-white px-4 py-3 text-lg outline-none transition focus:border-[#1b1b1b]/40",
-    showAnswer ? "cursor-not-allowed bg-[#f3f0eb] text-[#1b1b1b]/50" : "",
-    errorFlash ? "border-red-400 bg-red-50 ring-4 ring-red-200" : "",
-  ]
-    .filter((token) => token.length > 0)
-    .join(" ");
+    showAnswer && "cursor-not-allowed bg-[#f3f0eb] text-[#1b1b1b]/50",
+    errorFlash && "border-red-400 bg-red-50 ring-4 ring-red-200",
+  );
 
   return (
-    <div className="min-h-screen bg-[#f8f6f2] text-[#1b1b1b]">
+    <div className="min-h-screen bg-[#f8f3ea] text-[#1b1b1b]">
       <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-6 pb-16 pt-8 sm:px-10">
         <header className="flex items-center justify-between">
           <div className="flex items-center text-lg font-semibold tracking-tight">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1b1b1b] text-xs font-bold text-white">
-              S
-            </span>
+            <BrandMark />
           </div>
           <div className="flex items-center gap-3 text-sm font-medium">
             <Link className="rounded-full px-3 py-2" href="/">

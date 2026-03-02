@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+export function formatElapsed(ms: number): string {
+  return (ms / 1000).toFixed(1);
+}
+
 export function useTrainingTimer() {
   const [elapsedMs, setElapsedMs] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -37,16 +41,10 @@ export function useTrainingTimer() {
     setIsTimerRunning(false);
   }, []);
 
-  const formatElapsed = useCallback((ms: number) => {
-    const seconds = ms / 1000;
-    return seconds.toFixed(1);
-  }, []);
-
   return {
     elapsedMs,
     isTimerRunning,
     restart,
     stop,
-    formatElapsed,
   };
 }

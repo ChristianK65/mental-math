@@ -1,39 +1,45 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
+import { BrandMark } from "@/components/brand-mark";
+import { GuestStartButton } from "@/components/guest-start-button";
+import { isAnonymousUser } from "@/lib/auth-helpers";
 import { getServerSession } from "@/lib/session";
 
 export default async function Home() {
   const session = await getServerSession();
+  const isAnonymous = isAnonymousUser(session?.user);
+  const isRegularUser = !!session && !isAnonymous;
+
+  if (isRegularUser) {
+    redirect("/dashboard");
+  }
 
   return (
     <div className="min-h-screen bg-[#f8f3ea] text-[#151515]">
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 sm:px-10">
         <header className="flex items-center justify-between">
           <Link className="flex items-center" href="/">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#151515] text-xs font-bold text-white">
-              S
-            </span>
+            <BrandMark />
           </Link>
-          {!session ? (
-            <div className="flex items-center gap-2 text-sm font-semibold">
-              <Link className="rounded-full px-4 py-2" href="/login">
-                Sign in
-              </Link>
-              <Link
-                className="rounded-full border border-[#151515]/20 px-4 py-2 transition hover:border-[#151515]/40"
-                href="/signup"
-              >
-                Create account
-              </Link>
-            </div>
-          ) : null}
+          <div className="flex items-center gap-2 text-sm font-semibold">
+            <Link className="rounded-full px-4 py-2" href="/login">
+              Sign in
+            </Link>
+            <Link
+              className="rounded-full border border-[#151515]/20 px-4 py-2 transition hover:border-[#151515]/40"
+              href="/signup"
+            >
+              Create account
+            </Link>
+          </div>
         </header>
 
         <main className="mx-auto mt-24 w-full max-w-3xl text-center">
           <span className="inline-flex rounded-full border border-[#151515]/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#151515]/70">
             Adaptive Elo training
           </span>
-          <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight font-[var(--font-display)] sm:text-5xl">
+          <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight font-display sm:text-5xl">
             Train mental math with focused daily practice.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[#151515]/70">
@@ -42,18 +48,7 @@ export default async function Home() {
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              className="inline-flex items-center justify-center rounded-full bg-[#151515] px-7 py-3 text-sm font-semibold text-white transition hover:bg-black"
-              href="/dashboard"
-            >
-              Start training
-            </Link>
-            <Link
-              className="inline-flex items-center justify-center rounded-full border border-[#151515]/20 px-7 py-3 text-sm font-semibold transition hover:border-[#151515]/40"
-              href="/signup"
-            >
-              Create account
-            </Link>
+            <GuestStartButton />
           </div>
 
           <div className="mt-14 grid grid-cols-2 gap-3 text-left sm:grid-cols-4">
@@ -76,7 +71,7 @@ export default async function Home() {
 
         <section className="mt-20 grid gap-5 lg:grid-cols-2">
           <div className="rounded-3xl border border-[#151515]/10 bg-white/80 p-7">
-            <h2 className="text-xl font-semibold font-[var(--font-display)]">Why Samolni</h2>
+            <h2 className="text-xl font-semibold font-display">Why Samolni</h2>
             <p className="mt-3 text-sm leading-7 text-[#151515]/70">
               Short sessions, calibrated problem difficulty, and quick review
               cycles keep your training sustainable and effective.
@@ -89,7 +84,7 @@ export default async function Home() {
           </div>
 
           <div className="rounded-3xl border border-[#151515]/10 bg-white/80 p-7">
-            <h3 className="text-xl font-semibold font-[var(--font-display)]">Start in 3 steps</h3>
+            <h2 className="text-xl font-semibold font-display">Start in 3 steps</h2>
             <ol className="mt-5 grid gap-3 text-sm text-[#151515]/75">
               {[
                 "Create your account",
@@ -107,29 +102,6 @@ export default async function Home() {
                 </li>
               ))}
             </ol>
-          </div>
-        </section>
-
-        <section className="mt-14">
-          <div className="rounded-3xl border border-[#151515]/10 bg-[#151515] p-7 text-white">
-            <h2 className="text-2xl font-semibold font-[var(--font-display)]">Ready to begin?</h2>
-            <p className="mt-2 text-sm text-white/75">
-              Your first adaptive session is ready as soon as you sign up.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link
-                className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#151515]"
-                href="/dashboard"
-              >
-                Start training
-              </Link>
-              <Link
-                className="inline-flex items-center justify-center rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white/85"
-                href="/login"
-              >
-                Sign in
-              </Link>
-            </div>
           </div>
         </section>
       </div>

@@ -1,27 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { Domain } from "@/generated/prisma";
+import { BrandMark } from "@/components/brand-mark";
+import { DOMAIN_LABEL, DOMAIN_SYMBOL } from "@/features/training/domain-config";
+import { getUserDomainLevels } from "@/features/training/domain-progress";
 import { getServerSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 
 type SearchParams = Record<string, string | string[] | undefined>;
-
-const operatorByDomain = {
-  ADD: "+",
-  SUB: "−",
-  MUL: "×",
-  DIV: "÷",
-} as const;
-
-const orderedDomains: Domain[] = [Domain.ADD, Domain.SUB, Domain.MUL, Domain.DIV];
-
-const domainLabel: Record<Domain, string> = {
-  ADD: "Addition",
-  SUB: "Subtraction",
-  MUL: "Multiplication",
-  DIV: "Division",
-};
 
 function readSingleParam(value: string | string[] | undefined) {
   if (typeof value === "string") {
@@ -79,12 +65,10 @@ export default async function TrainingOverviewPage({
 
   if (!runId) {
     return (
-      <div className="min-h-screen bg-[#f8f6f2] text-[#1b1b1b]">
+      <div className="min-h-screen bg-[#f8f3ea] text-[#1b1b1b]">
         <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-6 pb-16 pt-8 sm:px-10">
           <header className="flex items-center justify-between">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1b1b1b] text-xs font-bold text-white">
-              S
-            </span>
+            <BrandMark />
             <Link className="rounded-full px-3 py-2 text-sm font-medium" href="/dashboard">
               Dashboard
             </Link>
@@ -119,44 +103,24 @@ export default async function TrainingOverviewPage({
     },
   });
 
-  const summary = {
-    correct: attempts.filter((attempt) => attempt.outcome === "CORRECT").length,
-    wrong: attempts.filter((attempt) => attempt.outcome === "WRONG").length,
-    timeout: attempts.filter((attempt) => attempt.outcome === "TIMEOUT").length,
-    skipped: attempts.filter((attempt) => attempt.outcome === "SKIPPED").length,
-  };
-
-  const progressRows = await prisma.userDomainProgress.findMany({
-    where: {
-      userId: session.user.id,
-      domain: {
-        in: orderedDomains,
-      },
+  const summary = attempts.reduce(
+    (acc, { outcome }) => {
+      if (outcome === "CORRECT") acc.correct++;
+      else if (outcome === "WRONG") acc.wrong++;
+      else if (outcome === "TIMEOUT") acc.timeout++;
+      else if (outcome === "SKIPPED") acc.skipped++;
+      return acc;
     },
-    select: {
-      domain: true,
-      currentLevel: true,
-      highestUnlockedLevel: true,
-    },
-  });
+    { correct: 0, wrong: 0, timeout: 0, skipped: 0 },
+  );
 
-  const progressByDomain = new Map(progressRows.map((row) => [row.domain, row]));
-  const levels = orderedDomains.map((domain) => {
-    const row = progressByDomain.get(domain);
-    return {
-      domain,
-      currentLevel: row?.currentLevel ?? 1,
-      highestUnlockedLevel: row?.highestUnlockedLevel ?? 1,
-    };
-  });
+  const levels = await getUserDomainLevels(session.user.id);
 
   return (
-    <div className="min-h-screen bg-[#f8f6f2] text-[#1b1b1b]">
+    <div className="min-h-screen bg-[#f8f3ea] text-[#1b1b1b]">
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 sm:px-10">
         <header className="flex items-center justify-between">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1b1b1b] text-xs font-bold text-white">
-            S
-          </span>
+          <BrandMark />
           <div className="flex items-center gap-2 text-sm font-medium">
             <Link className="rounded-full px-3 py-2" href="/training">
               Train again
@@ -185,9 +149,9 @@ export default async function TrainingOverviewPage({
           <div className="mt-6 overflow-x-auto">
             <div className="mb-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {levels.map((entry) => (
-                <div key={entry.domain} className="rounded-2xl border border-[#1b1b1b]/10 bg-[#f8f6f2] px-3 py-3">
+                <div key={entry.domain} className="rounded-2xl border border-[#1b1b1b]/10 bg-[#f8f3ea] px-3 py-3">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1b1b1b]/55">
-                    {operatorByDomain[entry.domain]} {domainLabel[entry.domain]}
+                    {DOMAIN_SYMBOL[entry.domain]} {DOMAIN_LABEL[entry.domain]}
                   </p>
                   <p className="mt-1 text-sm font-semibold text-[#1b1b1b]/85">
                     Current Lv {entry.currentLevel}
@@ -211,7 +175,7 @@ export default async function TrainingOverviewPage({
               </thead>
               <tbody>
                 {attempts.map((attempt) => {
-                  const operator = operatorByDomain[attempt.domain];
+                  const operator = DOMAIN_SYMBOL[attempt.domain];
                   const rowClass = attempt.outcome === "CORRECT"
                     ? "bg-green-50"
                     : attempt.outcome === "WRONG"

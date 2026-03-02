@@ -62,29 +62,20 @@ function parsePatternParams(value: Prisma.JsonValue): PatternParams {
     throw new Error("Pattern params must include an operation string");
   }
 
-  if (value.operation === "ADD") {
-    const leftDigits = asDigitCount(value.leftDigits);
-    const rightDigits = asDigitCount(value.rightDigits);
-    const carryCount = asNonNegativeInt(value.carryCount);
+  function parseCarryOpParams(operation: "ADD" | "MUL", params: Record<string, unknown>): AddParams | MulParams {
+    const leftDigits = asDigitCount(params.leftDigits);
+    const rightDigits = asDigitCount(params.rightDigits);
+    const carryCount = asNonNegativeInt(params.carryCount);
 
     if (!leftDigits || !rightDigits || carryCount === null) {
-      throw new Error("Invalid ADD pattern params");
+      throw new Error(`Invalid ${operation} pattern params`);
     }
 
-    return { operation: "ADD", leftDigits, rightDigits, carryCount };
+    return { operation, leftDigits, rightDigits, carryCount };
   }
 
-  if (value.operation === "MUL") {
-    const leftDigits = asDigitCount(value.leftDigits);
-    const rightDigits = asDigitCount(value.rightDigits);
-    const carryCount = asNonNegativeInt(value.carryCount);
-
-    if (!leftDigits || !rightDigits || carryCount === null) {
-      throw new Error("Invalid MUL pattern params");
-    }
-
-    return { operation: "MUL", leftDigits, rightDigits, carryCount };
-  }
+  if (value.operation === "ADD") return parseCarryOpParams("ADD", value);
+  if (value.operation === "MUL") return parseCarryOpParams("MUL", value);
 
   if (value.operation === "SUB") {
     const leftDigits = asDigitCount(value.leftDigits);

@@ -11,8 +11,7 @@ export function useTrainingQuestions(selectedOperations: string[], selectedCount
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(true);
   const [questionsError, setQuestionsError] = useState<string | null>(null);
 
-  const operationsKey = selectedOperations.join("|");
-  const countKey = selectedCount;
+  const operationsKey = selectedOperations.join(",");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -23,11 +22,10 @@ export function useTrainingQuestions(selectedOperations: string[], selectedCount
         setQuestionsError(null);
 
         const params = new URLSearchParams();
-        const operations = operationsKey.length > 0 ? operationsKey.split("|") : [];
-        operations.forEach((operation) => {
-          params.append("operations", operation);
+        selectedOperations.forEach((op) => {
+          params.append("operations", op);
         });
-        params.set("count", countKey);
+        params.set("count", selectedCount);
 
         const query = params.toString();
         const endpoint = query.length > 0
@@ -68,7 +66,7 @@ export function useTrainingQuestions(selectedOperations: string[], selectedCount
     return () => {
       controller.abort();
     };
-  }, [operationsKey, countKey]);
+  }, [operationsKey, selectedCount]);
 
   return {
     questions,

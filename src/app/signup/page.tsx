@@ -5,8 +5,9 @@ import { getServerSession } from "@/lib/session";
 
 export default async function SignUpPage() {
   const session = await getServerSession();
+  const isAnonymous = (session?.user as { isAnonymous?: boolean } | undefined)?.isAnonymous === true;
 
-  if (session) {
+  if (session && !isAnonymous) {
     redirect("/dashboard");
   }
 

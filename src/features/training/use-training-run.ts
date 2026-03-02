@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { persistTrainingAttempt } from "@/features/training/attempt-client";
 import type { CalculationQuestion } from "@/features/training/types";
-import { useTrainingTimer } from "@/features/training/use-training-timer";
+import { formatElapsed, useTrainingTimer } from "@/features/training/use-training-timer";
 
 type FirstSubmission = {
   submittedAnswer: string;
@@ -24,7 +24,7 @@ export function useTrainingRun({
   runId,
   onComplete,
 }: UseTrainingRunInput) {
-  const { elapsedMs, restart, stop, formatElapsed } = useTrainingTimer();
+  const { elapsedMs, restart, stop } = useTrainingTimer();
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answerInput, setAnswerInput] = useState("");
@@ -32,7 +32,7 @@ export function useTrainingRun({
   const [errorFlash, setErrorFlash] = useState(false);
   const [isSubmittingAttempt, setIsSubmittingAttempt] = useState(false);
   const [firstSubmission, setFirstSubmission] = useState<FirstSubmission | null>(null);
-  const [skipResponseMs, setSkipResponseMs] = useState<number | null>(null);
+  const skipResponseMsRef = useRef<number | null>(null);
   const answerInputRef = useRef<HTMLInputElement | null>(null);
 
   const totalQuestions = questions.length;
@@ -65,7 +65,7 @@ export function useTrainingRun({
     setAnswerInput("");
     setShowAnswer(false);
     setFirstSubmission(null);
-    setSkipResponseMs(null);
+    skipResponseMsRef.current = null;
     form.reset();
     focusAnswerInput();
   }, [focusAnswerInput]);
@@ -126,7 +126,7 @@ export function useTrainingRun({
 
       await persistCurrentAttempt({
         firstSubmittedAnswer: lockedSubmission ? lockedSubmission.submittedAnswer : null,
-        firstResponseMs: lockedSubmission ? lockedSubmission.responseMs : (skipResponseMs ?? elapsedMs),
+        firstResponseMs: lockedSubmission ? lockedSubmission.responseMs : (skipResponseMsRef.current ?? elapsedMs),
         skipped: !lockedSubmission,
       });
       advanceOrFinish(form);
@@ -175,7 +175,7 @@ export function useTrainingRun({
     isSubmittingAttempt,
     persistCurrentAttempt,
     showAnswer,
-    skipResponseMs,
+
   ]);
 
   const markDontKnow = useCallback(() => {
@@ -184,9 +184,9 @@ export function useTrainingRun({
     }
 
     setShowAnswer(true);
-    setSkipResponseMs(elapsedMs);
+    skipResponseMsRef.current = elapsedMs;
     stop();
-  }, [currentQuestion, elapsedMs, isSubmittingAttempt, stop]);
+  }, [currentQuestion, isSubmittingAttempt, stop]);
 
   return {
     answerInput,
@@ -195,7 +195,6 @@ export function useTrainingRun({
     currentQuestionNumber,
     elapsedMs,
     errorFlash,
-    formatElapsed,
     hasLoadedQuestions,
     isInteractionDisabled,
     markDontKnow,

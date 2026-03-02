@@ -10,13 +10,14 @@ datasource db {
 model User {
   id              String               @id @default(cuid())
   email           String               @unique
-  username        String               @unique
-  displayUsername String
+  username        String?              @unique
+  displayUsername String?
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @updatedAt
   name            String
   emailVerified   Boolean              @default(false)
   image           String?
+  isAnonymous     Boolean?
   sessions        Session[]
   accounts        Account[]
   attempts        Attempt[]

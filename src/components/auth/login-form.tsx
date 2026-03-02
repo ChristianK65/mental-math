@@ -45,7 +45,7 @@ export function LoginForm() {
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#1b1b1b]/60">
               Welcome back
             </p>
-            <h1 className="text-4xl font-semibold leading-tight tracking-tight font-[var(--font-display)]">
+            <h1 className="text-4xl font-semibold leading-tight tracking-tight font-display">
               Pick up your streak.
             </h1>
             <p className="max-w-md text-sm text-[#1b1b1b]/70">

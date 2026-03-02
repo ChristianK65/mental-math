@@ -1,0 +1,185 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+
+\title{Mental Math --- Level Definitions (v1)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview}
+
+Each domain (Addition, Subtraction, Multiplication, Division) is divided into ten progressive levels.
+A \textbf{pattern} defines the shape of questions generated for that level: the number of digits in each
+operand, the required number of carries or borrows, and the cutoff time within which a correct answer
+must be submitted to count as fast.
+
+Levels are designed to be completed in order within a domain. Progression to the next level requires
+demonstrating consistent performance on the current one (see \texttt{progression-algo/algorithm.tex}).
+
+\bigskip
+\noindent Column definitions used in the tables below:
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Level} --- sequential difficulty step within the domain (1 = easiest).
+  \item \textbf{Description} --- plain-language summary of the pattern.
+  \item \textbf{Operands} --- digit widths of the left and right operands (or dividend / divisor for division).
+  \item \textbf{Carries / Borrows} --- exact number of carry or borrow operations required by the generated question.
+  \item \textbf{Cutoff (ms)} --- time budget per question; answers submitted within this window are considered fast.
+\end{itemize}
+
+% ──────────────────────────────────────────────
+\section{Addition (ADD)}
+
+\begin{longtable}{@{}clccr@{}}
+\toprule
+\textbf{Level} & \textbf{Description} & \textbf{Operands} & \textbf{Carries} & \textbf{Cutoff (ms)} \\
+\midrule
+\endhead
+1  & 1-digit + 1-digit, no carry          & $1 + 1$ & 0 & 4\,000 \\
+2  & 1-digit + 1-digit, with carry        & $1 + 1$ & 1 & 4\,000 \\
+3  & 1-digit + 2-digit, no carry          & $1 + 2$ & 0 & 4\,500 \\
+4  & 1-digit + 2-digit, with carry        & $1 + 2$ & 1 & 4\,500 \\
+5  & 2-digit + 2-digit, no carry          & $2 + 2$ & 0 & 5\,000 \\
+6  & 2-digit + 2-digit, one carry         & $2 + 2$ & 1 & 5\,000 \\
+7  & 2-digit + 2-digit, two carries       & $2 + 2$ & 2 & 5\,500 \\
+8  & 2-digit + 3-digit, no carry          & $2 + 3$ & 0 & 5\,500 \\
+9  & 2-digit + 3-digit, one carry         & $2 + 3$ & 1 & 6\,000 \\
+10 & 3-digit + 3-digit, no carry          & $3 + 3$ & 0 & 6\,000 \\
+\bottomrule
+\end{longtable}
+
+\paragraph{Notes.}
+Carry count specifies exactly how many column additions overflow into the next column.
+Level 1 guarantees single-digit sums (e.g.\ $3 + 4 = 7$); Level 5 requires handling two-digit
+arithmetic with no carrying; Levels 6–10 extend to two- and three-digit operands with
+increasing carry requirements.
+
+% ──────────────────────────────────────────────
+\section{Subtraction (SUB)}
+
+\begin{longtable}{@{}clccr@{}}
+\toprule
+\textbf{Level} & \textbf{Description} & \textbf{Operands} & \textbf{Borrows} & \textbf{Cutoff (ms)} \\
+\midrule
+\endhead
+1  & 1-digit $-$ 1-digit, non-negative          & $1 - 1$ & 0 & 4\,000 \\
+2  & 2-digit $-$ 1-digit, no borrow             & $2 - 1$ & 0 & 4\,500 \\
+3  & 2-digit $-$ 1-digit, with borrow           & $2 - 1$ & 1 & 4\,500 \\
+4  & 2-digit $-$ 2-digit, no borrow             & $2 - 2$ & 0 & 5\,000 \\
+5  & 2-digit $-$ 2-digit, with borrow           & $2 - 2$ & 1 & 5\,000 \\
+6  & 3-digit $-$ 1-digit, no borrow             & $3 - 1$ & 0 & 5\,000 \\
+7  & 3-digit $-$ 1-digit, with borrow           & $3 - 1$ & 1 & 5\,500 \\
+8  & 3-digit $-$ 2-digit, no borrow             & $3 - 2$ & 0 & 5\,500 \\
+9  & 3-digit $-$ 2-digit, with borrow           & $3 - 2$ & 1 & 6\,000 \\
+10 & 3-digit $-$ 3-digit, no borrow             & $3 - 3$ & 0 & 6\,000 \\
+\bottomrule
+\end{longtable}
+
+\paragraph{Notes.}
+Negative results are never generated (\texttt{allowNegative: false} for all levels).
+Level 1 constrains the generator so that the right operand is always $\leq$ the left operand,
+avoiding borrows by construction.  Levels 6–10 introduce three-digit minuends, progressing
+from simple subtraction up to full three-digit minus three-digit.
+
+% ──────────────────────────────────────────────
+\section{Multiplication (MUL)}
+
+\begin{longtable}{@{}clccr@{}}
+\toprule
+\textbf{Level} & \textbf{Description} & \textbf{Operands} & \textbf{Carries} & \textbf{Cutoff (ms)} \\
+\midrule
+\endhead
+1  & 1-digit $\times$ 1-digit, no carry          & $1 \times 1$ & 0 & 4\,000 \\
+2  & 1-digit $\times$ 1-digit, with carry        & $1 \times 1$ & 1 & 4\,000 \\
+3  & 1-digit $\times$ 2-digit, no carry          & $1 \times 2$ & 0 & 4\,500 \\
+4  & 1-digit $\times$ 2-digit, one carry         & $1 \times 2$ & 1 & 4\,500 \\
+5  & 1-digit $\times$ 2-digit, two carries       & $1 \times 2$ & 2 & 5\,000 \\
+6  & 1-digit $\times$ 3-digit, no carry          & $1 \times 3$ & 0 & 5\,000 \\
+7  & 1-digit $\times$ 3-digit, one carry         & $1 \times 3$ & 1 & 5\,500 \\
+8  & 1-digit $\times$ 3-digit, two carries       & $1 \times 3$ & 2 & 5\,500 \\
+9  & 1-digit $\times$ 3-digit, three carries     & $1 \times 3$ & 3 & 6\,000 \\
+10 & 2-digit $\times$ 2-digit, no carry          & $2 \times 2$ & 0 & 6\,000 \\
+\bottomrule
+\end{longtable}
+
+\paragraph{Notes.}
+For multiplication, a carry occurs when a partial product exceeds 9 and must be added to the
+next column.  Levels 6–9 extend to a three-digit multiplicand, with the carry count rising
+from zero to three.  Level 10 introduces two-digit multipliers for the first time.
+
+% ──────────────────────────────────────────────
+\section{Division (DIV)}
+
+All division questions are \textbf{exact integer} divisions (no remainder), and the quotient is
+always $\geq 2$ (except Level 1 where the minimum quotient is 1).
+
+\begin{longtable}{@{}clccr@{}}
+\toprule
+\textbf{Level} & \textbf{Description} & \textbf{Dividend / Divisor} & \textbf{Min.\ Quotient} & \textbf{Cutoff (ms)} \\
+\midrule
+\endhead
+1  & 1-digit $\div$ 1-digit & $1 \div 1$ & 1 & 4\,000 \\
+2  & 2-digit $\div$ 1-digit & $2 \div 1$ & 2 & 4\,500 \\
+3  & 2-digit $\div$ 2-digit & $2 \div 2$ & 2 & 5\,000 \\
+4  & 3-digit $\div$ 1-digit & $3 \div 1$ & 2 & 5\,500 \\
+5  & 3-digit $\div$ 2-digit & $3 \div 2$ & 2 & 6\,000 \\
+6  & 3-digit $\div$ 3-digit & $3 \div 3$ & 2 & 6\,500 \\
+7  & 4-digit $\div$ 1-digit & $4 \div 1$ & 2 & 6\,500 \\
+8  & 4-digit $\div$ 2-digit & $4 \div 2$ & 2 & 7\,000 \\
+9  & 4-digit $\div$ 3-digit & $4 \div 3$ & 2 & 7\,500 \\
+10 & 4-digit $\div$ 4-digit & $4 \div 4$ & 2 & 8\,000 \\
+\bottomrule
+\end{longtable}
+
+\paragraph{Notes.}
+Questions are generated by first choosing a valid divisor and quotient, then computing the dividend
+as their product.  This guarantees an integer result.  The minimum quotient constraint prevents
+trivially easy questions such as $n \div n = 1$.  Levels 6–10 scale up to four-digit dividends
+with increasingly large divisors.
+
+% ──────────────────────────────────────────────
+\section{Summary: Cutoff Times}
+
+The tables below show the cutoff time (in milliseconds) for each level across all four domains.
+
+\noindent\textbf{Levels 1--5}
+\begin{center}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Domain} & \textbf{L1} & \textbf{L2} & \textbf{L3} & \textbf{L4} & \textbf{L5} \\
+\midrule
+Addition        & 4\,000 & 4\,000 & 4\,500 & 4\,500 & 5\,000 \\
+Subtraction     & 4\,000 & 4\,500 & 4\,500 & 5\,000 & 5\,000 \\
+Multiplication  & 4\,000 & 4\,000 & 4\,500 & 4\,500 & 5\,000 \\
+Division        & 4\,000 & 4\,500 & 5\,000 & 5\,500 & 6\,000 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Levels 6--10}
+\begin{center}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Domain} & \textbf{L6} & \textbf{L7} & \textbf{L8} & \textbf{L9} & \textbf{L10} \\
+\midrule
+Addition        & 5\,000 & 5\,500 & 5\,500 & 6\,000 & 6\,000 \\
+Subtraction     & 5\,000 & 5\,500 & 5\,500 & 6\,000 & 6\,000 \\
+Multiplication  & 5\,000 & 5\,500 & 5\,500 & 6\,000 & 6\,000 \\
+Division        & 6\,500 & 6\,500 & 7\,000 & 7\,500 & 8\,000 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Division carries the longest cutoff times at higher levels because reasoning through multi-digit
+division requires more working-memory steps than the equivalent addition or multiplication.
+Addition, Subtraction, and Multiplication share the same cutoff schedule across Levels 6--10.
+
+\end{document}

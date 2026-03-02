@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { Domain } from "@/generated/prisma";
-import { prisma } from "@/lib/prisma";
+import { AccountMenu } from "@/components/account-menu";
+import { BrandMark } from "@/components/brand-mark";
+import { DOMAIN_LABEL, DOMAIN_SYMBOL } from "@/features/training/domain-config";
+import { getUserDomainLevels } from "@/features/training/domain-progress";
+import { isAnonymousUser } from "@/lib/auth-helpers";
 import { getServerSession } from "@/lib/session";
 
 type OperationOption = {
@@ -19,22 +22,6 @@ const operationOptions: OperationOption[] = [
   { id: "division", label: "Division", symbol: "÷", defaultChecked: true },
 ];
 
-const orderedDomains: Domain[] = [Domain.ADD, Domain.SUB, Domain.MUL, Domain.DIV];
-
-const domainLabel: Record<Domain, string> = {
-  ADD: "Addition",
-  SUB: "Subtraction",
-  MUL: "Multiplication",
-  DIV: "Division",
-};
-
-const domainSymbol: Record<Domain, string> = {
-  ADD: "+",
-  SUB: "−",
-  MUL: "×",
-  DIV: "÷",
-};
-
 export default async function DashboardPage() {
   const session = await getServerSession();
 
@@ -42,39 +29,18 @@ export default async function DashboardPage() {
     redirect("/");
   }
 
-  const progressRows = await prisma.userDomainProgress.findMany({
-    where: {
-      userId: session.user.id,
-      domain: {
-        in: orderedDomains,
-      },
-    },
-    select: {
-      domain: true,
-      currentLevel: true,
-      highestUnlockedLevel: true,
-    },
-  });
-  const progressByDomain = new Map(progressRows.map((row) => [row.domain, row]));
-  const levels = orderedDomains.map((domain) => {
-    const row = progressByDomain.get(domain);
+  const isAnonymous = isAnonymousUser(session.user);
 
-    return {
-      domain,
-      currentLevel: row?.currentLevel ?? 1,
-      highestUnlockedLevel: row?.highestUnlockedLevel ?? 1,
-    };
-  });
+  const levels = await getUserDomainLevels(session.user.id);
 
   return (
     <div className="min-h-screen bg-[#f8f3ea] text-[#151515]">
       <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 sm:px-10">
-        <header className="flex items-center">
+        <header className="flex items-center justify-between">
           <Link className="flex items-center" href="/">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#151515] text-xs font-bold text-white">
-              S
-            </span>
+            <BrandMark />
           </Link>
+          {!isAnonymous && <AccountMenu />}
         </header>
 
         <main className="mt-10 space-y-6">
@@ -84,7 +50,7 @@ export default async function DashboardPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#151515]/55">
                   Training setup
                 </p>
-                <h1 className="mt-2 text-2xl font-semibold tracking-tight font-[var(--font-display)] sm:text-3xl">
+                <h1 className="mt-2 text-2xl font-semibold tracking-tight font-display sm:text-3xl">
                   Choose operations
                 </h1>
               </div>
@@ -166,7 +132,7 @@ export default async function DashboardPage() {
                     className="rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-3 py-3"
                   >
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#151515]/55">
-                      {domainSymbol[entry.domain]} {domainLabel[entry.domain]}
+                      {DOMAIN_SYMBOL[entry.domain]} {DOMAIN_LABEL[entry.domain]}
                     </p>
                     <p className="mt-1 text-sm font-semibold text-[#151515]/85">
                       Lv {entry.currentLevel}

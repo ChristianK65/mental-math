@@ -42,6 +42,14 @@ function toBoolean(value: unknown) {
   return typeof value === "boolean" ? value : null;
 }
 
+function parseDecimalOrNull(value: string): Prisma.Decimal | null {
+  try {
+    return new Prisma.Decimal(value);
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const session = await getServerSession();
@@ -104,13 +112,7 @@ export async function POST(request: Request) {
 
     const firstSubmittedAnswer = skipped
       ? null
-      : (() => {
-          try {
-            return new Prisma.Decimal(submittedAnswerRaw as string);
-          } catch {
-            return null;
-          }
-        })();
+      : parseDecimalOrNull(submittedAnswerRaw as string);
 
     if (!skipped && firstSubmittedAnswer === null) {
       return NextResponse.json({ error: "Invalid firstSubmittedAnswer" }, { status: 400 });
