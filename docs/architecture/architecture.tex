@@ -200,6 +200,7 @@ On \texttt{POST /api/training/attempts}:
 		\item \texttt{TIMEOUT} if answer matches but exceeds cutoff.
 	\end{itemize}
 	\item Immutable attempt row is written.
+	\item Server evaluates recent attempts at the user's current domain level and applies promotion/demotion updates to \texttt{UserDomainProgress} when thresholds are met.
 \end{enumerate}
 
 \subsection*{E. Run Completion and Review}
@@ -269,9 +270,9 @@ Prisma client is generated into \texttt{src/generated/prisma}, then consumed by 
 The architecture is production-shaped but intentionally narrow:
 
 \begin{itemize}[leftmargin=*]
-	\item Level selection uses weighted per-domain sampling based on \texttt{UserDomainProgress.currentLevel}; promotion/demotion writes are still not yet wired.
+	\item Level selection uses weighted per-domain sampling based on \texttt{UserDomainProgress.currentLevel}.
 	\item Dashboard progress widgets are currently mock visuals.
-	\item Progression table exists but promotion/demotion orchestration is not yet wired in training selection.
+	\item Progression evaluation currently uses fixed v1 thresholds (promotion over last 10 solved; demotion over last 20 with unsolved rate threshold).
 \end{itemize}
 
 These are product-scope decisions, not architectural inconsistencies.
