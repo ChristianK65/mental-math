@@ -111,8 +111,9 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 # COPY --from=builder --chown=node:node /app/.next/cache ./.next/cache
 
 # Copy Prisma schema and CLI so migrations can run at startup
+# Note: we copy the prisma package directly (not via the .bin symlink) so that
+# __dirname resolves correctly and wasm files are found at runtime.
 COPY --from=builder --chown=node:node /app/prisma ./prisma
-COPY --from=builder --chown=node:node /app/node_modules/.bin/prisma* ./node_modules/.bin/
 COPY --from=builder --chown=node:node /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder --chown=node:node /app/node_modules/@prisma ./node_modules/@prisma
 
@@ -124,4 +125,6 @@ EXPOSE 3000
 
 # Run pending migrations then start the server.
 # prisma migrate deploy is idempotent: safe to run on every startup.
-CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node server.js"]
+# Invoke prisma via its package entry point so __dirname resolves to the
+# build/ directory where the wasm files live.
+CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node server.js"]
