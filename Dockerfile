@@ -56,6 +56,9 @@ ENV DATABASE_URL=${DATABASE_URL}
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Generate Prisma client before building
+RUN npx prisma generate
+
 # Build Next.js application
 # If you want to speed up Docker rebuilds, you can cache the build artifacts
 # by adding: --mount=type=cache,target=/app/.next/cache
@@ -107,11 +110,18 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 # cached responses are available immediately on startup, uncomment this line:
 # COPY --from=builder --chown=node:node /app/.next/cache ./.next/cache
 
+# Copy Prisma schema and CLI so migrations can run at startup
+COPY --from=builder --chown=node:node /app/prisma ./prisma
+COPY --from=builder --chown=node:node /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+COPY --from=builder --chown=node:node /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder --chown=node:node /app/node_modules/@prisma ./node_modules/@prisma
+
 # Switch to non-root user for security best practices
 USER node
 
 # Expose port 3000 to allow HTTP traffic
 EXPOSE 3000
 
-# Start Next.js standalone server
-CMD ["node", "server.js"]
+# Run pending migrations then start the server.
+# prisma migrate deploy is idempotent: safe to run on every startup.
+CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node server.js"]
