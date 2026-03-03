@@ -112,7 +112,7 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 
 # Copy Prisma schema and CLI so migrations can run at startup
 COPY --from=builder --chown=node:node /app/prisma ./prisma
-COPY --from=builder --chown=node:node /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+COPY --from=builder --chown=node:node /app/node_modules/.bin/prisma* ./node_modules/.bin/
 COPY --from=builder --chown=node:node /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder --chown=node:node /app/node_modules/@prisma ./node_modules/@prisma
 
