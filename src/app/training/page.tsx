@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -11,7 +12,7 @@ import { useTrainingQuestions } from "@/features/training/use-training-questions
 import { useTrainingRun } from "@/features/training/use-training-run";
 import { cn } from "@/lib/cn";
 
-export default function TrainingPage() {
+function TrainingPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [runId] = useState(() => crypto.randomUUID());
@@ -182,5 +183,13 @@ export default function TrainingPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function TrainingPage() {
+  return (
+    <Suspense>
+      <TrainingPageContent />
+    </Suspense>
   );
 }
