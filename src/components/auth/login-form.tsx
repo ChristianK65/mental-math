@@ -46,15 +46,15 @@ export function LoginForm() {
               Welcome back
             </p>
             <h1 className="text-4xl font-semibold leading-tight tracking-tight font-display">
-              Pick up your streak.
+              Keep learning.
             </h1>
             <p className="max-w-md text-sm text-[#1b1b1b]/70">
-              Log in to continue your adaptive training plan and keep your Elo
-              momentum steady.
+              Log in to continue your adaptive training plan and pick up right
+              where you left off.
             </p>
             <div className="flex items-center gap-3 text-sm">
               <span className="rounded-full border border-[#1b1b1b]/10 bg-white/70 px-3 py-1">
-                Daily streaks
+                Adaptive difficulty
               </span>
               <span className="rounded-full border border-[#1b1b1b]/10 bg-white/70 px-3 py-1">
                 Session history

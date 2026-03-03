@@ -54,13 +54,13 @@ export function AccountMenu() {
     <div className="relative" ref={menuRef}>
       <button
         type="button"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#151515]/20 bg-white/80 transition hover:border-[#151515]/40"
+        className="inline-flex size-10 items-center justify-center rounded-full border border-[#151515]/20 bg-white/80 transition hover:border-[#151515]/40"
         aria-label="Open account menu"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
       >
         <svg
-          className="h-5 w-5 text-[#151515]"
+          className="size-5 text-[#151515]"
           viewBox="0 0 24 24"
           fill="none"
           aria-hidden="true"

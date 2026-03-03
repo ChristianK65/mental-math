@@ -15,15 +15,39 @@ export const auth = betterAuth({
         username(),
         anonymous({
             onLinkAccount: async ({ anonymousUser, newUser }) => {
-                // Transfer all training data from the anonymous user to the new account
+                // Transfer all attempt records (no unique constraint issues)
                 await prisma.attempt.updateMany({
                     where: { userId: anonymousUser.user.id },
                     data: { userId: newUser.user.id },
                 });
-                await prisma.userDomainProgress.updateMany({
-                    where: { userId: anonymousUser.user.id },
-                    data: { userId: newUser.user.id },
+
+                // Only transfer domain progress for domains the new user doesn't
+                // already have — a @@unique([userId, domain]) constraint means we
+                // can't blindly move rows that would conflict.
+                const existingProgress = await prisma.userDomainProgress.findMany({
+                    where: { userId: newUser.user.id },
+                    select: { domain: true },
                 });
+                const existingDomains = existingProgress.map((p) => p.domain);
+
+                if (existingDomains.length > 0) {
+                    await prisma.userDomainProgress.updateMany({
+                        where: {
+                            userId: anonymousUser.user.id,
+                            domain: { notIn: existingDomains },
+                        },
+                        data: { userId: newUser.user.id },
+                    });
+                    // Delete any conflicting anonymous progress that couldn't transfer
+                    await prisma.userDomainProgress.deleteMany({
+                        where: { userId: anonymousUser.user.id },
+                    });
+                } else {
+                    await prisma.userDomainProgress.updateMany({
+                        where: { userId: anonymousUser.user.id },
+                        data: { userId: newUser.user.id },
+                    });
+                }
             },
         }),
     ],

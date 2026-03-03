@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -116,17 +117,32 @@ export default async function TrainingOverviewPage({
 
   const levels = await getUserDomainLevels(session.user.id);
 
+  const cookieStore = await cookies();
+  const savedSettings = (() => {
+    try {
+      const raw = cookieStore.get("training-settings")?.value;
+      if (raw) return JSON.parse(decodeURIComponent(raw)) as { operations: string[]; count: string };
+    } catch {}
+    return null;
+  })();
+  const trainAgainParams = new URLSearchParams();
+  for (const op of (savedSettings?.operations ?? ["addition", "subtraction", "multiplication", "division"])) {
+    trainAgainParams.append("operations", op);
+  }
+  trainAgainParams.set("count", savedSettings?.count ?? "10");
+  const trainAgainHref = `/training?${trainAgainParams.toString()}`;
+
   return (
     <div className="min-h-screen bg-[#f8f3ea] text-[#1b1b1b]">
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 sm:px-10">
         <header className="flex items-center justify-between">
           <BrandMark />
           <div className="flex items-center gap-2 text-sm font-medium">
-            <Link className="rounded-full px-3 py-2" href="/training">
-              Train again
-            </Link>
-            <Link className="rounded-full px-3 py-2" href="/dashboard">
+            <Link className="rounded-full border border-[#1b1b1b]/15 px-4 py-2 hover:bg-[#1b1b1b]/5" href="/dashboard">
               Dashboard
+            </Link>
+            <Link className="rounded-full bg-[#1b1b1b] px-4 py-2 text-white hover:bg-[#1b1b1b]/80" href={trainAgainHref}>
+              Train again
             </Link>
           </div>
         </header>
@@ -136,7 +152,6 @@ export default async function TrainingOverviewPage({
             <div>
               <p className="text-xs uppercase tracking-[0.24em] text-[#1b1b1b]/60">Training overview</p>
               <h1 className="mt-2 text-2xl font-semibold">Run results</h1>
-              <p className="mt-1 text-xs text-[#1b1b1b]/50">Run ID: {runId}</p>
             </div>
             <div className="flex flex-wrap gap-2 text-xs font-semibold">
               <span className="rounded-full bg-green-100 px-3 py-1 text-green-800">Correct: {summary.correct}</span>
@@ -149,7 +164,7 @@ export default async function TrainingOverviewPage({
           <div className="mt-6 overflow-x-auto">
             <div className="mb-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {levels.map((entry) => (
-                <div key={entry.domain} className="rounded-2xl border border-[#1b1b1b]/10 bg-[#f8f3ea] px-3 py-3">
+                <div key={entry.domain} className="rounded-2xl border border-[#1b1b1b]/10 bg-[#f8f3ea] p-3">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1b1b1b]/55">
                     {DOMAIN_SYMBOL[entry.domain]} {DOMAIN_LABEL[entry.domain]}
                   </p>
@@ -166,11 +181,11 @@ export default async function TrainingOverviewPage({
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="border-b border-[#1b1b1b]/10 text-left text-xs uppercase tracking-[0.18em] text-[#1b1b1b]/55">
-                  <th className="px-3 py-3">Result</th>
-                  <th className="px-3 py-3">Calculation</th>
-                  <th className="px-3 py-3">Submitted</th>
-                  <th className="px-3 py-3">Correct answer</th>
-                  <th className="px-3 py-3">Time</th>
+                  <th className="p-3">Result</th>
+                  <th className="p-3">Calculation</th>
+                  <th className="p-3">Submitted</th>
+                  <th className="p-3">Correct answer</th>
+                  <th className="p-3">Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -198,13 +213,13 @@ export default async function TrainingOverviewPage({
 
                   return (
                     <tr key={attempt.id} className={`border-b border-[#1b1b1b]/10 ${rowClass}`}>
-                      <td className="px-3 py-3 font-semibold">{resultLabel}</td>
-                      <td className="px-3 py-3 font-medium">
+                      <td className="p-3 font-semibold">{resultLabel}</td>
+                      <td className="p-3 font-medium">
                         {formatDecimal(attempt.leftOperand)} {operator} {formatDecimal(attempt.rightOperand)}
                       </td>
-                      <td className="px-3 py-3">{submittedValue}</td>
-                      <td className="px-3 py-3">{formatDecimal(attempt.expectedAnswer)}</td>
-                      <td className="px-3 py-3 tabular-nums">{attempt.firstResponseMs} ms</td>
+                      <td className="p-3">{submittedValue}</td>
+                      <td className="p-3">{formatDecimal(attempt.expectedAnswer)}</td>
+                      <td className="p-3 tabular-nums">{attempt.firstResponseMs != null ? (attempt.firstResponseMs / 1000).toFixed(2) + " s" : "—"}</td>
                     </tr>
                   );
                 })}

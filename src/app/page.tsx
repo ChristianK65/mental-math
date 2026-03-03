@@ -37,7 +37,7 @@ export default async function Home() {
 
         <main className="mx-auto mt-24 w-full max-w-3xl text-center">
           <span className="inline-flex rounded-full border border-[#151515]/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#151515]/70">
-            Adaptive Elo training
+            Adaptive training
           </span>
           <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight font-display sm:text-5xl">
             Train mental math with focused daily practice.
@@ -51,16 +51,15 @@ export default async function Home() {
             <GuestStartButton />
           </div>
 
-          <div className="mt-14 grid grid-cols-2 gap-3 text-left sm:grid-cols-4">
+          <div className="mt-14 flex flex-wrap justify-center gap-3 text-left">
             {[
-              { value: "5 min", label: "Daily sessions" },
-              { value: "Elo", label: "Adaptive difficulty" },
+              { value: "Adaptive", label: "Smart difficulty" },
               { value: "Fast", label: "Feedback loop" },
               { value: "Clear", label: "Progress view" },
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="rounded-2xl border border-[#151515]/10 bg-white/70 p-4"
+                className="w-36 rounded-2xl border border-[#151515]/10 bg-white/70 p-4"
               >
                 <p className="text-xl font-semibold">{stat.value}</p>
                 <p className="text-sm text-[#151515]/65">{stat.label}</p>
@@ -68,42 +67,6 @@ export default async function Home() {
             ))}
           </div>
         </main>
-
-        <section className="mt-20 grid gap-5 lg:grid-cols-2">
-          <div className="rounded-3xl border border-[#151515]/10 bg-white/80 p-7">
-            <h2 className="text-xl font-semibold font-display">Why Samolni</h2>
-            <p className="mt-3 text-sm leading-7 text-[#151515]/70">
-              Short sessions, calibrated problem difficulty, and quick review
-              cycles keep your training sustainable and effective.
-            </p>
-            <ul className="mt-5 grid gap-2 text-sm text-[#151515]/75">
-              <li>Calibrated by Elo</li>
-              <li>Built for daily focus</li>
-              <li>Designed for measurable progress</li>
-            </ul>
-          </div>
-
-          <div className="rounded-3xl border border-[#151515]/10 bg-white/80 p-7">
-            <h2 className="text-xl font-semibold font-display">Start in 3 steps</h2>
-            <ol className="mt-5 grid gap-3 text-sm text-[#151515]/75">
-              {[
-                "Create your account",
-                "Take a quick rating check",
-                "Complete your first 5-minute session",
-              ].map((step, index) => (
-                <li
-                  key={step}
-                  className="flex items-center gap-3 rounded-2xl border border-[#151515]/10 bg-[#f8f3ea] px-4 py-3"
-                >
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#151515] text-xs font-semibold text-white">
-                    {index + 1}
-                  </span>
-                  <span>{step}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
       </div>
     </div>
   );

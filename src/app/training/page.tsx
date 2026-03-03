@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { BrandMark } from "@/components/brand-mark";
 import { formatElapsed } from "@/features/training/use-training-timer";
@@ -17,6 +17,14 @@ export default function TrainingPage() {
   const [runId] = useState(() => crypto.randomUUID());
   const selectedOperations = searchParams.getAll("operations");
   const selectedCount = searchParams.get("count") ?? "10";
+
+  useEffect(() => {
+    if (selectedOperations.length === 0) return;
+    const settings = JSON.stringify({ operations: selectedOperations, count: selectedCount });
+    document.cookie = `training-settings=${encodeURIComponent(settings)}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedOperations.join(","), selectedCount]);
+
   const { questions, isLoadingQuestions, questionsError } = useTrainingQuestions(selectedOperations, selectedCount);
   const handleRunComplete = useCallback((completedRunId: string) => {
     router.push(`/training/overview?runId=${encodeURIComponent(completedRunId)}`);
@@ -54,7 +62,7 @@ export default function TrainingPage() {
     <div className="min-h-screen bg-[#f8f3ea] text-[#1b1b1b]">
       <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-6 pb-16 pt-8 sm:px-10">
         <header className="flex items-center justify-between">
-          <div className="flex items-center text-lg font-semibold tracking-tight">
+          <div className="flex items-center">
             <BrandMark />
           </div>
           <div className="flex items-center gap-3 text-sm font-medium">
@@ -68,8 +76,8 @@ export default function TrainingPage() {
           <div className="rounded-3xl border border-[#1b1b1b]/10 bg-white p-8">
             <div className="flex flex-wrap items-center justify-between gap-6 text-sm">
               <div className="flex items-center gap-4">
-                <div className="relative h-16 w-16">
-                  <svg viewBox="0 0 36 36" className="h-16 w-16">
+                <div className="relative size-16">
+                  <svg viewBox="0 0 36 36" className="size-16">
                     <circle
                       className="text-[#1b1b1b]/10"
                       cx="18"
@@ -161,7 +169,7 @@ export default function TrainingPage() {
                     </button>
                   ) : null}
                   <button
-                    className={`rounded-full bg-[#1b1b1b] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black ${showAnswer ? "w-full" : ""}`}
+                    className={cn("rounded-full bg-[#1b1b1b] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black", showAnswer && "w-full")}
                     type="submit"
                     disabled={isInteractionDisabled}
                   >

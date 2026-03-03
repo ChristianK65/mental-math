@@ -102,18 +102,18 @@ export function SignUpForm() {
               Create account
             </p>
             <h1 className="text-4xl font-semibold leading-tight tracking-tight font-display">
-              Start your Samolni streak.
+              Start learning today.
             </h1>
             <p className="max-w-md text-sm text-[#1b1b1b]/70">
-              Create a profile and get your first Elo rating in minutes. You can
+              Create a profile and begin adaptive training in minutes. You can
               switch between skill tracks anytime.
             </p>
             <div className="flex items-center gap-3 text-sm">
               <span className="rounded-full border border-[#1b1b1b]/10 bg-white/70 px-3 py-1">
-                Elo-based training
+                Adaptive difficulty
               </span>
               <span className="rounded-full border border-[#1b1b1b]/10 bg-white/70 px-3 py-1">
-                5 minute sessions
+                Focused sessions
               </span>
             </div>
           </section>
