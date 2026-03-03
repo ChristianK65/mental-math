@@ -17,6 +17,7 @@ Samolni is a web app for training mental arithmetic with adaptive difficulty. Ea
 
 | Layer | Technology |
 |---|---|
+| Hardware | Intel NUC |
 | Hosting | Proxmox · Docker · Caddy reverse proxy (alongside [kohlertej.hu](https://kohlertej.hu)) |
 | Framework | Next.js 16 (App Router) |
 | Language | TypeScript 5 |
