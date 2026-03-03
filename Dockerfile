@@ -118,6 +118,7 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 # The standalone output bundles the app's own deps; node_modules here is only
 # needed for the `prisma migrate deploy` CLI invocation.
 COPY --from=builder --chown=node:node /app/prisma ./prisma
+COPY --from=builder --chown=node:node /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 
 # Switch to non-root user for security best practices
