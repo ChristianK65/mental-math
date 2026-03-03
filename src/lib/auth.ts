@@ -15,7 +15,7 @@ export const auth = betterAuth({
         username(),
         anonymous({
             onLinkAccount: async ({ anonymousUser, newUser }) => {
-                // Transfer all attempt records (no unique constraint issues)
+                // Transfer all attempt records 
                 await prisma.attempt.updateMany({
                     where: { userId: anonymousUser.user.id },
                     data: { userId: newUser.user.id },
@@ -23,7 +23,6 @@ export const auth = betterAuth({
 
                 // Only transfer domain progress for domains the new user doesn't
                 // already have — a @@unique([userId, domain]) constraint means we
-                // can't blindly move rows that would conflict.
                 const existingProgress = await prisma.userDomainProgress.findMany({
                     where: { userId: newUser.user.id },
                     select: { domain: true },
