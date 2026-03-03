@@ -94,6 +94,9 @@ ENV HOSTNAME="0.0.0.0"
 # Uncomment the following line in case you want to disable telemetry during the run time.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Install OpenSSL required by the Prisma CLI at runtime
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
 # Copy production assets
 COPY --from=builder --chown=node:node /app/public ./public
 
