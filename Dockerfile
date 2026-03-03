@@ -113,7 +113,7 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 # cached responses are available immediately on startup, uncomment this line:
 # COPY --from=builder --chown=node:node /app/.next/cache ./.next/cache
 
-# Copy Prisma schema, seed, generated client, config, and full node_modules.
+# Copy Prisma schema, generated client, config, and full node_modules.
 # Full node_modules is required: Prisma CLI uses .wasm files and has a large
 # transitive dependency tree that breaks if only cherry-picked packages are copied.
 COPY --from=builder --chown=node:node /app/prisma ./prisma
