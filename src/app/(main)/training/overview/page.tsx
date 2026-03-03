@@ -1,8 +1,6 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-
-import { BrandMark } from "@/components/brand-mark";
 import { DOMAIN_LABEL, DOMAIN_SYMBOL } from "@/features/training/domain-config";
 import { getUserDomainLevels } from "@/features/training/domain-progress";
 import { getServerSession } from "@/lib/session";
@@ -66,20 +64,16 @@ export default async function TrainingOverviewPage({
 
   if (!runId) {
     return (
-      <div className="min-h-screen bg-[#f8f3ea] text-[#1b1b1b]">
-        <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-6 pb-16 pt-8 sm:px-10">
-          <header className="flex items-center justify-between">
-            <BrandMark />
-            <Link className="rounded-full px-3 py-2 text-sm font-medium" href="/dashboard">
+      <div className="mx-auto w-full max-w-5xl px-6 pb-16 sm:px-10">
+        <main className="mt-10 rounded-3xl border border-[#1b1b1b]/10 bg-white p-8">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-semibold">Training overview</h1>
+            <Link className="rounded-full border border-[#1b1b1b]/15 px-4 py-2 text-sm font-semibold hover:bg-[#1b1b1b]/5" href="/dashboard">
               Dashboard
             </Link>
-          </header>
-
-          <main className="mt-16 rounded-3xl border border-[#1b1b1b]/10 bg-white p-8">
-            <h1 className="text-2xl font-semibold">Training overview</h1>
-            <p className="mt-3 text-sm text-[#1b1b1b]/65">No attempts found yet.</p>
-          </main>
-        </div>
+          </div>
+          <p className="mt-3 text-sm text-[#1b1b1b]/65">No attempts found yet.</p>
+        </main>
       </div>
     );
   }
@@ -133,33 +127,26 @@ export default async function TrainingOverviewPage({
   const trainAgainHref = `/training?${trainAgainParams.toString()}`;
 
   return (
-    <div className="min-h-screen bg-[#f8f3ea] text-[#1b1b1b]">
-      <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 sm:px-10">
-        <header className="flex items-center justify-between">
-          <BrandMark />
-          <div className="flex items-center gap-2 text-sm font-medium">
-            <Link className="rounded-full border border-[#1b1b1b]/15 px-4 py-2 hover:bg-[#1b1b1b]/5" href="/dashboard">
+    <div className="mx-auto w-full max-w-5xl px-6 pb-16 sm:px-10">
+      <main className="mt-10 rounded-3xl border border-[#1b1b1b]/10 bg-white p-8">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-xs uppercase tracking-[0.24em] text-[#1b1b1b]/60">Training overview</p>
+            <h1 className="mt-2 text-2xl font-semibold">Run results</h1>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">Correct: {summary.correct}</span>
+            <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-800">Wrong: {summary.wrong}</span>
+            <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-800">Timeout: {summary.timeout}</span>
+            <span className="rounded-full bg-[#1b1b1b]/10 px-3 py-1 text-xs font-semibold text-[#1b1b1b]/70">Skipped: {summary.skipped}</span>
+            <Link className="rounded-full border border-[#1b1b1b]/15 px-4 py-2 text-xs font-semibold hover:bg-[#1b1b1b]/5" href="/dashboard">
               Dashboard
             </Link>
-            <Link className="rounded-full bg-[#1b1b1b] px-4 py-2 text-white hover:bg-[#1b1b1b]/80" href={trainAgainHref}>
+            <Link className="rounded-full bg-[#1b1b1b] px-4 py-2 text-xs font-semibold text-white hover:bg-[#1b1b1b]/80" href={trainAgainHref}>
               Train again
             </Link>
           </div>
-        </header>
-
-        <main className="mt-10 rounded-3xl border border-[#1b1b1b]/10 bg-white p-8">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <p className="text-xs uppercase tracking-[0.24em] text-[#1b1b1b]/60">Training overview</p>
-              <h1 className="mt-2 text-2xl font-semibold">Run results</h1>
-            </div>
-            <div className="flex flex-wrap gap-2 text-xs font-semibold">
-              <span className="rounded-full bg-green-100 px-3 py-1 text-green-800">Correct: {summary.correct}</span>
-              <span className="rounded-full bg-red-100 px-3 py-1 text-red-800">Wrong: {summary.wrong}</span>
-              <span className="rounded-full bg-orange-100 px-3 py-1 text-orange-800">Timeout: {summary.timeout}</span>
-              <span className="rounded-full bg-[#1b1b1b]/10 px-3 py-1 text-[#1b1b1b]/70">Skipped: {summary.skipped}</span>
-            </div>
-          </div>
+        </div>
 
           <div className="mt-6 overflow-x-auto">
             <div className="mb-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -226,8 +213,7 @@ export default async function TrainingOverviewPage({
               </tbody>
             </table>
           </div>
-        </main>
-      </div>
+      </main>
     </div>
   );
 }

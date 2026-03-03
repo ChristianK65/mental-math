@@ -1,7 +1,5 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { BrandMark } from "@/components/brand-mark";
 import { GuestStartButton } from "@/components/guest-start-button";
 import { isAnonymousUser } from "@/lib/auth-helpers";
 import { getServerSession } from "@/lib/session";
@@ -16,26 +14,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f3ea] text-[#151515]">
-      <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-16 pt-8 sm:px-10">
-        <header className="flex items-center justify-between">
-          <Link className="flex items-center" href="/">
-            <BrandMark />
-          </Link>
-          <div className="flex items-center gap-2 text-sm font-semibold">
-            <Link className="rounded-full px-4 py-2" href="/login">
-              Sign in
-            </Link>
-            <Link
-              className="rounded-full border border-[#151515]/20 px-4 py-2 transition hover:border-[#151515]/40"
-              href="/signup"
-            >
-              Create account
-            </Link>
-          </div>
-        </header>
-
-        <main className="mx-auto mt-24 w-full max-w-3xl text-center">
+    <main className="mx-auto mt-16 w-full max-w-3xl px-6 pb-16 text-center sm:px-10">
           <span className="inline-flex rounded-full border border-[#151515]/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#151515]/70">
             Adaptive training
           </span>
@@ -66,8 +45,6 @@ export default async function Home() {
               </div>
             ))}
           </div>
-        </main>
-      </div>
-    </div>
+    </main>
   );
 }

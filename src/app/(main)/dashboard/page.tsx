@@ -1,12 +1,7 @@
 import { cookies } from "next/headers";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-
-import { AccountMenu } from "@/components/account-menu";
-import { BrandMark } from "@/components/brand-mark";
 import { DOMAIN_LABEL, DOMAIN_SYMBOL } from "@/features/training/domain-config";
 import { getUserDomainLevels } from "@/features/training/domain-progress";
-import { isAnonymousUser } from "@/lib/auth-helpers";
 import { getServerSession } from "@/lib/session";
 import { startTraining } from "./actions";
 
@@ -31,8 +26,6 @@ export default async function DashboardPage() {
     redirect("/");
   }
 
-  const isAnonymous = isAnonymousUser(session.user);
-
   const cookieStore = await cookies();
   const savedSettings = (() => {
     try {
@@ -47,32 +40,7 @@ export default async function DashboardPage() {
   const levels = await getUserDomainLevels(session.user.id);
 
   return (
-    <div className="min-h-screen bg-[#f8f3ea] text-[#151515]">
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-16 pt-8 sm:px-10">
-        <header className="flex items-center justify-between">
-          <Link className="flex items-center" href="/">
-            <BrandMark />
-          </Link>
-          {isAnonymous ? (
-            <div className="flex items-center gap-2">
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center rounded-full border border-[#151515]/15 px-4 py-2 text-sm font-semibold text-[#151515] transition hover:border-[#151515]/35"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/signup"
-                className="inline-flex items-center justify-center rounded-full bg-[#151515] px-4 py-2 text-sm font-semibold text-white transition hover:bg-black"
-              >
-                Sign up
-              </Link>
-            </div>
-          ) : (
-            <AccountMenu />
-          )}
-        </header>
-
+    <div className="mx-auto w-full max-w-6xl px-6 pb-16 sm:px-10">
         <main className="mt-10 space-y-6">
           <section className="rounded-3xl border border-[#151515]/10 bg-white p-7 sm:p-8">
             <div>
@@ -170,7 +138,6 @@ export default async function DashboardPage() {
             </div>
           </section>
         </main>
-      </div>
     </div>
   );
 }
