@@ -94,6 +94,9 @@ ENV HOSTNAME="0.0.0.0"
 # Uncomment the following line in case you want to disable telemetry during the run time.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Install OpenSSL required by the Prisma CLI at runtime
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
 # Copy production assets
 COPY --from=builder --chown=node:node /app/public ./public
 
@@ -110,11 +113,13 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 # cached responses are available immediately on startup, uncomment this line:
 # COPY --from=builder --chown=node:node /app/.next/cache ./.next/cache
 
-# Copy Prisma schema and CLI so migrations can run at startup
+# Copy Prisma schema, seed, generated client, config, and full node_modules.
+# Full node_modules is required: Prisma CLI uses .wasm files and has a large
+# transitive dependency tree that breaks if only cherry-picked packages are copied.
 COPY --from=builder --chown=node:node /app/prisma ./prisma
-COPY --from=builder --chown=node:node /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
-COPY --from=builder --chown=node:node /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder --chown=node:node /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder --chown=node:node /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder --chown=node:node /app/src/generated ./src/generated
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 
 # Switch to non-root user for security best practices
 USER node
@@ -122,6 +127,5 @@ USER node
 # Expose port 3000 to allow HTTP traffic
 EXPOSE 3000
 
-# Run pending migrations then start the server.
-# prisma migrate deploy is idempotent: safe to run on every startup.
+# Run pending migrations then start. Pattern data is seeded via migration.
 CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node server.js"]
