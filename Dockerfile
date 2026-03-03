@@ -30,30 +30,7 @@ RUN --mount=type=cache,target=/root/.npm \
   fi
 
 # ============================================
-# Stage 2: Production-only dependencies (no devDependencies)
-# ============================================
-
-FROM node:${NODE_VERSION} AS prod-deps
-
-WORKDIR /app
-
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
-
-RUN --mount=type=cache,target=/root/.npm \
-    --mount=type=cache,target=/usr/local/share/.cache/yarn \
-    --mount=type=cache,target=/root/.local/share/pnpm/store \
-  if [ -f package-lock.json ]; then \
-    npm ci --omit=dev --no-audit --no-fund; \
-  elif [ -f yarn.lock ]; then \
-    corepack enable yarn && yarn install --frozen-lockfile --production=true; \
-  elif [ -f pnpm-lock.yaml ]; then \
-    corepack enable pnpm && pnpm install --frozen-lockfile --prod; \
-  else \
-    echo "No lockfile found." && exit 1; \
-  fi
-
-# ============================================
-# Stage 3: Build Next.js application in standalone mode
+# Stage 2: Build Next.js application in standalone mode
 # ============================================
 
 FROM node:${NODE_VERSION} AS builder
@@ -117,9 +94,6 @@ ENV HOSTNAME="0.0.0.0"
 # Uncomment the following line in case you want to disable telemetry during the run time.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install OpenSSL required by the Prisma CLI at runtime
-RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
-
 # Copy production assets
 COPY --from=builder --chown=node:node /app/public ./public
 
@@ -136,13 +110,11 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 # cached responses are available immediately on startup, uncomment this line:
 # COPY --from=builder --chown=node:node /app/.next/cache ./.next/cache
 
-# Copy Prisma schema and seed, the generated client, prisma.config.ts, and
-# production-only node_modules (prisma CLI + tsx are prod deps, so they are
-# included here without shipping all devDependencies).
+# Copy Prisma schema and CLI so migrations can run at startup
 COPY --from=builder --chown=node:node /app/prisma ./prisma
-COPY --from=builder --chown=node:node /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder --chown=node:node /app/src/generated ./src/generated
-COPY --from=prod-deps --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+COPY --from=builder --chown=node:node /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder --chown=node:node /app/node_modules/@prisma ./node_modules/@prisma
 
 # Switch to non-root user for security best practices
 USER node
@@ -150,5 +122,6 @@ USER node
 # Expose port 3000 to allow HTTP traffic
 EXPOSE 3000
 
-# Run pending migrations, seed reference data (upsert — idempotent), then start.
-CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node_modules/.bin/prisma db seed && node server.js"]
+# Run pending migrations then start the server.
+# prisma migrate deploy is idempotent: safe to run on every startup.
+CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node server.js"]
