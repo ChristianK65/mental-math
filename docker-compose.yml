@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
   # Node.js service (use with: docker compose up mental-math-nextjs --build)
   mental-math-nextjs:
     build:
