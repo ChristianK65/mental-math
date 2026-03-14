@@ -102,11 +102,11 @@ order is naturally symmetric.
 \subsection*{Example Patterns (Division) --- first 5 levels }
 
 \begin{itemize}[leftmargin=*]
-    \item Level 1: 1-digit $\div$ 1-digit, exact integer result
-    \item Level 2: 2-digit $\div$ 1-digit, exact integer result
-    \item Level 3: 2-digit $\div$ 2-digit, exact integer result
-    \item Level 4: 3-digit $\div$ 1-digit, exact integer result
-    \item Level 5: 3-digit $\div$ 2-digit, exact integer result
+    \item Level 1: 1-digit $\div$ 1-digit, 1-digit quotient
+    \item Level 2: 2-digit $\div$ 1-digit, 1-digit quotient
+    \item Level 3: 2-digit $\div$ 1-digit, 2-digit quotient
+    \item Level 4: 2-digit $\div$ 2-digit, 1-digit quotient
+    \item Level 5: 3-digit $\div$ 2-digit, 1-digit quotient
 \end{itemize}
 
 
@@ -129,7 +129,7 @@ This threshold is tuned manually and can later be replaced by population percent
 For a user currently on Level $L$ in a domain, evaluate the last $N$ completed attempts at Level $L$.
 
 \begin{center}
-$N = 10$
+$N = 5$
 \end{center}
 
 Promotion requires:
@@ -145,7 +145,7 @@ If satisfied, unlock Level $L + 1$.
 Evaluate the last $M$ attempts at the current level (including skips).
 
 \begin{center}
-$M = 20$
+$M = 10$
 \end{center}
 
 Demote if any of the following holds:
@@ -158,7 +158,7 @@ Demote if any of the following holds:
     \item $S_{max} = 0.25$ (25\%)
 \end{itemize}
 
-Only allow demotion after a minimum exposure at that level (20 attempts).
+Only allow demotion after a minimum exposure at that level (10 attempts).
 
 \subsection*{Soft Demotion Target}
 
@@ -360,7 +360,7 @@ because each pattern uses one fixed digit size per side.
 }
 \end{verbatim}
 
-\textbf{DIV example (Level 3: 2-digit / 2-digit, exact integer)}
+\textbf{DIV example (Level 4: 2-digit / 2-digit, exact integer)}
 
 \begin{verbatim}
 {
@@ -368,7 +368,7 @@ because each pattern uses one fixed digit size per side.
     "dividendDigits": 2,
     "divisorDigits": 2,
     "exactInteger": true,
-    "minQuotient": 2
+    "quotientDigits": 1
 }
 \end{verbatim}
 
