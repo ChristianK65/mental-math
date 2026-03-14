@@ -5,8 +5,8 @@ type EvaluateLevelProgressionInput = {
   recentOutcomesDesc: AttemptOutcome[];
 };
 
-export const PROMOTION_WINDOW = 10;
-export const DEMOTION_WINDOW = 20;
+export const PROMOTION_WINDOW = 5;
+export const DEMOTION_WINDOW = 10;
 export const DEMOTION_UNSOLVED_RATE_MAX = 0.25;
 
 function isSolved(outcome: AttemptOutcome) {
