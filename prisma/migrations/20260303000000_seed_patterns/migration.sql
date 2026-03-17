@@ -38,16 +38,16 @@ VALUES
   (gen_random_uuid()::text, 'SUB'::"domain", 9,  '3-digit - 2-digit, with borrow (single)', '{"operation":"SUB","leftDigits":3,"rightDigits":2,"borrowCount":1,"allowNegative":false}', 6000, true, NOW(), NOW()),
   (gen_random_uuid()::text, 'SUB'::"domain", 10, '3-digit - 3-digit, no borrow',       '{"operation":"SUB","leftDigits":3,"rightDigits":3,"borrowCount":0,"allowNegative":false}', 6000, true, NOW(), NOW()),
   -- DIV
-  (gen_random_uuid()::text, 'DIV'::"domain", 1,  '1-digit / 1-digit, exact integer',   '{"operation":"DIV","dividendDigits":1,"divisorDigits":1,"exactInteger":true,"minQuotient":1}', 4000, true, NOW(), NOW()),
-  (gen_random_uuid()::text, 'DIV'::"domain", 2,  '2-digit / 1-digit, exact integer',   '{"operation":"DIV","dividendDigits":2,"divisorDigits":1,"exactInteger":true,"minQuotient":2}', 4500, true, NOW(), NOW()),
-  (gen_random_uuid()::text, 'DIV'::"domain", 3,  '2-digit / 2-digit, exact integer',   '{"operation":"DIV","dividendDigits":2,"divisorDigits":2,"exactInteger":true,"minQuotient":2}', 5000, true, NOW(), NOW()),
-  (gen_random_uuid()::text, 'DIV'::"domain", 4,  '3-digit / 1-digit, exact integer',   '{"operation":"DIV","dividendDigits":3,"divisorDigits":1,"exactInteger":true,"minQuotient":2}', 5500, true, NOW(), NOW()),
-  (gen_random_uuid()::text, 'DIV'::"domain", 5,  '3-digit / 2-digit, exact integer',   '{"operation":"DIV","dividendDigits":3,"divisorDigits":2,"exactInteger":true,"minQuotient":2}', 6000, true, NOW(), NOW()),
-  (gen_random_uuid()::text, 'DIV'::"domain", 6,  '3-digit / 3-digit, exact integer',   '{"operation":"DIV","dividendDigits":3,"divisorDigits":3,"exactInteger":true,"minQuotient":2}', 6500, true, NOW(), NOW()),
-  (gen_random_uuid()::text, 'DIV'::"domain", 7,  '4-digit / 1-digit, exact integer',   '{"operation":"DIV","dividendDigits":4,"divisorDigits":1,"exactInteger":true,"minQuotient":2}', 6500, true, NOW(), NOW()),
-  (gen_random_uuid()::text, 'DIV'::"domain", 8,  '4-digit / 2-digit, exact integer',   '{"operation":"DIV","dividendDigits":4,"divisorDigits":2,"exactInteger":true,"minQuotient":2}', 7000, true, NOW(), NOW()),
-  (gen_random_uuid()::text, 'DIV'::"domain", 9,  '4-digit / 3-digit, exact integer',   '{"operation":"DIV","dividendDigits":4,"divisorDigits":3,"exactInteger":true,"minQuotient":2}', 7500, true, NOW(), NOW()),
-  (gen_random_uuid()::text, 'DIV'::"domain", 10, '4-digit / 4-digit, exact integer',   '{"operation":"DIV","dividendDigits":4,"divisorDigits":4,"exactInteger":true,"minQuotient":2}', 8000, true, NOW(), NOW())
+  (gen_random_uuid()::text, 'DIV'::"domain", 1,  '1-digit / 1-digit, exact integer (1-digit quotient)',   '{"operation":"DIV","dividendDigits":1,"divisorDigits":1,"exactInteger":true,"quotientDigits":1}', 4000, true, NOW(), NOW()),
+  (gen_random_uuid()::text, 'DIV'::"domain", 2,  '2-digit / 1-digit, exact integer (1-digit quotient)',   '{"operation":"DIV","dividendDigits":2,"divisorDigits":1,"exactInteger":true,"quotientDigits":1}', 4000, true, NOW(), NOW()),
+  (gen_random_uuid()::text, 'DIV'::"domain", 3,  '2-digit / 1-digit, exact integer (2-digit quotient)',   '{"operation":"DIV","dividendDigits":2,"divisorDigits":1,"exactInteger":true,"quotientDigits":2}', 4500, true, NOW(), NOW()),
+  (gen_random_uuid()::text, 'DIV'::"domain", 4,  '2-digit / 2-digit, exact integer (1-digit quotient)',   '{"operation":"DIV","dividendDigits":2,"divisorDigits":2,"exactInteger":true,"quotientDigits":1}', 5000, true, NOW(), NOW()),
+  (gen_random_uuid()::text, 'DIV'::"domain", 5,  '3-digit / 1-digit, exact integer (2-digit quotient)',   '{"operation":"DIV","dividendDigits":3,"divisorDigits":1,"exactInteger":true,"quotientDigits":2}', 5500, true, NOW(), NOW()),
+  (gen_random_uuid()::text, 'DIV'::"domain", 6,  '3-digit / 1-digit, exact integer (3-digit quotient)',   '{"operation":"DIV","dividendDigits":3,"divisorDigits":1,"exactInteger":true,"quotientDigits":3}', 6000, true, NOW(), NOW()),
+  (gen_random_uuid()::text, 'DIV'::"domain", 7,  '3-digit / 2-digit, exact integer (1-digit quotient)',   '{"operation":"DIV","dividendDigits":3,"divisorDigits":2,"exactInteger":true,"quotientDigits":1}', 6500, true, NOW(), NOW()),
+  (gen_random_uuid()::text, 'DIV'::"domain", 8,  '3-digit / 2-digit, exact integer (2-digit quotient)',   '{"operation":"DIV","dividendDigits":3,"divisorDigits":2,"exactInteger":true,"quotientDigits":2}', 7000, true, NOW(), NOW()),
+  (gen_random_uuid()::text, 'DIV'::"domain", 9,  '4-digit / 2-digit, exact integer (2-digit quotient)',   '{"operation":"DIV","dividendDigits":4,"divisorDigits":2,"exactInteger":true,"quotientDigits":2}', 7500, true, NOW(), NOW()),
+  (gen_random_uuid()::text, 'DIV'::"domain", 10, '4-digit / 2-digit, exact integer (3-digit quotient)',   '{"operation":"DIV","dividendDigits":4,"divisorDigits":2,"exactInteger":true,"quotientDigits":3}', 8000, true, NOW(), NOW())
 ON CONFLICT (domain, level, description) DO UPDATE SET
   "cutoffTimeMs" = EXCLUDED."cutoffTimeMs",
   params         = EXCLUDED.params,

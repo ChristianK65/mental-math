@@ -28,7 +28,7 @@ type DivParams = {
   dividendDigits: number;
   divisorDigits: number;
   exactInteger: boolean;
-  minQuotient?: number;
+  quotientDigits: number;
 };
 
 type PatternParams = AddParams | MulParams | SubParams | DivParams;
@@ -94,9 +94,9 @@ function parsePatternParams(value: Prisma.JsonValue): PatternParams {
     const dividendDigits = asDigitCount(value.dividendDigits);
     const divisorDigits = asDigitCount(value.divisorDigits);
     const exactInteger = value.exactInteger;
-    const minQuotient = typeof value.minQuotient === "number" ? value.minQuotient : 1;
+    const quotientDigits = asDigitCount(value.quotientDigits);
 
-    if (!dividendDigits || !divisorDigits || typeof exactInteger !== "boolean") {
+    if (!dividendDigits || !divisorDigits || !quotientDigits || typeof exactInteger !== "boolean") {
       throw new Error("Invalid DIV pattern params");
     }
 
@@ -105,7 +105,7 @@ function parsePatternParams(value: Prisma.JsonValue): PatternParams {
       dividendDigits,
       divisorDigits,
       exactInteger,
-      minQuotient,
+      quotientDigits,
     };
   }
 
@@ -253,8 +253,14 @@ function generateMulQuestion(params: MulParams, random: () => number): BaseQuest
     const leftBounds = digitBounds(params.leftDigits);
     const rightBounds = digitBounds(params.rightDigits);
 
-    const rawLeft = randomInt(leftBounds.min, leftBounds.max, random);
-    const rawRight = randomInt(rightBounds.min, rightBounds.max, random);
+    const leftMin = Math.max(leftBounds.min, 2);
+    const rightMin = Math.max(rightBounds.min, 2);
+    if (leftMin > leftBounds.max || rightMin > rightBounds.max) {
+      break;
+    }
+
+    const rawLeft = randomInt(leftMin, leftBounds.max, random);
+    const rawRight = randomInt(rightMin, rightBounds.max, random);
     const operands = maybeSwapOperands(rawLeft, rawRight, random);
 
     const carries = countMultiplicationCarries(operands.left, operands.right);
@@ -307,35 +313,29 @@ function generateSubQuestion(params: SubParams, random: () => number): BaseQuest
 function generateDivQuestion(params: DivParams, random: () => number): BaseQuestion {
   for (let attempts = 0; attempts < MAX_GENERATION_ATTEMPTS; attempts += 1) {
     const divisorBounds = digitBounds(params.divisorDigits);
+    const quotientBounds = digitBounds(params.quotientDigits);
     const dividendBounds = digitBounds(params.dividendDigits);
 
-    const divisor = randomInt(divisorBounds.min, divisorBounds.max, random);
+    const divisorMin = Math.max(divisorBounds.min, 2);
+    const quotientMin = Math.max(quotientBounds.min, 2);
 
-    if (params.exactInteger) {
-      const maxQuotient = Math.floor(dividendBounds.max / divisor);
-      const minQuotient = Math.max(params.minQuotient ?? 1, Math.ceil(dividendBounds.min / divisor));
-
-      if (minQuotient > maxQuotient) {
-        continue;
-      }
-
-      const quotient = randomInt(minQuotient, maxQuotient, random);
-      const dividend = divisor * quotient;
-
-      return {
-        left: dividend,
-        operator: "/",
-        right: divisor,
-        answer: quotient,
-      };
+    if (divisorMin > divisorBounds.max || quotientMin > quotientBounds.max) {
+      break;
     }
 
-    const dividend = randomInt(dividendBounds.min, dividendBounds.max, random);
+    const divisor = randomInt(divisorMin, divisorBounds.max, random);
+    const quotient = randomInt(quotientMin, quotientBounds.max, random);
+    const dividend = divisor * quotient;
+
+    if (dividend < dividendBounds.min || dividend > dividendBounds.max) {
+      continue;
+    }
+
     return {
       left: dividend,
       operator: "/",
       right: divisor,
-      answer: Math.trunc(dividend / divisor),
+      answer: quotient,
     };
   }
 
