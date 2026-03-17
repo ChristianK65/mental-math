@@ -31,6 +31,8 @@ function formatDecimal(value: { toString: () => string } | null) {
     : asString;
 }
 
+import { TrainAgainShortcut } from "./train-again-shortcut";
+
 export default async function TrainingOverviewPage({
   searchParams,
 }: {
@@ -128,6 +130,7 @@ export default async function TrainingOverviewPage({
 
   return (
     <div className="mx-auto w-full max-w-5xl px-6 pb-16 sm:px-10">
+      <TrainAgainShortcut href={trainAgainHref} />
       <main className="mt-10 rounded-3xl border border-[#1b1b1b]/10 bg-white p-8">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -139,12 +142,6 @@ export default async function TrainingOverviewPage({
             <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-800">Wrong: {summary.wrong}</span>
             <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-800">Timeout: {summary.timeout}</span>
             <span className="rounded-full bg-[#1b1b1b]/10 px-3 py-1 text-xs font-semibold text-[#1b1b1b]/70">Skipped: {summary.skipped}</span>
-            <Link className="rounded-full border border-[#1b1b1b]/15 px-4 py-2 text-xs font-semibold hover:bg-[#1b1b1b]/5" href="/dashboard">
-              Dashboard
-            </Link>
-            <Link className="rounded-full bg-[#1b1b1b] px-4 py-2 text-xs font-semibold text-white hover:bg-[#1b1b1b]/80" href={trainAgainHref}>
-              Train again
-            </Link>
           </div>
         </div>
 
@@ -163,6 +160,21 @@ export default async function TrainingOverviewPage({
                   </p>
                 </div>
               ))}
+            </div>
+
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <Link
+                href="/dashboard"
+                className="rounded-full border border-[#1b1b1b]/20 px-5 py-3 text-center text-sm font-semibold transition hover:border-[#1b1b1b]/40"
+              >
+                Dashboard
+              </Link>
+              <Link
+                href={trainAgainHref}
+                className="rounded-full bg-[#1b1b1b] px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-black sm:min-w-[200px]"
+              >
+                Train again
+              </Link>
             </div>
 
             <table className="min-w-full text-sm">

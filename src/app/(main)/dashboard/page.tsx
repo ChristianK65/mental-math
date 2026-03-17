@@ -62,7 +62,7 @@ export default async function DashboardPage() {
                   <label
                     key={operation.id}
                     htmlFor={`op-${operation.id}`}
-                    className="group cursor-pointer"
+                    className="group relative flex w-full cursor-pointer items-center justify-between rounded-2xl border border-[#151515]/10 bg-white p-3 text-sm transition hover:border-[#151515]/30 has-[:checked]:border-[#151515] has-[:checked]:bg-[#f8f3ea]"
                   >
                     <input
                       id={`op-${operation.id}`}
@@ -70,12 +70,19 @@ export default async function DashboardPage() {
                       name="operations"
                       value={operation.id}
                       defaultChecked={savedOperations.includes(operation.id)}
-                      className="peer sr-only"
+                      className="sr-only"
                     />
-                    <span className="flex w-full items-center justify-between rounded-2xl border border-[#151515]/15 bg-[#151515]/8 px-3 py-3 text-sm opacity-40 transition hover:opacity-70 peer-checked:bg-[#f8f3ea] peer-checked:opacity-100">
-                      <span className="font-semibold text-[#151515]/85">{operation.label}</span>
-                      <span className="text-xs font-semibold text-[#151515]/65">{operation.symbol}</span>
-                    </span>
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#151515]/5 text-lg font-bold text-[#151515] transition group-has-[:checked]:bg-white group-has-[:checked]:shadow-sm">
+                        {operation.symbol}
+                      </div>
+                      <span className="font-semibold text-[#151515]/85 group-has-[:checked]:text-[#151515]">{operation.label}</span>
+                    </div>
+                    <div className="mr-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-[#151515]/20 bg-transparent text-transparent transition-colors group-has-[:checked]:border-[#151515] group-has-[:checked]:bg-[#151515] group-has-[:checked]:text-white sm:mr-1">
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
                   </label>
                 ))}
               </div>
