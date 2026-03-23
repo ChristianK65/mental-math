@@ -57,7 +57,7 @@ export default async function DashboardPage() {
               <legend className="text-xs font-semibold uppercase tracking-[0.2em] text-[#151515]/55">
                 Operations
               </legend>
-              <div className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
                 {operationOptions.map((operation) => (
                   <label
                     key={operation.id}
