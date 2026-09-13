@@ -1,10 +1,14 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { and, asc, desc, eq } from "drizzle-orm";
+
 import { DOMAIN_LABEL, DOMAIN_SYMBOL } from "@/features/training/domain-config";
 import { getUserDomainLevels } from "@/features/training/domain-progress";
 import { getServerSession } from "@/lib/session";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import { attempts as attemptsTable } from "@/db/schema";
+import { TrainAgainShortcut } from "./train-again-shortcut";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -20,8 +24,8 @@ function readSingleParam(value: string | string[] | undefined) {
   return null;
 }
 
-function formatDecimal(value: { toString: () => string } | null) {
-  if (value === null) {
+function formatDecimal(value: { toString: () => string } | string | null) {
+  if (value === null || value === undefined) {
     return "—";
   }
 
@@ -30,8 +34,6 @@ function formatDecimal(value: { toString: () => string } | null) {
     ? asString.replace(/\.0+$/, "").replace(/(\.\d*?)0+$/, "$1")
     : asString;
 }
-
-import { TrainAgainShortcut } from "./train-again-shortcut";
 
 export default async function TrainingOverviewPage({
   searchParams,
@@ -49,17 +51,14 @@ export default async function TrainingOverviewPage({
 
   let runId = requestedRunId;
   if (!runId) {
-    const latestAttempt = await prisma.attempt.findFirst({
-      where: {
-        userId: session.user.id,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      select: {
-        runId: true,
-      },
-    });
+    const [latestAttempt] = await db
+      .select({
+        runId: attemptsTable.runId,
+      })
+      .from(attemptsTable)
+      .where(eq(attemptsTable.userId, session.user.id))
+      .orderBy(desc(attemptsTable.createdAt))
+      .limit(1);
 
     runId = latestAttempt?.runId ?? null;
   }
@@ -80,25 +79,25 @@ export default async function TrainingOverviewPage({
     );
   }
 
-  const attempts = await prisma.attempt.findMany({
-    where: {
-      userId: session.user.id,
-      runId,
-    },
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-      domain: true,
-      outcome: true,
-      leftOperand: true,
-      rightOperand: true,
-      firstSubmittedAnswer: true,
-      expectedAnswer: true,
-      firstResponseMs: true,
-    },
-  });
+  const attempts = await db
+    .select({
+      id: attemptsTable.id,
+      domain: attemptsTable.domain,
+      outcome: attemptsTable.outcome,
+      leftOperand: attemptsTable.leftOperand,
+      rightOperand: attemptsTable.rightOperand,
+      firstSubmittedAnswer: attemptsTable.firstSubmittedAnswer,
+      expectedAnswer: attemptsTable.expectedAnswer,
+      firstResponseMs: attemptsTable.firstResponseMs,
+    })
+    .from(attemptsTable)
+    .where(
+      and(
+        eq(attemptsTable.userId, session.user.id),
+        eq(attemptsTable.runId, runId),
+      ),
+    )
+    .orderBy(asc(attemptsTable.createdAt));
 
   const summary = attempts.reduce(
     (acc, { outcome }) => {

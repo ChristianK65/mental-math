@@ -1,4 +1,4 @@
-import type { AttemptOutcome } from "@/generated/prisma";
+import type { AttemptOutcome } from "@/db/schema";
 
 type EvaluateLevelProgressionInput = {
   currentLevel: number;

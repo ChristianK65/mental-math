@@ -1,7 +1,111 @@
--- Seed reference data for pattern table.
--- Uses ON CONFLICT DO UPDATE so this is safe to re-run (idempotent).
--- The unique constraint is (domain, level, description).
-
+CREATE TYPE "public"."attempt_outcome" AS ENUM('CORRECT', 'WRONG', 'TIMEOUT', 'SKIPPED');--> statement-breakpoint
+CREATE TYPE "public"."domain" AS ENUM('ADD', 'MUL', 'SUB', 'DIV');--> statement-breakpoint
+CREATE TABLE "account" (
+	"id" text PRIMARY KEY NOT NULL,
+	"accountId" text NOT NULL,
+	"providerId" text NOT NULL,
+	"userId" text NOT NULL,
+	"accessToken" text,
+	"refreshToken" text,
+	"idToken" text,
+	"accessTokenExpiresAt" timestamp (3),
+	"refreshTokenExpiresAt" timestamp (3),
+	"scope" text,
+	"password" text,
+	"createdAt" timestamp (3) DEFAULT now() NOT NULL,
+	"updatedAt" timestamp (3) NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "session" (
+	"id" text PRIMARY KEY NOT NULL,
+	"expiresAt" timestamp (3) NOT NULL,
+	"token" text NOT NULL,
+	"createdAt" timestamp (3) DEFAULT now() NOT NULL,
+	"updatedAt" timestamp (3) NOT NULL,
+	"ipAddress" text,
+	"userAgent" text,
+	"userId" text NOT NULL,
+	CONSTRAINT "session_token_unique" UNIQUE("token")
+);
+--> statement-breakpoint
+CREATE TABLE "user" (
+	"id" text PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"email" text NOT NULL,
+	"emailVerified" boolean DEFAULT false NOT NULL,
+	"image" text,
+	"username" text,
+	"displayUsername" text,
+	"isAnonymous" boolean,
+	"createdAt" timestamp (3) DEFAULT now() NOT NULL,
+	"updatedAt" timestamp (3) NOT NULL,
+	CONSTRAINT "user_email_unique" UNIQUE("email"),
+	CONSTRAINT "user_username_unique" UNIQUE("username")
+);
+--> statement-breakpoint
+CREATE TABLE "verification" (
+	"id" text PRIMARY KEY NOT NULL,
+	"identifier" text NOT NULL,
+	"value" text NOT NULL,
+	"expiresAt" timestamp (3) NOT NULL,
+	"createdAt" timestamp (3) DEFAULT now() NOT NULL,
+	"updatedAt" timestamp (3) NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "attempt" (
+	"id" text PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
+	"patternId" text NOT NULL,
+	"runId" text NOT NULL,
+	"domain" "domain" NOT NULL,
+	"presentedLevel" integer NOT NULL,
+	"seed" integer NOT NULL,
+	"outcome" "attempt_outcome" NOT NULL,
+	"firstSubmittedAnswer" numeric(65, 30),
+	"firstResponseMs" integer NOT NULL,
+	"leftOperand" numeric(65, 30) NOT NULL,
+	"rightOperand" numeric(65, 30),
+	"expectedAnswer" numeric(65, 30) NOT NULL,
+	"createdAt" timestamp (3) DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "pattern" (
+	"id" text PRIMARY KEY NOT NULL,
+	"domain" "domain" NOT NULL,
+	"level" integer NOT NULL,
+	"description" text NOT NULL,
+	"params" jsonb NOT NULL,
+	"cutoffTimeMs" integer NOT NULL,
+	"active" boolean DEFAULT true NOT NULL,
+	"createdAt" timestamp (3) DEFAULT now() NOT NULL,
+	"updatedAt" timestamp (3) NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "user_domain_progress" (
+	"id" text PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
+	"domain" "domain" NOT NULL,
+	"currentLevel" integer DEFAULT 1 NOT NULL,
+	"highestUnlockedLevel" integer DEFAULT 1 NOT NULL,
+	"createdAt" timestamp (3) DEFAULT now() NOT NULL,
+	"updatedAt" timestamp (3) NOT NULL
+);
+--> statement-breakpoint
+ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "attempt" ADD CONSTRAINT "attempt_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "attempt" ADD CONSTRAINT "attempt_patternId_pattern_id_fk" FOREIGN KEY ("patternId") REFERENCES "public"."pattern"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_domain_progress" ADD CONSTRAINT "user_domain_progress_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "account_userId_idx" ON "account" USING btree ("userId");--> statement-breakpoint
+CREATE INDEX "session_userId_idx" ON "session" USING btree ("userId");--> statement-breakpoint
+CREATE INDEX "verification_identifier_idx" ON "verification" USING btree ("identifier");--> statement-breakpoint
+CREATE INDEX "attempt_userId_createdAt_idx" ON "attempt" USING btree ("userId","createdAt");--> statement-breakpoint
+CREATE INDEX "attempt_userId_runId_createdAt_idx" ON "attempt" USING btree ("userId","runId","createdAt");--> statement-breakpoint
+CREATE INDEX "attempt_userId_patternId_createdAt_idx" ON "attempt" USING btree ("userId","patternId","createdAt");--> statement-breakpoint
+CREATE INDEX "attempt_patternId_createdAt_idx" ON "attempt" USING btree ("patternId","createdAt");--> statement-breakpoint
+CREATE INDEX "attempt_userId_domain_presentedLevel_createdAt_idx" ON "attempt" USING btree ("userId","domain","presentedLevel","createdAt");--> statement-breakpoint
+CREATE UNIQUE INDEX "pattern_domain_level_description_key" ON "pattern" USING btree ("domain","level","description");--> statement-breakpoint
+CREATE UNIQUE INDEX "user_domain_progress_userId_domain_key" ON "user_domain_progress" USING btree ("userId","domain");--> statement-breakpoint
 INSERT INTO "pattern" (id, domain, level, description, params, "cutoffTimeMs", active, "createdAt", "updatedAt")
 VALUES
   -- ADD

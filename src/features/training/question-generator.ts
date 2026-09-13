@@ -1,4 +1,4 @@
-import { Domain, type Prisma } from "@/generated/prisma";
+import { Domain } from "@/db/schema";
 import type { CalculationQuestion } from "@/features/training/types";
 
 type AddParams = {
@@ -57,7 +57,7 @@ function asNonNegativeInt(value: unknown): number | null {
   return value;
 }
 
-function parsePatternParams(value: Prisma.JsonValue): PatternParams {
+function parsePatternParams(value: unknown): PatternParams {
   if (!isRecord(value) || typeof value.operation !== "string") {
     throw new Error("Pattern params must include an operation string");
   }
@@ -344,7 +344,7 @@ function generateDivQuestion(params: DivParams, random: () => number): BaseQuest
 
 type GenerateQuestionInput = {
   domain: Domain;
-  params: Prisma.JsonValue;
+  params: unknown;
   seed: number;
 };
 

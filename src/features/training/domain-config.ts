@@ -1,4 +1,4 @@
-import { Domain } from "@/generated/prisma";
+import { Domain } from "@/db/schema";
 
 export const ORDERED_DOMAINS: Domain[] = [Domain.ADD, Domain.SUB, Domain.MUL, Domain.DIV];
 

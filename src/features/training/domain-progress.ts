@@ -1,6 +1,7 @@
-import type { Domain } from "@/generated/prisma";
-import { prisma } from "@/lib/prisma";
+import { and, eq, inArray } from "drizzle-orm";
 
+import { db } from "@/db";
+import { userDomainProgress, type Domain } from "@/db/schema";
 import { ORDERED_DOMAINS } from "@/features/training/domain-config";
 
 export type DomainLevel = {
@@ -10,17 +11,19 @@ export type DomainLevel = {
 };
 
 export async function getUserDomainLevels(userId: string): Promise<DomainLevel[]> {
-  const progressRows = await prisma.userDomainProgress.findMany({
-    where: {
-      userId,
-      domain: { in: ORDERED_DOMAINS },
-    },
-    select: {
-      domain: true,
-      currentLevel: true,
-      highestUnlockedLevel: true,
-    },
-  });
+  const progressRows = await db
+    .select({
+      domain: userDomainProgress.domain,
+      currentLevel: userDomainProgress.currentLevel,
+      highestUnlockedLevel: userDomainProgress.highestUnlockedLevel,
+    })
+    .from(userDomainProgress)
+    .where(
+      and(
+        eq(userDomainProgress.userId, userId),
+        inArray(userDomainProgress.domain, ORDERED_DOMAINS),
+      ),
+    );
 
   const progressByDomain = new Map(progressRows.map((row) => [row.domain, row]));
 

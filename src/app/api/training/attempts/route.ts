@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
+import Decimal from "decimal.js";
+import { and, desc, eq } from "drizzle-orm";
 
-import { Prisma } from "@/generated/prisma";
 import { generateQuestionFromPattern } from "@/features/training/question-generator";
 import { evaluateLevelProgression } from "@/features/training/progression-rules";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import {
+  type AttemptOutcome,
+  attempts,
+  patterns,
+  userDomainProgress,
+} from "@/db/schema";
 import { getServerSession } from "@/lib/session";
 
 type CreateAttemptBody = {
@@ -14,8 +21,6 @@ type CreateAttemptBody = {
   firstResponseMs?: unknown;
   skipped?: unknown;
 };
-
-type AttemptOutcomeValue = "CORRECT" | "WRONG" | "TIMEOUT" | "SKIPPED";
 
 function toNonEmptyString(value: unknown) {
   return typeof value === "string" && value.trim().length > 0 ? value : null;
@@ -42,9 +47,9 @@ function toBoolean(value: unknown) {
   return typeof value === "boolean" ? value : null;
 }
 
-function parseDecimalOrNull(value: string): Prisma.Decimal | null {
+function parseDecimalOrNull(value: string): Decimal | null {
   try {
-    return new Prisma.Decimal(value);
+    return new Decimal(value);
   } catch {
     return null;
   }
@@ -85,18 +90,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const pattern = await prisma.pattern.findUnique({
-      where: {
-        id: patternId,
-      },
-      select: {
-        id: true,
-        domain: true,
-        level: true,
-        params: true,
-        cutoffTimeMs: true,
-      },
-    });
+    const [pattern] = await db
+      .select({
+        id: patterns.id,
+        domain: patterns.domain,
+        level: patterns.level,
+        params: patterns.params,
+        cutoffTimeMs: patterns.cutoffTimeMs,
+      })
+      .from(patterns)
+      .where(eq(patterns.id, patternId))
+      .limit(1);
 
     if (!pattern) {
       return NextResponse.json({ error: "Pattern not found" }, { status: 404 });
@@ -108,7 +112,7 @@ export async function POST(request: Request) {
       seed,
     });
 
-    const expectedAnswer = new Prisma.Decimal(generated.answer.toString());
+    const expectedAnswer = new Decimal(generated.answer.toString());
 
     const firstSubmittedAnswer = skipped
       ? null
@@ -118,7 +122,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid firstSubmittedAnswer" }, { status: 400 });
     }
 
-    let outcome: AttemptOutcomeValue;
+    let outcome: AttemptOutcome;
 
     if (skipped) {
       outcome = "SKIPPED";
@@ -130,66 +134,59 @@ export async function POST(request: Request) {
       outcome = "TIMEOUT";
     }
 
-    const attemptData: Prisma.AttemptUncheckedCreateInput = {
-      userId: session.user.id,
-      patternId: pattern.id,
-      runId,
-      domain: pattern.domain,
-      presentedLevel: pattern.level,
-      seed,
-      outcome,
-      firstSubmittedAnswer,
-      firstResponseMs,
-      leftOperand: new Prisma.Decimal(generated.left.toString()),
-      rightOperand:
-        generated.right === null ? null : new Prisma.Decimal(generated.right.toString()),
-      expectedAnswer,
-    };
-
-    await prisma.$transaction(async (tx) => {
-      const progress = await tx.userDomainProgress.upsert({
-        where: {
-          userId_domain: {
-            userId: session.user.id,
-            domain: pattern.domain,
-          },
-        },
-        update: {},
-        create: {
+    await db.transaction(async (tx) => {
+      const [progress] = await tx
+        .insert(userDomainProgress)
+        .values({
           userId: session.user.id,
           domain: pattern.domain,
           currentLevel: 1,
           highestUnlockedLevel: 1,
-        },
-        select: {
-          id: true,
-          currentLevel: true,
-          highestUnlockedLevel: true,
-        },
-      });
+          updatedAt: new Date(),
+        })
+        .onConflictDoUpdate({
+          target: [userDomainProgress.userId, userDomainProgress.domain],
+          set: { updatedAt: new Date() },
+        })
+        .returning({
+          id: userDomainProgress.id,
+          currentLevel: userDomainProgress.currentLevel,
+          highestUnlockedLevel: userDomainProgress.highestUnlockedLevel,
+        });
 
-      await tx.attempt.create({
-        data: attemptData,
+      await tx.insert(attempts).values({
+        userId: session.user.id,
+        patternId: pattern.id,
+        runId,
+        domain: pattern.domain,
+        presentedLevel: pattern.level,
+        seed,
+        outcome,
+        firstSubmittedAnswer: firstSubmittedAnswer !== null ? firstSubmittedAnswer.toString() : null,
+        firstResponseMs,
+        leftOperand: generated.left.toString(),
+        rightOperand: generated.right === null ? null : generated.right.toString(),
+        expectedAnswer: expectedAnswer.toString(),
       });
 
       if (pattern.level !== progress.currentLevel) {
         return;
       }
 
-      const recentLevelAttempts = await tx.attempt.findMany({
-        where: {
-          userId: session.user.id,
-          domain: pattern.domain,
-          presentedLevel: progress.currentLevel,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 20,
-        select: {
-          outcome: true,
-        },
-      });
+      const recentLevelAttempts = await tx
+        .select({
+          outcome: attempts.outcome,
+        })
+        .from(attempts)
+        .where(
+          and(
+            eq(attempts.userId, session.user.id),
+            eq(attempts.domain, pattern.domain),
+            eq(attempts.presentedLevel, progress.currentLevel),
+          ),
+        )
+        .orderBy(desc(attempts.createdAt))
+        .limit(20);
 
       const progression = evaluateLevelProgression({
         currentLevel: progress.currentLevel,
@@ -200,15 +197,14 @@ export async function POST(request: Request) {
         return;
       }
 
-      await tx.userDomainProgress.update({
-        where: {
-          id: progress.id,
-        },
-        data: {
+      await tx
+        .update(userDomainProgress)
+        .set({
           currentLevel: progression.nextLevel,
           highestUnlockedLevel: Math.max(progress.highestUnlockedLevel, progression.nextLevel),
-        },
-      });
+          updatedAt: new Date(),
+        })
+        .where(eq(userDomainProgress.id, progress.id));
     });
 
     return NextResponse.json({ success: true });

@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
+import { and, asc, eq, inArray } from "drizzle-orm";
 
 import type { CalculationQuestion } from "@/features/training/types";
 import { generateQuestionFromPattern } from "@/features/training/question-generator";
 import { selectPlayableLevel } from "@/features/training/level-selection";
-import { Domain } from "@/generated/prisma";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import { Domain, patterns, userDomainProgress } from "@/db/schema";
 import { getServerSession } from "@/lib/session";
 
 const DEFAULT_QUESTIONS_PER_BATCH = 10;
@@ -58,34 +59,33 @@ export async function GET(request: Request) {
 
     const activeDomains = selectedDomains.length > 0 ? selectedDomains : defaultDomains;
 
-    const activePatterns = await prisma.pattern.findMany({
-      where: {
-        active: true,
-        domain: {
-          in: activeDomains,
-        },
-      },
-      orderBy: {
-        description: "asc",
-      },
-    });
+    const activePatterns = await db
+      .select()
+      .from(patterns)
+      .where(
+        and(
+          eq(patterns.active, true),
+          inArray(patterns.domain, activeDomains),
+        ),
+      )
+      .orderBy(asc(patterns.description));
 
     if (activePatterns.length === 0) {
       return NextResponse.json({ calculations: [] as CalculationQuestion[] });
     }
 
-    const domainProgressRows = await prisma.userDomainProgress.findMany({
-      where: {
-        userId: session.user.id,
-        domain: {
-          in: activeDomains,
-        },
-      },
-      select: {
-        domain: true,
-        currentLevel: true,
-      },
-    });
+    const domainProgressRows = await db
+      .select({
+        domain: userDomainProgress.domain,
+        currentLevel: userDomainProgress.currentLevel,
+      })
+      .from(userDomainProgress)
+      .where(
+        and(
+          eq(userDomainProgress.userId, session.user.id),
+          inArray(userDomainProgress.domain, activeDomains),
+        ),
+      );
 
     const currentLevelByDomain = new Map<Domain, number>();
     for (const row of domainProgressRows) {

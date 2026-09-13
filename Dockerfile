@@ -46,25 +46,12 @@ COPY . .
 
 ENV NODE_ENV=production
 
-# Provide a dummy DATABASE_URL so Prisma can be imported at build time without
-# throwing. No actual DB connection is made during the build.
-ARG DATABASE_URL=postgresql://build:build@localhost:5432/build_placeholder
-ENV DATABASE_URL=${DATABASE_URL}
-
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Generate Prisma client before building
-RUN npx prisma generate
-
 # Build Next.js application
-# If you want to speed up Docker rebuilds, you can cache the build artifacts
-# by adding: --mount=type=cache,target=/app/.next/cache
-# This caches the .next/cache directory across builds, but it also prevents
-# .next/cache/fetch-cache from being included in the final image, meaning
-# cached fetch responses from the build won't be available at runtime.
 RUN if [ -f package-lock.json ]; then \
     npm run build; \
   elif [ -f yarn.lock ]; then \
@@ -94,9 +81,6 @@ ENV HOSTNAME="0.0.0.0"
 # Uncomment the following line in case you want to disable telemetry during the run time.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install OpenSSL required by the Prisma CLI at runtime
-RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
-
 # Copy production assets
 COPY --from=builder --chown=node:node /app/public ./public
 
@@ -109,17 +93,9 @@ RUN chown node:node .next
 COPY --from=builder --chown=node:node /app/.next/standalone ./
 COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 
-# If you want to persist the fetch cache generated during the build so that
-# cached responses are available immediately on startup, uncomment this line:
-# COPY --from=builder --chown=node:node /app/.next/cache ./.next/cache
-
-# Copy Prisma schema, generated client, config, and full node_modules.
-# Full node_modules is required: Prisma CLI uses .wasm files and has a large
-# transitive dependency tree that breaks if only cherry-picked packages are copied.
-COPY --from=builder --chown=node:node /app/prisma ./prisma
-COPY --from=builder --chown=node:node /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder --chown=node:node /app/src/generated ./src/generated
-COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+# Copy Drizzle migrations and migration runner script
+COPY --from=builder --chown=node:node /app/drizzle ./drizzle
+COPY --from=builder --chown=node:node /app/scripts ./scripts
 
 # Switch to non-root user for security best practices
 USER node
@@ -127,5 +103,5 @@ USER node
 # Expose port 3000 to allow HTTP traffic
 EXPOSE 3000
 
-# Run pending migrations then start. Pattern data is seeded via migration.
-CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node server.js"]
+# Run pending Drizzle migrations then start Next.js
+CMD ["sh", "-c", "node scripts/migrate.mjs && node server.js"]
