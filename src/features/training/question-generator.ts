@@ -33,7 +33,7 @@ type DivParams = {
 
 type PatternParams = AddParams | MulParams | SubParams | DivParams;
 
-type BaseQuestion = Omit<CalculationQuestion, "patternId" | "seed">;
+type BaseQuestion = Omit<CalculationQuestion, "patternId" | "seed" | "level">;
 
 const MAX_GENERATION_ATTEMPTS = 500;
 

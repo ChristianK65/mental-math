@@ -145,6 +145,7 @@ export async function GET(request: Request) {
 
         calculations.push({
           patternId: pattern.id,
+          level: pattern.level,
           seed,
           ...generated,
         });

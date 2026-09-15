@@ -83,6 +83,7 @@ export default async function TrainingOverviewPage({
     .select({
       id: attemptsTable.id,
       domain: attemptsTable.domain,
+      presentedLevel: attemptsTable.presentedLevel,
       outcome: attemptsTable.outcome,
       leftOperand: attemptsTable.leftOperand,
       rightOperand: attemptsTable.rightOperand,
@@ -180,6 +181,7 @@ export default async function TrainingOverviewPage({
               <thead>
                 <tr className="border-b border-[#1b1b1b]/10 text-left text-xs uppercase tracking-[0.18em] text-[#1b1b1b]/55">
                   <th className="p-3">Result</th>
+                  <th className="p-3">Level</th>
                   <th className="p-3">Calculation</th>
                   <th className="p-3">Submitted</th>
                   <th className="p-3">Correct answer</th>
@@ -212,6 +214,7 @@ export default async function TrainingOverviewPage({
                   return (
                     <tr key={attempt.id} className={`border-b border-[#1b1b1b]/10 ${rowClass}`}>
                       <td className="p-3 font-semibold">{resultLabel}</td>
+                      <td className="p-3 font-medium">Lv {attempt.presentedLevel}</td>
                       <td className="p-3 font-medium">
                         {formatDecimal(attempt.leftOperand)} {operator} {formatDecimal(attempt.rightOperand)}
                       </td>

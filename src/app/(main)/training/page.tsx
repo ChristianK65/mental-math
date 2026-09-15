@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-import { BrandMark } from "@/components/brand-mark";
 import { formatElapsed } from "@/features/training/use-training-timer";
 import { formatPrompt } from "@/features/training/format-prompt";
 import { useTrainingQuestions } from "@/features/training/use-training-questions";
@@ -94,9 +93,16 @@ function TrainingPageContent() {
                   </span>
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-[#1b1b1b]/60">
-                    Question
-                  </p>
+                  <div className="flex items-center gap-2.5">
+                    <p className="text-xs uppercase tracking-[0.24em] text-[#1b1b1b]/60">
+                      Question
+                    </p>
+                    {currentQuestion ? (
+                      <span className="rounded-full border border-[#1b1b1b]/15 bg-[#f8f3ea] px-2.5 py-0.5 text-xs font-semibold text-[#1b1b1b]/80">
+                        Level {currentQuestion.level}
+                      </span>
+                    ) : null}
+                  </div>
                   <p className="mt-2 text-sm text-[#1b1b1b]/60">
                     Focus on accuracy, speed follows.
                   </p>
